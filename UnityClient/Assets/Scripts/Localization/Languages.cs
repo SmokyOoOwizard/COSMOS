@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace COSMOS.Localization
 {
+    [Manager]
     public static class Languages
     {
         static Dictionary<string, Language> AllLanguages = new Dictionary<string, Language>();
@@ -16,6 +17,12 @@ namespace COSMOS.Localization
             {
                 CurrentLanguage = AllLanguages[languageName];
             }
+        }
+
+        [InitMethod]
+        public static void LoadLanguages()
+        {
+
         }
     }
 }
