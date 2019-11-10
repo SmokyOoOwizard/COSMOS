@@ -17,7 +17,7 @@ namespace COSMOS.Race
         }
         static List<Race> races = new List<Race>();
 
-        public string Name { get; protected set; }
+        public lstring Name { get; protected set; }
         public Dictionary<Race, float> relations = new Dictionary<Race, float>();
     }
 }

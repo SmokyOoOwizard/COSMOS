@@ -7,7 +7,7 @@ namespace COSMOS.Space
 {
     public class SolarSystem
     {
-        public string Name;
+        public lstring Name;
         public Vector2 PosOnMap;
         public List<Planet> Planets = new List<Planet>();
         public List<SpaceStation> SpaceStaions = new List<SpaceStation>();

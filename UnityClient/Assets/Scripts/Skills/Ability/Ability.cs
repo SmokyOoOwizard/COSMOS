@@ -9,7 +9,7 @@ namespace COSMOS.Skills.Ability
     public abstract class Ability
     {
         public string inerName;
-        public string Name;
+        public lstring Name;
         public uint CurrentXP;
         public uint CurrentLevel;
         public List<uint> Levels = new List<uint>();

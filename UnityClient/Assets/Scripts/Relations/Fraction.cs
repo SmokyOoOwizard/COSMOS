@@ -17,7 +17,7 @@ namespace COSMOS.Relations
         }
         static List<Fraction> fractions = new List<Fraction>();
 
-        public string Name;
+        public lstring Name;
 
     }
 }
