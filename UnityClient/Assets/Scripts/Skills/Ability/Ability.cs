@@ -8,21 +8,38 @@ namespace COSMOS.Skills.Ability
 {
     public abstract class Ability
     {
+        public delegate void levelUpEvent(AbilityStatBonus[] bonus);
+
         public string inerName;
         public lstring Name;
+        public string IconID;
+        public lstring Description;
+
         public uint CurrentXP;
         public uint CurrentLevel;
         public List<uint> Levels = new List<uint>();
 
-        public void AddXP(uint xp)
+        public event levelUpEvent LevelUp;
+        public uint AddXP(uint xp)
         {
-            uint needXpToNextLevel = Levels[(int)CurrentLevel];
-            CurrentXP += xp;
-            if(CurrentXP >= needXpToNextLevel)
+            if (CurrentLevel < Levels.Count - 1)
             {
-                CurrentXP -= needXpToNextLevel;
+                uint needXpToNextLevel = Levels[(int)CurrentLevel];
+                CurrentXP += xp;
+                if (CurrentXP >= needXpToNextLevel)
+                {
+                    CurrentXP -= needXpToNextLevel;
 
-                nextLevel();
+                    nextLevel();
+                    uint tmp = CurrentXP;
+                    CurrentXP = 0;
+                    return tmp;
+                }
+                return 0;
+            }
+            else
+            {
+                return xp;
             }
         }
 
@@ -31,18 +48,12 @@ namespace COSMOS.Skills.Ability
             if (CurrentLevel < Levels.Count - 1)
             {
                 CurrentLevel++;
-                levelUp();
+                LevelUp.Invoke(levelUp());
+
             }
         }
-        protected abstract void levelUp();
-    }
-    public abstract class SubAbility : Ability
-    {
-
-    }
-    public abstract class MainAblity : Ability
-    {
-        public List<SubAbility> SubAbilities = new List<SubAbility>();
-
+        protected abstract AbilityStatBonus[] levelUp();
+        public abstract void GetActiveSkills();
+        public abstract void GetPassiveSkills();
     }
 }

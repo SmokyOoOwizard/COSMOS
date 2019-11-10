@@ -9,5 +9,7 @@ namespace COSMOS.Charactor
     public partial class Character
     {
         public readonly Abilities Abilities;
+        
+
     }
 }
