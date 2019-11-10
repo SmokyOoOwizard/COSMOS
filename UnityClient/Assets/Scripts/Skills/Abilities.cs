@@ -6,6 +6,11 @@ namespace COSMOS
 {
     public class Abilities
     {
-        List<Ability> abilities = new List<Ability>();
+        List<MainAblity> abilities = new List<MainAblity>();
+
+        public MainAblity GetAblity(string ability)
+        {
+            return abilities.Find((x) => x.inerName == ability);
+        }
     }
 }
