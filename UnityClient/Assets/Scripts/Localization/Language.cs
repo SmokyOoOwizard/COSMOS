@@ -8,6 +8,7 @@ namespace COSMOS.Localization
 {
     public class Language
     {
+        public readonly string Name;
         Dictionary<string, string> Keys = new Dictionary<string, string>();
         public string GetString(string key)
         {
