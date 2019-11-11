@@ -11,17 +11,25 @@ namespace COSMOS.Skills
     }
     public interface ISkillCountdown
     {
-        public float TimeLeft { get; }
-        public float Countdown { get; }
+        float TimeLeft { get; }
+        float Countdown { get; }
     }
     public interface ISkillOnOff
     {
-        public bool State { get; }
+        bool State { get; }
     }
     public interface ISkillTarget
     {
-        public int TargetCount { get; }
-        public Relation TargetRelation { get; }
-        public bool Self { get; }
+        int TargetCount { get; }
+        Relation TargetRelation { get; }
+        bool Self { get; }
+    }
+    public interface ISkillDistanceTarget
+    {
+        float Distance { get; }
+    }
+    public interface ISkillZoneTarget
+    {
+        float Radius { get; }
     }
 }
