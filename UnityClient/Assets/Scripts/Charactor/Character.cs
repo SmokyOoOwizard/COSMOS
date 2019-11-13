@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace COSMOS.Charactor
 {
-    public partial class Charactor
+    public partial class Character
     {
         public string Name;
     }
