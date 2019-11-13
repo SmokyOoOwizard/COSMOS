@@ -8,8 +8,6 @@ namespace COSMOS.Skills.Ability
 {
     public abstract class Ability
     {
-        public delegate void levelUpEvent(AbilityStatBonus[] bonus);
-
         public string inerName;
         public lstring Name;
         public string IconID;
@@ -19,7 +17,7 @@ namespace COSMOS.Skills.Ability
         public uint CurrentLevel;
         public List<uint> Levels = new List<uint>();
 
-        public event levelUpEvent LevelUp;
+        public event Action<AbilityStatBonus[]> LevelUp;
         public uint AddXP(uint xp)
         {
             if (CurrentLevel < Levels.Count - 1)
@@ -53,7 +51,7 @@ namespace COSMOS.Skills.Ability
             }
         }
         protected abstract AbilityStatBonus[] levelUp();
-        public abstract void GetActiveSkills();
-        public abstract void GetPassiveSkills();
+        public abstract ActiveSkill[] GetActiveSkills();
+        public abstract PassiveSkill[] GetPassiveSkills();
     }
 }
