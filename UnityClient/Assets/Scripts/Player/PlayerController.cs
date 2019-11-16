@@ -11,10 +11,11 @@ namespace COSMOS.Player
         public CameraController cmc;
         public IControllable IC;
         public Vector3 mousePos;
+        public COSMOS.Charactor.CharacterController Character;
         // Start is called before the first frame update
         void Start()
         {
-            //IC = SC;
+            IC = Character as IControllable;
         }
 
         // Update is called once per frame

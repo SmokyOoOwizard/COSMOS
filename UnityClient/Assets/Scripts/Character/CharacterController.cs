@@ -8,44 +8,43 @@ namespace COSMOS.Charactor {
     public class CharacterController : MonoBehaviour, IControllable
     {
 #warning Need reFactoring
-        [SerializeField] float m_MovingTurnSpeed = 360;
-        [SerializeField] float m_StationaryTurnSpeed = 180;
-        [SerializeField] float m_JumpPower = 12f;
-        [Range(1f, 4f)] [SerializeField] float m_GravityMultiplier = 2f;
-        [SerializeField] float m_RunCycleLegOffset = 0.2f; //specific to the character in sample assets, will need to be modified to work with others
-        [SerializeField] float m_MoveSpeedMultiplier = 1f;
-        [SerializeField] float m_AnimSpeedMultiplier = 1f;
-        [SerializeField] float m_GroundCheckDistance = 0.1f;
+        [SerializeField] float movingTurnSpeed = 360;
+        [SerializeField] float stationaryTurnSpeed = 180;
+        [Range(1f, 4f)] [SerializeField] float gravityMultiplier = 2f;
+        [SerializeField] float runCycleLegOffset = 0.2f;
+        [SerializeField] float moveSpeedMultiplier = 1f;
+        [SerializeField] float animSpeedMultiplier = 1f;
+        [SerializeField] float groundCheckDistance = 0.1f;
         public bool crouch;
         public bool jump;
 
-        Rigidbody m_Rigidbody;
-        Animator m_Animator;
-        bool m_IsGrounded;
-        float m_OrigGroundCheckDistance;
+        Rigidbody rigidbody;
+        Animator animator;
+        bool isGrounded;
+        float origGroundCheckDistance;
         const float k_Half = 0.5f;
-        public float m_TurnAmount;
-        public float m_ForwardAmount;
+        public float TurnAmount;
+        public float ForwardAmount;
         public float RightAmount;
-        Vector3 m_GroundNormal;
-        float m_CapsuleHeight;
-        Vector3 m_CapsuleCenter;
-        CapsuleCollider m_Capsule;
-        bool m_Crouching;
+        Vector3 groundNormal;
+        float capsuleHeight;
+        Vector3 capsuleCenter;
+        CapsuleCollider capsule;
+        bool crouching;
         public float Movement;
         public bool lastUse;
 
 
         void Start()
         {
-            m_Animator = GetComponent<Animator>();
-            m_Rigidbody = GetComponent<Rigidbody>();
-            m_Capsule = GetComponent<CapsuleCollider>();
-            m_CapsuleHeight = m_Capsule.height;
-            m_CapsuleCenter = m_Capsule.center;
+            animator = GetComponent<Animator>();
+            rigidbody = GetComponent<Rigidbody>();
+            capsule = GetComponent<CapsuleCollider>();
+            capsuleHeight = capsule.height;
+            capsuleCenter = capsule.center;
 
-            m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
-            m_OrigGroundCheckDistance = m_GroundCheckDistance;
+            rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
+            origGroundCheckDistance = groundCheckDistance;
         }
 
         private void FixedUpdate()
@@ -70,7 +69,7 @@ namespace COSMOS.Charactor {
             if (move.magnitude > 1f) move.Normalize();
             //move = transform.InverseTransformDirection(move);
             CheckGroundStatus();
-            move = Vector3.ProjectOnPlane(move, m_GroundNormal);
+            move = Vector3.ProjectOnPlane(move, groundNormal);
             if (move.magnitude > 0)
             {
                 Movement = 1;
@@ -79,10 +78,10 @@ namespace COSMOS.Charactor {
             {
                 Movement = 0;
             }
-            m_ForwardAmount = move.z;
+            ForwardAmount = move.z;
             RightAmount = move.x;
 
-            if (m_IsGrounded)
+            if (isGrounded)
             {
                 HandleGroundedMovement(crouch, jump);
             }
@@ -108,7 +107,7 @@ namespace COSMOS.Charactor {
                 target -= 360;
             }
 
-            m_TurnAmount = Mathf.Clamp(target / 10, -1, 1);
+            TurnAmount = Mathf.Clamp(target / 10, -1, 1);
 
             ApplyExtraTurnRotation();
         }
@@ -116,7 +115,7 @@ namespace COSMOS.Charactor {
         {
             lastUse = false;
             jump = Input.GetKeyDown(KeyCode.Space);
-            m_ForwardAmount = (Input.GetKey(KeyCode.LeftShift) ? m_ForwardAmount : Mathf.Clamp(m_ForwardAmount, -0.5f, 0.5f));
+            ForwardAmount = (Input.GetKey(KeyCode.LeftShift) ? ForwardAmount : Mathf.Clamp(ForwardAmount, -0.5f, 0.5f));
 
 
             UpdateAnimator();
@@ -124,38 +123,38 @@ namespace COSMOS.Charactor {
 
         void ScaleCapsuleForCrouching(bool crouch)
         {
-            if (m_IsGrounded && crouch)
+            if (isGrounded && crouch)
             {
-                if (m_Crouching) return;
-                m_Capsule.height = m_Capsule.height / 2f;
-                m_Capsule.center = m_Capsule.center / 2f;
-                m_Crouching = true;
+                if (crouching) return;
+                capsule.height = capsule.height / 2f;
+                capsule.center = capsule.center / 2f;
+                crouching = true;
             }
             else
             {
-                Ray crouchRay = new Ray(m_Rigidbody.position + Vector3.up * m_Capsule.radius * k_Half, Vector3.up);
-                float crouchRayLength = m_CapsuleHeight - m_Capsule.radius * k_Half;
-                if (Physics.SphereCast(crouchRay, m_Capsule.radius * k_Half, crouchRayLength, Physics.AllLayers, QueryTriggerInteraction.Ignore))
+                Ray crouchRay = new Ray(rigidbody.position + Vector3.up * capsule.radius * k_Half, Vector3.up);
+                float crouchRayLength = capsuleHeight - capsule.radius * k_Half;
+                if (Physics.SphereCast(crouchRay, capsule.radius * k_Half, crouchRayLength, Physics.AllLayers, QueryTriggerInteraction.Ignore))
                 {
-                    m_Crouching = true;
+                    crouching = true;
                     return;
                 }
-                m_Capsule.height = m_CapsuleHeight;
-                m_Capsule.center = m_CapsuleCenter;
-                m_Crouching = false;
+                capsule.height = capsuleHeight;
+                capsule.center = capsuleCenter;
+                crouching = false;
             }
         }
 
         void PreventStandingInLowHeadroom()
         {
             // prevent standing up in crouch-only zones
-            if (!m_Crouching)
+            if (!crouching)
             {
-                Ray crouchRay = new Ray(m_Rigidbody.position + Vector3.up * m_Capsule.radius * k_Half, Vector3.up);
-                float crouchRayLength = m_CapsuleHeight - m_Capsule.radius * k_Half;
-                if (Physics.SphereCast(crouchRay, m_Capsule.radius * k_Half, crouchRayLength, Physics.AllLayers, QueryTriggerInteraction.Ignore))
+                Ray crouchRay = new Ray(rigidbody.position + Vector3.up * capsule.radius * k_Half, Vector3.up);
+                float crouchRayLength = capsuleHeight - capsule.radius * k_Half;
+                if (Physics.SphereCast(crouchRay, capsule.radius * k_Half, crouchRayLength, Physics.AllLayers, QueryTriggerInteraction.Ignore))
                 {
-                    m_Crouching = true;
+                    crouching = true;
                 }
             }
         }
@@ -164,14 +163,14 @@ namespace COSMOS.Charactor {
         void UpdateAnimator()
         {
             // update the animator parameters
-            m_Animator.SetFloat("Forward", m_ForwardAmount, 0.1f, Time.deltaTime);
-            m_Animator.SetFloat("Right", RightAmount, 0.1f, Time.deltaTime);
-            m_Animator.SetFloat("Movement", Movement, 0.1f, Time.deltaTime);
-            m_Animator.SetFloat("Turn", m_TurnAmount, 0.1f, Time.deltaTime);
+            animator.SetFloat("Forward", ForwardAmount, 0.1f, Time.deltaTime);
+            animator.SetFloat("Right", RightAmount, 0.1f, Time.deltaTime);
+            animator.SetFloat("Movement", Movement, 0.1f, Time.deltaTime);
+            animator.SetFloat("Turn", TurnAmount, 0.1f, Time.deltaTime);
 
             //m_Animator.SetBool("Crouch", m_Crouching);
             //m_Animator.SetBool("OnGround", m_IsGrounded);
-            if (!m_IsGrounded)
+            if (!isGrounded)
             {
                 //m_Animator.SetFloat("Jump", m_Rigidbody.velocity.y);
             }
@@ -181,9 +180,9 @@ namespace COSMOS.Charactor {
             // and assumes one leg passes the other at the normalized clip times of 0.0 and 0.5)
             float runCycle =
                 Mathf.Repeat(
-                    m_Animator.GetCurrentAnimatorStateInfo(0).normalizedTime + m_RunCycleLegOffset, 1);
-            float jumpLeg = (runCycle < k_Half ? 1 : -1) * m_ForwardAmount;
-            if (m_IsGrounded)
+                    animator.GetCurrentAnimatorStateInfo(0).normalizedTime + runCycleLegOffset, 1);
+            float jumpLeg = (runCycle < k_Half ? 1 : -1) * ForwardAmount;
+            if (isGrounded)
             {
                 //m_Animator.SetFloat("JumpLeg", jumpLeg);
             }
@@ -192,7 +191,7 @@ namespace COSMOS.Charactor {
             // which affects the movement speed because of the root motion.
             //if (m_IsGrounded && move.magnitude > 0)
             {
-                m_Animator.speed = m_AnimSpeedMultiplier;
+                animator.speed = animSpeedMultiplier;
             }
             //else
             {
@@ -205,10 +204,10 @@ namespace COSMOS.Charactor {
         void HandleAirborneMovement()
         {
             // apply extra gravity from multiplier:
-            Vector3 extraGravityForce = (Physics.gravity * m_GravityMultiplier) - Physics.gravity;
-            m_Rigidbody.AddForce(extraGravityForce);
+            Vector3 extraGravityForce = (Physics.gravity * gravityMultiplier) - Physics.gravity;
+            rigidbody.AddForce(extraGravityForce);
 
-            m_GroundCheckDistance = m_Rigidbody.velocity.y < 0 ? m_OrigGroundCheckDistance : 0.01f;
+            groundCheckDistance = rigidbody.velocity.y < 0 ? origGroundCheckDistance : 0.01f;
         }
 
 
@@ -227,9 +226,8 @@ namespace COSMOS.Charactor {
 
         void ApplyExtraTurnRotation()
         {
-            // help the character turn faster (this is in addition to root rotation in the animation)
-            float turnSpeed = Mathf.Lerp(m_StationaryTurnSpeed, m_MovingTurnSpeed, m_ForwardAmount);
-            transform.Rotate(0, m_TurnAmount * turnSpeed * Time.deltaTime, 0);
+            float turnSpeed = Mathf.Lerp(stationaryTurnSpeed, movingTurnSpeed, ForwardAmount);
+            transform.Rotate(0, TurnAmount * turnSpeed * Time.deltaTime, 0);
         }
 
 
@@ -237,13 +235,13 @@ namespace COSMOS.Charactor {
         {
             // we implement this function to override the default root motion.
             // this allows us to modify the positional speed before it's applied.
-            if (m_IsGrounded && Time.deltaTime > 0)
+            if (isGrounded && Time.deltaTime > 0)
             {
-                Vector3 v = (m_Animator.deltaPosition * m_MoveSpeedMultiplier) / Time.deltaTime;
+                Vector3 v = (animator.deltaPosition * moveSpeedMultiplier) / Time.deltaTime;
 
                 // we preserve the existing y part of the current velocity.
-                v.y = m_Rigidbody.velocity.y;
-                m_Rigidbody.velocity = v;
+                v.y = rigidbody.velocity.y;
+                rigidbody.velocity = v;
             }
         }
 
@@ -253,21 +251,21 @@ namespace COSMOS.Charactor {
             RaycastHit hitInfo;
 #if UNITY_EDITOR
             // helper to visualise the ground check ray in the scene view
-            Debug.DrawLine(transform.position + (Vector3.up * 0.1f), transform.position + (Vector3.up * 0.1f) + (Vector3.down * m_GroundCheckDistance));
+            Debug.DrawLine(transform.position + (Vector3.up * 0.1f), transform.position + (Vector3.up * 0.1f) + (Vector3.down * groundCheckDistance));
 #endif
             // 0.1f is a small offset to start the ray from inside the character
             // it is also good to note that the transform position in the sample assets is at the base of the character
-            if (Physics.Raycast(transform.position + (Vector3.up * 0.1f), Vector3.down, out hitInfo, m_GroundCheckDistance))
+            if (Physics.Raycast(transform.position + (Vector3.up * 0.1f), Vector3.down, out hitInfo, groundCheckDistance))
             {
-                m_GroundNormal = hitInfo.normal;
-                m_IsGrounded = true;
-                m_Animator.applyRootMotion = true;
+                groundNormal = hitInfo.normal;
+                isGrounded = true;
+                animator.applyRootMotion = true;
             }
             else
             {
-                m_IsGrounded = false;
-                m_GroundNormal = Vector3.up;
-                m_Animator.applyRootMotion = false;
+                isGrounded = false;
+                groundNormal = Vector3.up;
+                animator.applyRootMotion = false;
             }
         }
 

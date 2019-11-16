@@ -1,25 +1,21 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
     public Transform Target;
-    public float DistanceToTarget = 5;
+    [SerializeField] float distanceToTarget = 5;
     public float Angle = 45f;
-    public float Height
+    public float DistanceToTarget
     {
         get
         {
-            return CurrentHeight;
+            return distanceToTarget;
         }
         set
         {
-            DistanceToTarget = value;
-            CurrentHeight = value;
+            distanceToTarget = value;
         }
     }
-    [SerializeField] float CurrentHeight;
     public bool DrawDebug = false;
     float radius;
     // Start is called before the first frame update
@@ -39,11 +35,12 @@ public class CameraController : MonoBehaviour
         Vector3 Rot = transform.eulerAngles;
 
 
-        radius = Height * Mathf.Tan((Angle + 90) * Mathf.Deg2Rad);
+        radius = distanceToTarget * Mathf.Tan((Angle + 90) * Mathf.Deg2Rad);
 
         NewPos.z = Mathf.Cos(Rot.y * Mathf.Deg2Rad) * radius;
-        NewPos.y = Height;
+        NewPos.y = distanceToTarget;
         NewPos.x = Mathf.Sin(Rot.y * Mathf.Deg2Rad) * radius;
+        transform.rotation = Quaternion.Euler(Angle, Rot.y, Rot.z);
         if (Target != null)
         {
             transform.position = NewPos + Target.position;
