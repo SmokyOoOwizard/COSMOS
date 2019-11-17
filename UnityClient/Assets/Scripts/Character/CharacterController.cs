@@ -14,7 +14,7 @@ namespace COSMOS.Charactor {
         [SerializeField] float runCycleLegOffset = 0.2f;
         [SerializeField] float moveSpeedMultiplier = 1f;
         [SerializeField] float animSpeedMultiplier = 1f;
-        [SerializeField] float groundCheckDistance = 0.1f;
+        [SerializeField] float groundCheckDistance = 0.3f;
         public bool crouch;
         public bool jump;
 

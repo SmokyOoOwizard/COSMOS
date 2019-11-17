@@ -12,10 +12,27 @@ namespace COSMOS.Player
         public IControllable IC;
         public Vector3 mousePos;
         public COSMOS.Charactor.CharacterController Character;
+        public COSMOS.SpaceShip.SpaceShipController Ship;
+
         // Start is called before the first frame update
         void Start()
         {
             IC = Character as IControllable;
+        }
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                IC = Character as IControllable;
+                cmc.Target = Character.transform;
+                cmc.DistanceToTarget = 5;
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                IC = Ship as IControllable;
+                cmc.Target = Ship.transform;
+                cmc.DistanceToTarget = 25;
+            }
         }
 
         // Update is called once per frame
