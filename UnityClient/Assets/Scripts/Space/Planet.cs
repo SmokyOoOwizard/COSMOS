@@ -1,22 +1,32 @@
-﻿using System;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using COSMOS.Relations;
-namespace COSMOS.Space
-{
-    public class Planet : SpaceObject
+using COSMOS.DataBase;
+namespace COSMOS.Space {
+    public class Planet : MonoBehaviour
     {
-        public override Fraction GetFraction()
+        public static Planet CreatePlanet(PlanetProto proto, GameObject parent)
         {
-            return null;
+            GameObject prefab = AssetsDatabase.LoadGameObject(@"ProtoPrefabs\Planet");
+            prefab = Instantiate(prefab);
+            prefab.transform.SetParent(parent.transform);
+            prefab.GetComponent<Planet>().Init(proto);
+            return prefab.GetComponent<Planet>();
+        }
+        PlanetProto proto;
+        public float time;
+        public void Init(PlanetProto proto)
+        {
+            this.proto = proto;
         }
 
-        public override Vector2 GetPos()
+        private void Update()
         {
-            return new Vector2();
+            time += proto.OrbitSpeed * Time.deltaTime;
+            float x = Mathf.Sin(time);
+            float y = Mathf.Cos(time);
+
+            transform.localPosition = new Vector3(x, 0, y) * proto.OrbitSize;
         }
     }
 }

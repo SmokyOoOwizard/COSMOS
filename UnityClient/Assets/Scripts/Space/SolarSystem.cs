@@ -1,33 +1,30 @@
-﻿using COSMOS.Relations;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace COSMOS.Space
-{
-    public class SolarSystem
+namespace COSMOS.Space {
+    public class SolarSystem : MonoBehaviour
     {
-        public lstring Name;
-        public Vector2 PosOnMap;
-        public List<Planet> Planets = new List<Planet>();
-        public List<SpaceStation> SpaceStaions = new List<SpaceStation>();
-        public float AsteroidPercent;
+        public SolarSystemProto Proto;
+        public List<Planet> InstancePlanets = new List<Planet>();
 
-        public Dictionary<SpaceObject, Fraction> GetFractions()
+        private void Awake()
         {
-            Dictionary<SpaceObject, Fraction> fractions = new Dictionary<SpaceObject, Fraction>();
-            for (int i = 0; i < Planets.Count; i++)
-            {
-                var frac = Planets[i].GetFraction();
-                fractions.Add(Planets[i], frac);
-            }
-            for (int i = 0; i < SpaceStaions.Count; i++)
-            {
-                var frac = SpaceStaions[i].GetFraction();
-                fractions.Add(SpaceStaions[i], frac);
-            }
+            SolarSystemProto p = new SolarSystemProto();
+            p.Planets = new List<PlanetProto>();
+            p.Planets.Add(new PlanetProto() { OrbitSize = 10, OrbitSpeed = 0.1f, Size = 1 });
+            Init(p);
+        }
 
-            return fractions;
+        public void Init(SolarSystemProto proto)
+        {
+            Proto = proto;
+
+            foreach (var planet in proto.Planets)
+            {
+                Planet p = Planet.CreatePlanet(planet, this.gameObject);
+                InstancePlanets.Add(p);
+            }
         }
     }
 }
