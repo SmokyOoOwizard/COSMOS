@@ -25,12 +25,14 @@ namespace COSMOS.Player
             {
                 IC = Character as IControllable;
                 cmc.Target = Character.transform;
+                cmc.TargetRigid = Character.GetComponent<Rigidbody>();
                 cmc.DistanceToTarget = 5;
             }
             if (Input.GetKeyDown(KeyCode.Alpha2))
             {
                 IC = Ship as IControllable;
                 cmc.Target = Ship.transform;
+                cmc.TargetRigid = Ship.GetComponent<Rigidbody>();
                 cmc.DistanceToTarget = 25;
             }
         }
