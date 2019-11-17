@@ -1,0 +1,11 @@
+<AssetsDatabase>
+  <Asset ID="ProtoPrefabs\Planet" Name="Planet" Type="GameObject">
+    <Path>ProtoPrefabs\Planet</Path>
+  </Asset>
+  <Asset ID="Materials\EthanWhite" Name="EthanWhite" Type="Material">
+    <Path>Materials\EthanWhite</Path>
+  </Asset>
+  <Asset ID="Materials\Feisar_Ship" Name="Feisar_Ship" Type="Material">
+    <Path>Materials\Feisar_Ship</Path>
+  </Asset>
+</AssetsDatabase>
