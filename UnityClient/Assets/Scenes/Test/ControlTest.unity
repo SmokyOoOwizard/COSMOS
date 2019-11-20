@@ -305,6 +305,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 852841089}
+  - component: {fileID: 852841090}
   m_Layer: 0
   m_Name: SolarSystem
   m_TagString: Untagged
@@ -320,12 +321,25 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 852841088}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.5289917, y: 3.4739165, z: 0.7794708}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &852841090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 852841088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5072393bc4c72834d88b8dee0d3f2bef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InstancePlanets: []
 --- !u!1 &1000519201
 GameObject:
   m_ObjectHideFlags: 0
@@ -417,7 +431,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000519201}
   m_LocalRotation: {x: 0.5, y: 0, z: 0, w: 0.8660254}
-  m_LocalPosition: {x: -1.593, y: 5, z: -2.2367516}
+  m_LocalPosition: {x: -1.593, y: 5, z: -2.2367513}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -438,6 +452,7 @@ MonoBehaviour:
   Target: {fileID: 2144488014}
   distanceToTarget: 5
   Angle: 60
+  Speed: 2
   DrawDebug: 0
 --- !u!1 &1140600542
 GameObject:
@@ -816,72 +831,3 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 282625518}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &7456803897964225208
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 1909010443383011482, guid: cd320e71a3b29334ca00a4192f02a4e1,
-        type: 3}
-      propertyPath: m_Name
-      value: Planet
-      objectReference: {fileID: 0}
-    - target: {fileID: 3248649317364879007, guid: cd320e71a3b29334ca00a4192f02a4e1,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 7.0612307
-      objectReference: {fileID: 0}
-    - target: {fileID: 3248649317364879007, guid: cd320e71a3b29334ca00a4192f02a4e1,
-        type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 3.7946696
-      objectReference: {fileID: 0}
-    - target: {fileID: 3248649317364879007, guid: cd320e71a3b29334ca00a4192f02a4e1,
-        type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 1.9572905
-      objectReference: {fileID: 0}
-    - target: {fileID: 3248649317364879007, guid: cd320e71a3b29334ca00a4192f02a4e1,
-        type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3248649317364879007, guid: cd320e71a3b29334ca00a4192f02a4e1,
-        type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3248649317364879007, guid: cd320e71a3b29334ca00a4192f02a4e1,
-        type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3248649317364879007, guid: cd320e71a3b29334ca00a4192f02a4e1,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3248649317364879007, guid: cd320e71a3b29334ca00a4192f02a4e1,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 3248649317364879007, guid: cd320e71a3b29334ca00a4192f02a4e1,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3248649317364879007, guid: cd320e71a3b29334ca00a4192f02a4e1,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3248649317364879007, guid: cd320e71a3b29334ca00a4192f02a4e1,
-        type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: cd320e71a3b29334ca00a4192f02a4e1, type: 3}
