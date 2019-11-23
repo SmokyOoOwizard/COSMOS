@@ -26,12 +26,16 @@ namespace COSMOS.Player
                 IC = Character as IControllable;
                 cmc.Target = Character.transform;
                 cmc.distanceToTarget = 5;
+                cmc.Height = 10;
+
             }
             if (Input.GetKeyDown(KeyCode.Alpha2))
             {
                 IC = Ship as IControllable;
                 cmc.Target = Ship.transform;
                 cmc.distanceToTarget = 25;
+                cmc.Height = 45;
+
             }
         }
 
