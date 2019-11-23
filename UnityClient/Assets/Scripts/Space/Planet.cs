@@ -14,7 +14,7 @@ namespace COSMOS.Space {
             prefab.GetComponent<Planet>().Init(proto);
             return prefab.GetComponent<Planet>();
         }
-        PlanetProto proto;
+        [SerializeField] PlanetProto proto;
         GameObject trail;
         public int TrailDetail = 50;
         float time;
@@ -23,10 +23,15 @@ namespace COSMOS.Space {
             this.proto = proto;
             GenerateTrail();
         }
+        private void Awake()
+        {
+            trail = transform.Find("Trail").gameObject;
+            GenerateTrail();
+        }
 
         private void Update()
         {
-            time = (time + proto.OrbitSpeed * Time.deltaTime) % 360;
+            time = (time + (proto.OrbitSpeed * Time.deltaTime) / proto.OrbitSize) % 360;
             float x = Mathf.Sin(time * Mathf.Deg2Rad);
             float y = Mathf.Cos(time * Mathf.Deg2Rad);
 

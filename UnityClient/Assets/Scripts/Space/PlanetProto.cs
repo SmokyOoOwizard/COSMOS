@@ -7,6 +7,7 @@ using UnityEngine;
 using COSMOS.Relations;
 namespace COSMOS.Space
 {
+    [Serializable]
     public class PlanetProto : SpaceObject
     {
         public float Size;

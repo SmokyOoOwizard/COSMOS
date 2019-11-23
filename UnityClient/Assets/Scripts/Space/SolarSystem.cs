@@ -12,7 +12,7 @@ namespace COSMOS.Space {
         {
             SolarSystemProto p = new SolarSystemProto();
             p.Planets = new List<PlanetProto>();
-            p.Planets.Add(new PlanetProto() { OrbitSize = 10, OrbitSpeed = 1f, Size = 1 });
+            p.Planets.Add(new PlanetProto() { OrbitSize = 20, OrbitSpeed = 1f, Size = 5 });
             Init(p);
         }
 

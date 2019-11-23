@@ -3,24 +3,23 @@
 public class CameraController : MonoBehaviour
 {
     public Transform Target;
-    public Rigidbody TargetRigid;
-    [SerializeField] float distanceToTarget = 5;
-    public float Angle = 45f;
-    public float Speed = 1;
-    public float DistanceToTarget
-    {
-        get
-        {
-            return distanceToTarget;
-        }
-        set
-        {
-            distanceToTarget = value;
-        }
-    }
+    public float distanceToTarget = 5;
+    public float Height = 2f;
     public bool DrawDebug = false;
     float radius;
-    Vector3 offset;
+    float disTarget;
+    float h;
+    [Header("PlanetZoom")]
+    public AnimationCurve HByTime;
+    public AnimationCurve DistanceByTime;
+    public bool Zoom = false;
+    public float HSpeed = 1;
+    public float HAmount = 1;
+    public float TargetH;
+    public float DSpeed = 1;
+    public float DistanceAmount = 1;
+    public float TargetDistance;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,6 +29,7 @@ public class CameraController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        ZoomUpdate();
         SetCameraPos();
     }
     public void SetCameraPos()
@@ -38,50 +38,45 @@ public class CameraController : MonoBehaviour
         Vector3 Rot = transform.eulerAngles;
 
 
-        radius = distanceToTarget * Mathf.Tan((Angle + 90) * Mathf.Deg2Rad);
+        radius = disTarget;// * Mathf.Tan((Angle + 90) * Mathf.Deg2Rad);
 
-        NewPos.z = Mathf.Cos(Rot.y * Mathf.Deg2Rad) * radius;
-        NewPos.y = distanceToTarget;
-        NewPos.x = Mathf.Sin(Rot.y * Mathf.Deg2Rad) * radius;
-        transform.rotation = Quaternion.Euler(Angle, Rot.y, Rot.z);
+        NewPos.z = Mathf.Cos(Rot.y * Mathf.Deg2Rad) * -radius;
+        NewPos.y = h;
+        NewPos.x = Mathf.Sin(Rot.y * Mathf.Deg2Rad) * -radius;
+        Rot.x = Mathf.Atan(h / radius) * Mathf.Rad2Deg;
+        if (float.IsNaN(Rot.x)) Rot.x = 0;
+        transform.rotation = Quaternion.Euler(Rot.x, Rot.y, Rot.z);
         if (Target != null)
         {
-            //float x = transform.position.x - (NewPos.x + Target.position.x);
-            //float z = transform.position.z - (NewPos.z + Target.position.z);
-            //if (x > 5)
-            //{
-            //    transform.position += new Vector3(5 - x, 0, 0);
-            //}
-            //else if (x < -5)
-            //{
-            //    transform.position += new Vector3(-5 - x, 0, 0);
-            //}
-            //if (z > 5)
-            //{
-            //    transform.position += new Vector3(0, 0, 5 - z);
-            //}
-            //else if (z < -5)
-            //{
-            //    transform.position += new Vector3(0, 0, -5 - z);
-            //}
-            //if (x > -5 && x < 5 && z > -5 && z < 5)
-            {
-                if(TargetRigid != null)
-                {
-                    offset.x = Mathf.Lerp(offset.x, Mathf.Clamp((TargetRigid.velocity).x, -1, 1), Time.deltaTime * Speed);
-                    offset.z = Mathf.Lerp(offset.z, Mathf.Clamp((TargetRigid.velocity).z, -1, 1), Time.deltaTime * Speed);
-                }
-
-                Vector3 newPos = new Vector3(0, NewPos.y + Target.position.y, 0);
-                newPos.z = Mathf.Lerp(transform.position.z, NewPos.z + Target.transform.position.z, Time.deltaTime * Speed);
-                newPos.x = Mathf.Lerp(transform.position.x, NewPos.x + Target.transform.position.x, Time.deltaTime * Speed);
-                transform.position = NewPos + Target.position + offset;
-            }
+            Vector3 newPos = new Vector3(0, NewPos.y + Target.position.y, 0);
+            //newPos.z = Mathf.Lerp(transform.position.z, NewPos.z + Target.transform.position.z, Time.deltaTime * Speed);
+            newPos.z = -NewPos.z + Target.position.z;
+            //newPos.x = Mathf.Lerp(transform.position.x, NewPos.x + Target.transform.position.x, Time.deltaTime * Speed);
+            newPos.x = NewPos.x + Target.position.x;
+                
+            transform.position = NewPos + Target.position;
         }
         else
         {
-            transform.position = NewPos;
+            transform.position = NewPos + Target.position;
         }
+    }
+    public void ZoomUpdate()
+    {
+        if (Zoom)
+        {
+            DistanceAmount += DSpeed * Time.deltaTime;
+            HAmount += HSpeed * Time.deltaTime;
+        }
+        else
+        {
+            DistanceAmount -= DSpeed * Time.deltaTime;
+            HAmount -= HSpeed * Time.deltaTime;
+        }
+        DistanceAmount = Mathf.Clamp01(DistanceAmount);
+        HAmount = Mathf.Clamp01(HAmount);
+        h = Mathf.Lerp(Height ,TargetH, HByTime.Evaluate(HAmount));
+        disTarget = Mathf.Lerp(distanceToTarget, TargetDistance, DistanceByTime.Evaluate(DistanceAmount));
     }
     private void OnDrawGizmos()
     {
