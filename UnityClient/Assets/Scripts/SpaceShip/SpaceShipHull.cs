@@ -23,7 +23,7 @@ namespace COSMOS.SpaceShip
         public BrakingEngine BrakingEngine { get; protected set; }
         public TurnEngine TurnEngines { get; protected set; }
         public SideEngine SideEngines { get; protected set; }
-
+        public WarpEngine WarpEngine { get; protected set; }
         public List<Tank> Tanks { get; protected set; }
         #endregion
 
@@ -62,6 +62,15 @@ namespace COSMOS.SpaceShip
                 Tanks = new List<Tank>();
             }
             Tanks.Add(tank);
+        }
+        public float GetFuelCount(string fuelType)
+        {
+            Tank tank = Tanks.Find((x) => { return x.FuelType == fuelType; });
+            if (tank != null)
+            {
+                return tank.FuelVolume;
+            }
+            return 0;
         }
         public float UseFuel(float amount, string fuelType)
         {

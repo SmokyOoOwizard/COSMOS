@@ -10,7 +10,7 @@ using UnityEngine;
 namespace COSMOS.SpaceShip
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class SpaceShipController : MonoBehaviour, IControllable
+    public partial class SpaceShipController : MonoBehaviour, IControllable
     {
         public bool Enable;
         public bool EnableInputControl;
@@ -18,7 +18,7 @@ namespace COSMOS.SpaceShip
         public Vector3 torque;
 
         SpaceShipHull Hull;
-        new Rigidbody rigidbody;
+        private new Rigidbody rigidbody;
         PID AngleCont, VelocityCont;
         private void Awake()
         {
@@ -35,17 +35,29 @@ namespace COSMOS.SpaceShip
             VelocityCont.Ki = 0;
             VelocityCont.Kd = 0.2553191f;
         }
-
+        private void Update()
+        {
+            WarpingProcess();
+        }
+        private void FixedUpdate()
+        {
+            if (Enable)
+            {
+                if (EnableInputControl)
+                {
+                    TurnUpdate();
+                }
+            }
+        }
+        #region IControllable
         public bool Exist()
         {
             return this != null;
         }
-
         public Vector3 GetPos()
         {
             return transform.position;
         }
-
         public void Move(Vector2 dir)
         {
             if (Enable)
@@ -63,7 +75,6 @@ namespace COSMOS.SpaceShip
                 }
             }
         }
-
         public void Rotate(float angle)
         {
             if (Enable && EnableInputControl)
@@ -75,7 +86,6 @@ namespace COSMOS.SpaceShip
                 }
             }
         }
-
         public void Selected()
         {
             if (Input.GetKey(KeyCode.Space))
@@ -83,6 +93,7 @@ namespace COSMOS.SpaceShip
                 Brake();
             }
         }
+        #endregion
         public void Brake()
         {
             if (EnableInputControl)
@@ -95,15 +106,17 @@ namespace COSMOS.SpaceShip
                 UseSideEngine(Mathf.Clamp((-local.x / Hull.SideEngines.MaxForce), -1, 1));
             }
         }
-        private void FixedUpdate()
+        public float GetSpeed()
         {
-            if (Enable)
-            {
-                if (EnableInputControl)
-                {
-                    TurnUpdate();
-                }
-            }
+            return rigidbody.velocity.magnitude;
+        }
+        public float GetSpeedSqr()
+        {
+            return rigidbody.velocity.sqrMagnitude;
+        }
+        public Vector2 GetVelocity()
+        {
+            return new Vector2(rigidbody.velocity.x, rigidbody.velocity.z);
         }
         #region Engines
         public void UseForwardEngine(float power)

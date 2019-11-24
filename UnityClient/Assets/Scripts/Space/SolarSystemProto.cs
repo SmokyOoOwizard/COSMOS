@@ -9,6 +9,7 @@ namespace COSMOS.Space
     {
         public lstring Name;
         public Vector2 PosOnMap;
+        public float WarpSafeDistance = 2;
         public List<PlanetProto> Planets = new List<PlanetProto>();
         public List<SpaceStation> SpaceStaions = new List<SpaceStation>();
         public float AsteroidPercent;

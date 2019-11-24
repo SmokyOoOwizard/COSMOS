@@ -5,7 +5,8 @@ using UnityEngine;
 namespace COSMOS.Space {
     public class SolarSystem : MonoBehaviour
     {
-        public SolarSystemProto Proto;
+        public static SolarSystem CurrentSystem { get; protected set; }
+        public SolarSystemProto Proto { get; protected set; }
         public List<Planet> InstancePlanets = new List<Planet>();
 
         private void Awake()
@@ -19,6 +20,7 @@ namespace COSMOS.Space {
         public void Init(SolarSystemProto proto)
         {
             Proto = proto;
+            CurrentSystem = this;
 
             foreach (var planet in proto.Planets)
             {
