@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace COSMOS.SpaceShip
+namespace COSMOS.SpaceShip.Equipment
 {
-    public abstract class Engine : Item
+    public abstract class Engine : ShipEquipment
     {
         public float MaxForce { get; protected set; }
         public string FuelType { get; protected set; }

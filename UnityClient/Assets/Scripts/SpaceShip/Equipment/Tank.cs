@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using COSMOS.Equipment;
 
-namespace COSMOS.SpaceShip
+namespace COSMOS.SpaceShip.Equipment
 {
-    public class Tank : Item
+    public class Tank : ShipEquipment
     {
         public string FuelType { get; protected set; }
         public float FuelVolume { get; protected set; }

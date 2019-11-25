@@ -1,4 +1,5 @@
 ﻿using COSMOS.Equipment;
+using COSMOS.SpaceShip.Equipment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,12 +20,16 @@ namespace COSMOS.SpaceShip
         public float MaxSpeed { get; protected set; } = 20;
 
         #region Equipments
+        public List<ShipEquipment> Equipments { get; protected set; }
         public MainEngine MainEngine { get; protected set; }
         public BrakingEngine BrakingEngine { get; protected set; }
         public TurnEngine TurnEngines { get; protected set; }
         public SideEngine SideEngines { get; protected set; }
         public WarpEngine WarpEngine { get; protected set; }
         public List<Tank> Tanks { get; protected set; }
+        public List<Generator> Generators { get; protected set; }
+        public List<EnergyTank> EnergyTanks { get; protected set; }
+        public List<INeedEnergy> EnergyСonsumptions { get; protected set; }
         #endregion
 
         public Engine ReplaceEngine(Engine engine)

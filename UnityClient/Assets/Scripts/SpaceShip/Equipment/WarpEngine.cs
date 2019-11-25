@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using COSMOS.Equipment;
 
-namespace COSMOS.SpaceShip
+namespace COSMOS.SpaceShip.Equipment
 {
-    public class WarpEngine : Item
+    public class WarpEngine : ShipEquipment
     {
         public float WarpSpeed { get; protected set; }
         public float ChargeTime { get; protected set; }

@@ -37,6 +37,7 @@ namespace COSMOS.SpaceShip
         }
         private void Update()
         {
+            EnergyUpdate();
             WarpingProcess();
         }
         private void FixedUpdate()
