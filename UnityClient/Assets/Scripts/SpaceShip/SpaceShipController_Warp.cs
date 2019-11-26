@@ -15,6 +15,7 @@ namespace COSMOS.SpaceShip
         public event Action<SpaceShipController> WarpChargeStop;
         public event Action<SpaceShipController> WarpChargeEnd;
         public event Action<SpaceShipController> WarpStart;
+        public event Action<SpaceShipController> WarpStop;
         public event Action<SpaceShipController> WarpEnd;
         public float WarpChargeTimeLeft { get; protected set; }
         public float WarpChargePercentLeft { get; protected set; }
@@ -54,6 +55,7 @@ namespace COSMOS.SpaceShip
                 WarpChargeStart?.Invoke(this);
                 WarpChargeTimeLeft = Hull.WarpEngine.ChargeTime;
                 WarpTarget = ss;
+                CalculateTimeWarp = Hull.WarpEngine.WarpSpeed * Vector2.Distance(SolarSystem.CurrentSystem.Proto.PosOnMap, ss.Proto.PosOnMap);
                 WarpCharging = true;
                 Warping = false;
             }
@@ -109,6 +111,7 @@ namespace COSMOS.SpaceShip
                     Warping = false;
                     WarpChargeTimeLeft = 0;
                     WarpChargePercentLeft = 0;
+                    WarpStop?.Invoke(this);
                     return;
                 }
             }
