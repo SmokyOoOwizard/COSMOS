@@ -29,10 +29,10 @@ namespace COSMOS.SpaceShip
                 {
                     foreach (var ec in Hull.EnergyСonsumptions)
                     {
-                        energyNeed += ec.EnergyConsumption;
+                        energyNeed += ec.EnergyConsumption * Time.deltaTime;
                     }
                 }
-                if(energyAdd > energyNeed)
+                if(energyAdd >= energyNeed)
                 {
                     foreach (var ec in Hull.EnergyСonsumptions)
                     {
@@ -41,17 +41,58 @@ namespace COSMOS.SpaceShip
                     energyAdd -= energyNeed;
                     if(Hull.EnergyTanks != null)
                     {
-                        int energyTanksCount = Hull.EnergyTanks.Count;
-                        float add = energyAdd / Hull.EnergyTanks.Count;
+                        List<Equipment.EnergyTank> tanks = new List<Equipment.EnergyTank>(Hull.EnergyTanks);
+                        int energyTanksCount = tanks.Count;
+                        tanks.Sort((x, y) => { return y.FreeFuelVolume.CompareTo(x.FreeFuelVolume); });
+
+                        float add = energyAdd / energyTanksCount;
                         for (int i = 0; i < energyTanksCount; i++)
                         {
-                            var tank = Hull.EnergyTanks[i];
+                            var tank = tanks[i];
                             float excess = tank.PourIn(add);                                                                                                                                                        
                             if(excess > 0)
                             {
-                                energyAdd -= add;
+                                energyAdd -= excess;
                                 add = energyAdd / (energyTanksCount - i);
                             }
+                        }
+                    }
+                }
+                else
+                {
+                    float diff = energyNeed - energyAdd;
+                    if(Hull.EnergyTanks != null)
+                    {
+                        List<Equipment.EnergyTank> tanks = new List<Equipment.EnergyTank>(Hull.EnergyTanks);
+                        int energyTanksCount = tanks.Count;
+                        tanks.Sort((x, y) => { return x.FreeFuelVolume.CompareTo(y.FreeFuelVolume); });
+
+                        float need = diff / energyTanksCount;
+                        for (int i = 0; i < energyTanksCount; i++)
+                        {
+                            var tank = tanks[i];
+                            float excess = tank.Drain(need);
+                            if (excess > 0)
+                            {
+                                diff -= excess;
+                                need = diff / (energyTanksCount - i);
+                            }
+                        }
+                        if(diff > 0)
+                        {
+                            float power = (energyNeed - diff) / energyNeed;
+                            foreach (var ec in Hull.EnergyСonsumptions)
+                            {
+                                ec.PowerPercent = power;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        float power = energyAdd / energyNeed;
+                        foreach (var ec in Hull.EnergyСonsumptions)
+                        {
+                            ec.PowerPercent = power;
                         }
                     }
                 }
