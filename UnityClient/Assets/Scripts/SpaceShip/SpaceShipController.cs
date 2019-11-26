@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using COSMOS.HelpfullStuff;
 using COSMOS.Player;
+using COSMOS.SpaceShip.Equipment;
 using UnityEngine;
 
 namespace COSMOS.SpaceShip
@@ -194,7 +195,7 @@ namespace COSMOS.SpaceShip
             Hull.ReplaceEngine(new MainEngine(20, "fuel", 1));
             Hull.ReplaceEngine(new BrakingEngine(20, "fuel", 1));
 
-            Hull.AddTank(new Tank("fuel", 10, 10));
+            Hull.AddEquipment(new Tank("fuel", 10, 10));
         }
     }
 }

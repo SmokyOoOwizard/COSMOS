@@ -30,7 +30,6 @@ namespace COSMOS.SpaceShip
         public List<Generator> Generators { get; protected set; }
         public List<EnergyTank> EnergyTanks { get; protected set; }
         public List<INeedEnergy> EnergyСonsumptions { get; protected set; }
-        #endregion
 
         public Engine ReplaceEngine(Engine engine)
         {
@@ -60,14 +59,75 @@ namespace COSMOS.SpaceShip
             }
             return null;
         }
-        public void AddTank(Tank tank)
+        public void AddEquipment(ShipEquipment equipment)
+        {
+            if(Equipments == null)
+            {
+                Equipments = new List<ShipEquipment>();
+            }
+            if(equipment is Tank)
+            {
+                AddTank(equipment as Tank);
+            }
+            else if(equipment is Generator)
+            {
+                AddGenerator(equipment as Generator);
+            }
+            if(equipment is INeedEnergy)
+            {
+                EnergyСonsumptions.Add(equipment as INeedEnergy);
+            }
+        }
+        public void RemoveEquipment(ShipEquipment equipment)
+        {
+            if(Equipments == null)
+            {
+                Equipments = new List<ShipEquipment>();
+                return;
+            }
+            if(equipment is Tank)
+            {
+                RemoveTank(equipment as Tank);
+            }
+            else if(equipment is Generator)
+            {
+                RemoveGenerator(equipment as Generator);
+            }
+            if (equipment is INeedEnergy)
+            {
+                EnergyСonsumptions.Remove(equipment as INeedEnergy);
+            }
+        }
+        void AddGenerator(Generator generator)
+        {
+            if(Generators == null)
+            {
+                Generators = new List<Generator>();
+            }
+            Generators.Add(generator);
+        }
+        void RemoveGenerator(Generator generator)
+        {
+#warning not complite
+        }
+        void AddTank(Tank tank)
         {
             if (Tanks == null)
             {
                 Tanks = new List<Tank>();
             }
+            if(Equipments == null)
+            {
+                Equipments = new List<ShipEquipment>();
+            }
+            Equipments.Add(tank);
             Tanks.Add(tank);
         }
+        void RemoveTank(Tank tank)
+        {
+#warning not complite
+        }
+        #endregion
         public float GetFuelCount(string fuelType)
         {
             Tank tank = Tanks.Find((x) => { return x.FuelType == fuelType; });
