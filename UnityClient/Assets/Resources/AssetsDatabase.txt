@@ -8,4 +8,7 @@
   <Asset ID="Materials\Feisar_Ship" Name="Feisar_Ship" Type="Material">
     <Path>Materials\Feisar_Ship</Path>
   </Asset>
+  <Asset ID="Configs\SolarSystems" Name="SolarSystems" Type="Config">
+    <Path>Configs\SolarSystems</Path>
+  </Asset>
 </AssetsDatabase>
