@@ -9,7 +9,7 @@ namespace COSMOS.SpaceShip.Equipment
 {
     public class Tank : ShipEquipment
     {
-        public bool Infinite { get; protected set; }
+        public bool InfiniteFuel { get; protected set; }
         public string FuelType { get; protected set; }
         public float FuelVolume { get; protected set; }
         public float FreeFuelVolume { get { return MaxFuelVolume - FuelVolume; } }
@@ -24,7 +24,7 @@ namespace COSMOS.SpaceShip.Equipment
         public float PourIn(float amount)
         {
             FuelVolume += amount;
-            if(Infinite || FuelVolume <= MaxFuelVolume)
+            if(InfiniteFuel || FuelVolume <= MaxFuelVolume)
             {
                 return 0;
             }
@@ -38,7 +38,7 @@ namespace COSMOS.SpaceShip.Equipment
         public float Drain(float amount)
         {
             FuelVolume -= amount;
-            if (Infinite || FuelVolume >= 0)
+            if (InfiniteFuel || FuelVolume >= 0)
             {
                 return 0;
             }
