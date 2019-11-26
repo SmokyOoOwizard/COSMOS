@@ -25,7 +25,7 @@ namespace COSMOS.SpaceShip.Equipment
             if (FuelVolume - amount > 0)
             {
                 //FuelVolume -= amount;
-                return amount;
+                return 0;
             }
             else
             {

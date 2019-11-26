@@ -99,12 +99,9 @@ namespace COSMOS.SpaceShip
         {
             if (MainEngine != null)
             {
-                float fuelConsumption = power * MainEngine.FuelConsumption;
+                float fuelConsumption = power * MainEngine.FuelConsumption * Time.deltaTime;
                 float fuelUsedUp = UseFuel(fuelConsumption, MainEngine.FuelType);
-                if (fuelUsedUp > 0)
-                {
-                    return MainEngine.CalculateEngineForce(power * (fuelUsedUp / fuelConsumption));
-                }
+                return MainEngine.CalculateEngineForce(power * ((fuelConsumption - fuelUsedUp) / fuelConsumption));
             }
             return 0;
         }
@@ -120,12 +117,9 @@ namespace COSMOS.SpaceShip
         {
             if (BrakingEngine != null)
             {
-                float fuelConsumption = power * BrakingEngine.FuelConsumption;
+                float fuelConsumption = power * BrakingEngine.FuelConsumption * Time.deltaTime;
                 float fuelUsedUp = UseFuel(fuelConsumption, BrakingEngine.FuelType);
-                if (fuelUsedUp > 0)
-                {
-                    return BrakingEngine.CalculateEngineForce(power * (fuelUsedUp / fuelConsumption));
-                }
+                return BrakingEngine.CalculateEngineForce(power * ((fuelConsumption - fuelUsedUp) / fuelConsumption));
             }
             return 0;
         }
@@ -141,12 +135,9 @@ namespace COSMOS.SpaceShip
         {
             if (TurnEngines != null)
             {
-                float fuelConsumption = power * TurnEngines.FuelConsumption;
+                float fuelConsumption = power * TurnEngines.FuelConsumption * Time.deltaTime;
                 float fuelUsedUp = UseFuel(fuelConsumption, TurnEngines.FuelType);
-                if (fuelUsedUp > 0)
-                {
-                    return TurnEngines.CalculateEngineForce(power * (fuelUsedUp / fuelConsumption));
-                }
+                return TurnEngines.CalculateEngineForce(power * ((fuelConsumption - fuelUsedUp) / fuelConsumption));
             }
             return 0;
         }
@@ -162,12 +153,9 @@ namespace COSMOS.SpaceShip
         {
             if (SideEngines != null)
             {
-                float fuelConsumption = power * SideEngines.FuelConsumption;
+                float fuelConsumption = power * SideEngines.FuelConsumption * Time.deltaTime;
                 float fuelUsedUp = UseFuel(fuelConsumption, SideEngines.FuelType);
-                if (fuelUsedUp > 0)
-                {
-                    return SideEngines.CalculateEngineForce(power * (fuelUsedUp / fuelConsumption));
-                }
+                return SideEngines.CalculateEngineForce(power * ((fuelConsumption - fuelUsedUp) / fuelConsumption));
             }
             return 0;
         }
