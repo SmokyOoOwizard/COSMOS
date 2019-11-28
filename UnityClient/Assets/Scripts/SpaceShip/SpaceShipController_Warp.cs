@@ -52,12 +52,13 @@ namespace COSMOS.SpaceShip
         {
             if (HasWarpEngine() && CanWarp(ss))
             {
-                WarpChargeStart?.Invoke(this);
                 WarpChargeTimeLeft = Hull.WarpEngine.ChargeTime;
                 WarpTarget = ss;
                 CalculateTimeWarp = Hull.WarpEngine.WarpSpeed * Vector2.Distance(SolarSystemManager.CurrentSystem.Proto.PosOnMap, ss.Proto.PosOnMap);
                 WarpCharging = true;
+                Hull.WarpEngine.EngineState = Equipment.WarpEngine.State.Charge;
                 Warping = false;
+                WarpChargeStart?.Invoke(this);
             }
         }
         void WarpingProcess()
@@ -72,7 +73,9 @@ namespace COSMOS.SpaceShip
                     Warping = false;
                     WarpChargeTimeLeft = 0;
                     WarpChargePercentLeft = 0;
+                    Hull.WarpEngine.EngineState = Equipment.WarpEngine.State.Idle;
                     WarpChargeStop?.Invoke(this);
+
                     return;
                 }
                 if(WarpChargeTimeLeft <= 0)
@@ -83,6 +86,7 @@ namespace COSMOS.SpaceShip
 
                     WarpChargeTimeLeft = 0;
                     WarpChargePercentLeft = 0;
+                    Hull.WarpEngine.EngineState = Equipment.WarpEngine.State.Warp;
                     WarpStart?.Invoke(this);
                     return;
                 }
@@ -94,7 +98,6 @@ namespace COSMOS.SpaceShip
 
                 if (WarpTimeLeft <= 0)
                 {
-                    WarpEnd?.Invoke(this);
                     WarpCharging = false;
                     Warping = false;
 
@@ -102,6 +105,7 @@ namespace COSMOS.SpaceShip
                     WarpChargePercentLeft = 0;
                     WarpTimeLeft = 0;
                     WarpPercentLeft = 0;
+                    Hull.WarpEngine.EngineState = Equipment.WarpEngine.State.Idle;
                     WarpEnd?.Invoke(this);
                     return;
                 }
@@ -111,6 +115,7 @@ namespace COSMOS.SpaceShip
                     Warping = false;
                     WarpChargeTimeLeft = 0;
                     WarpChargePercentLeft = 0;
+                    Hull.WarpEngine.EngineState = Equipment.WarpEngine.State.Idle;
                     WarpStop?.Invoke(this);
                     return;
                 }
