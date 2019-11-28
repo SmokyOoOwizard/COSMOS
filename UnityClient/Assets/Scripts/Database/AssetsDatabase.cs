@@ -124,6 +124,31 @@ namespace COSMOS.DataBase
             }
             return null;
         }
+        public static string LoadConfig(string ID)
+        {
+            if (ID != null && Assets.ContainsKey(ID))
+            {
+                if (Assets[ID] != null && Assets[ID].Type == "Config")
+                {
+                    Asset o = Assets[ID];
+                    TextAsset proto = Resources.Load(o.Path, typeof(TextAsset)) as TextAsset;
+                    if (proto != null)
+                    {
+                        return proto.text;
+                    }
+                    Debug.LogError("load null Config " + ID);
+                }
+                else
+                {
+                    Debug.LogError("wrong type " + ID);
+                }
+            }
+            else
+            {
+                Debug.LogError("no config " + ID);
+            }
+            return null;
+        }
         #endregion
 #if !UNITY_EDITOR
         [InitMethod]
@@ -172,7 +197,8 @@ namespace COSMOS.DataBase
                 }
             }
         }
-#if UNITY_EDITOR
+
+        #if UNITY_EDITOR
         [InitMethod]
         public static void DebugUpdateSaveLoad()
         {
@@ -186,6 +212,7 @@ namespace COSMOS.DataBase
             UpdateDatabaseSprites();
             UpdateDatabaseMaterial();
             UpdateDataBasePrototypes();
+            UpdateDatabaseConfigs();
         }
         static void UpdateDatabaseSprites()
         {
@@ -265,6 +292,25 @@ namespace COSMOS.DataBase
                 }
             }
         }
+        static void UpdateDatabaseConfigs()
+        {
+            List<string> paths = new List<string>(Directory.GetFiles(@"Assets\Resources\Configs", "*.xml", SearchOption.AllDirectories));
+            for (int i = 0; i < paths.Count; i++)
+            {
+                paths[i] = paths[i].Remove(0, 17).Replace(".xml", "");
+                string id = paths[i];
+                if (!Assets.ContainsKey(id))
+                {
+                    string[] temp = paths[i].Split('\\');
+                    Asset a = new Asset();
+                    a.ID = id;
+                    a.Type = "Config";
+                    a.Name = temp[temp.Length - 1];
+                    a.Path = paths[i];
+                    Assets.Add(id, a);
+                }
+            }
+        }
         public static void SaveDatabase()
         {
             if (!Directory.Exists(@"Assets\Resources"))
@@ -315,6 +361,6 @@ namespace COSMOS.DataBase
             xdoc.AppendChild(xroot);
             xdoc.Save(@"Assets\Resources\AssetsDatabase.txt");
         }
-#endif
+        #endif
     }
 }
