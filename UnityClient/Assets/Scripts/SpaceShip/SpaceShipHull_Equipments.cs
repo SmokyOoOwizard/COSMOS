@@ -23,7 +23,11 @@ namespace COSMOS.SpaceShip
 
         public void InitEquipments()
         {
-
+            Equipments = new List<ShipEquipment>();
+            Tanks = new List<Tank>();
+            EnergyTanks = new List<EnergyTank>();
+            Generators = new List<Generator>();
+            EnergyСonsumptions = new List<INeedEnergy>();
         }
 
         public Engine ReplaceEngine(Engine engine)
@@ -90,22 +94,18 @@ namespace COSMOS.SpaceShip
         }
         void AddGenerator(Generator generator)
         {
-            Equipments.Add(generator);
             Generators.Add(generator);
         }
         void RemoveGenerator(Generator generator)
         {
-            Equipments.Remove(generator);
             Generators.Remove(generator);
         }
         void AddTank(Tank tank)
         {
-            Equipments.Add(tank);
             Tanks.Add(tank);
         }
         void RemoveTank(Tank tank)
         {
-            Equipments.Remove(tank);
             Tanks.Remove(tank);
         }
         public float GetFuelCount(string fuelType)

@@ -19,6 +19,9 @@ namespace COSMOS.SpaceShip
 
         public float MaxSpeed { get; protected set; } = 20;
 
-           
+        public SpaceShipHull()
+        {
+            InitEquipments();
+        }
     }
 }
