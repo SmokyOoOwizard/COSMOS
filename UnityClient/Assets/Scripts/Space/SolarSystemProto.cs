@@ -2,27 +2,86 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
-using System.Xml.Serialization;
+using System.Xml;
 using UnityEngine;
-
+using COSMOS.HelpfullStuff;
 namespace COSMOS.Space
 {
     [Serializable]
     public class SolarSystemProto
     {
-        [XmlAttribute("Name")]
         public lstring Name;
-        [XmlElement("Position")]
         public Vector2 PosOnMap;
-        [XmlAttribute("WarpSafe")]
         public float WarpSafeDistance = 2;
-        [XmlArray("Planets")]
         public List<PlanetProto> Planets = new List<PlanetProto>();
-        [XmlArray("Stations")]
         public List<SpaceStation> SpaceStaions = new List<SpaceStation>();
-        [XmlAttribute("Asteroids")]
         public float AsteroidPercent;
 
+        public SolarSystemProto()
+        {
+
+        }
+        public SolarSystemProto(XmlElement xml)
+        {
+            if(xml.Name == "SolarSystem")
+            {
+                XmlAttributeCollection attributes = xml.Attributes;
+                foreach (XmlAttribute att in attributes)
+                {
+                    switch (att.Name)
+                    {
+                        case "Name":
+                            Name = att.Value;
+                            break;
+                        case "WarpSafe":
+                            float? ws = Parser.ParseFloatN(att.Value); 
+                            if(ws == null || !ws.HasValue)
+                            {
+                                Log.Error("fail parse float. Attribute: WarpSafe Value: " + att.Value);
+                            }
+                            WarpSafeDistance = ws.Value;
+                            break;
+                        case "Asteroids":
+                            float? a = Parser.ParseFloatN(att.Value);
+                            if (a == null || !a.HasValue)
+                            {
+                                Log.Error("fail parse float. Attribute: WarpSafe Value: " + att.Value);
+                            }
+                            AsteroidPercent = a.Value;
+                            break;
+                        case "Position":
+                            Vector2? v2 = Parser.ParseVector2N(att.Value);
+                            if (v2 == null || !v2.HasValue)
+                            {
+                                Log.Error("fail parse float. Attribute: WarpSafe Value: " + att.Value);
+                            }
+                            PosOnMap = v2.Value;
+                            break;
+                        default:
+                            Log.Warning("unknown attribute: " + att.Name + " name: " + Name.Key);
+                            break;
+                    }
+                }
+                foreach (XmlElement child in xml.ChildNodes)
+                {
+                    try
+                    {
+                        if(child.Name == "Planets")
+                        {
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.Error("fail parse " + child.Name + "\n" + ex);
+                    }
+                }
+            }
+            else
+            {
+                throw new Exception("wrong type " + xml.Name);
+            }
+        }
         public Dictionary<SpaceObject, Fraction> GetFractions()
         {
             Dictionary<SpaceObject, Fraction> fractions = new Dictionary<SpaceObject, Fraction>();

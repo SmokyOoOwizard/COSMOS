@@ -18,23 +18,27 @@ namespace COSMOS.Space
         [InitMethod]
         public static void Init()
         {
-            string config = AssetsDatabase.LoadConfig("SolarSystems");
-            //if (!string.IsNullOrEmpty(config))
-            //{
-            //    XmlDocument xdoc = new XmlDocument();
-            //    xdoc.LoadXml(config);
-            //    XmlElement xroot = xdoc.DocumentElement;
-            //    if (xroot.Name == "SolarSystems")
-            //    {
-            //        foreach (XmlElement item in xroot)
-            //        {
-            //            if (item.Name == "SolarSystem")
-            //            {
-            //                SolarSystems.Add(new SolarSystemProto(item));
-            //            }
-            //        }
-            //    }
-            //}
+            Load();
+        }
+        static void Load()
+        {
+            string config = AssetsDatabase.LoadPrototype("SolarSystems");
+            if (!string.IsNullOrEmpty(config))
+            {
+                XmlDocument xdoc = new XmlDocument();
+                xdoc.LoadXml(config);
+                XmlElement xroot = xdoc.DocumentElement;
+                if (xroot.Name == "SolarSystems")
+                {
+                    foreach (XmlElement item in xroot)
+                    {
+                        if (item.Name == "SolarSystem")
+                        {
+                            SolarSystems.Add(new SolarSystemProto(item));
+                        }
+                    }
+                }
+            }
         }
     }
 }
