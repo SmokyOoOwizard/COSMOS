@@ -21,11 +21,11 @@ namespace COSMOS.Managers
         }
         static void LogProcess(Delogger.LogString log)
         {
-            if(log.level == Delogger.LogLevel.Info || log.level == Delogger.LogLevel.Debug)
+            if(log.level == Delogger.LogLevel.Info)
             {
                 Debug.unityLogger.Log(LogType.Log, log.ToString());
             }
-            if (log.level == Delogger.LogLevel.Warning)
+            if (log.level == Delogger.LogLevel.Warning || log.level == Delogger.LogLevel.Debug)
             {
                 Debug.unityLogger.Log(LogType.Warning, log.ToString());
             }
