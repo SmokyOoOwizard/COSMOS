@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SolarSystems>
 	<SolarSystem Name="TestName" Position="2;4" WarpSafe="3" Asteroids="0.4">
+		<Planets/>
 	</SolarSystem>
 </SolarSystems>
