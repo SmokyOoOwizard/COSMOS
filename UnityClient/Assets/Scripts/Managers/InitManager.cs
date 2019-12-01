@@ -29,7 +29,7 @@ namespace COSMOS.Managers
         }
         void InitAllManagers()
         {
-            List<KeyValuePair<int,(Type,MethodInfo)>> methods = new List<KeyValuePair<int, (Type, MethodInfo)>>();
+            List<KeyValuePair<int,(Type,MethodInfo, bool)>> methods = new List<KeyValuePair<int, (Type, MethodInfo, bool)>>();
             foreach (var item in AppDomain.CurrentDomain.GetAssemblies())
             {
                 foreach (var t in item.GetTypes())
@@ -38,12 +38,20 @@ namespace COSMOS.Managers
                     {
                         if (t.IsAbstract && t.IsSealed)
                         {
-                            foreach (var m in t.GetMethods(BindingFlags.Static | BindingFlags.Public))
+                            foreach (var m in t.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
                             {
-                                InitMethodAttribute initMethod = m.GetCustomAttribute(typeof(InitMethodAttribute)) as InitMethodAttribute;
+                                InitMethodAttribute initMethod = m.GetCustomAttribute<InitMethodAttribute>();
                                 if (initMethod != null)
                                 {
-                                    methods.Add(new KeyValuePair<int, (Type, MethodInfo)>(initMethod.Priority, (t, m)));
+                                    methods.Add(new KeyValuePair<int, (Type, MethodInfo, bool)>(initMethod.Priority, (t, m, false)));
+                                }
+                                else
+                                {
+                                    InitAsyncMethodAttribute initAsyncMethod = m.GetCustomAttribute<InitAsyncMethodAttribute>();
+                                    if (initAsyncMethod != null)
+                                    {
+                                        methods.Add(new KeyValuePair<int, (Type, MethodInfo, bool)>(initAsyncMethod.Priority, (t, m, true)));
+                                    }
                                 }
                             }
                         }
@@ -51,13 +59,23 @@ namespace COSMOS.Managers
                 }
             }
             methods.Sort((x, y) => { return y.Key.CompareTo(x.Key); });
+            List<Task> tasks = new List<Task>();
             try
             {
                 foreach (var method in methods)
                 {
-                    Log.Info("Init: " + method.Value.Item1.FullName + " Method: " + method.Value.Item2.Name, "Init");
-                    method.Value.Item2.Invoke(null, null);
+                    if (method.Value.Item3)
+                    {
+                        Log.Info("Init async: " + method.Value.Item1.FullName + " Method: " + method.Value.Item2.Name, "Init", "Async");
+                        tasks.Add(method.Value.Item2.Invoke(null, null) as Task);
+                    }
+                    else
+                    {
+                        Log.Info("Init: " + method.Value.Item1.FullName + " Method: " + method.Value.Item2.Name, "Init");
+                        method.Value.Item2.Invoke(null, null);
+                    }
                 }
+                Task.WaitAll(tasks.ToArray());
             }
             catch (Exception ex)
             {
@@ -75,6 +93,15 @@ public sealed class InitMethodAttribute : Attribute
 {
     public int Priority;
     public InitMethodAttribute(int priority = 0)
+    {
+        Priority = priority;
+    }
+}
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+public sealed class InitAsyncMethodAttribute : Attribute
+{
+    public int Priority;
+    public InitAsyncMethodAttribute(int priority = 0)
     {
         Priority = priority;
     }
