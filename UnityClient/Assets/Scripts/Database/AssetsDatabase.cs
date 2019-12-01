@@ -35,16 +35,16 @@ namespace COSMOS.DataBase
                         return s;
                     }
                     Debug.Log(Assets[ID].Path);
-                    Debug.LogError("load null sprite " + ID);
+                    Log.Error("load null sprite " + ID);
                 }
                 else
                 {
-                    Debug.LogError("wrong type " + ID);
+                    Log.Error("wrong type " + ID);
                 }
             }
             else
             {
-                Debug.LogError("no sprite " + ID);
+                Log.Error("no sprite " + ID);
             }
             return Resources.Load<Sprite>(@"Sprites\Default");
 
@@ -61,16 +61,16 @@ namespace COSMOS.DataBase
                     {
                         return go;
                     }
-                    Debug.LogError("load null gameobject " + ID);
+                    Log.Error("load null gameobject " + ID);
                 }
                 else
                 {
-                    Debug.LogError("wrong type " + ID);
+                    Log.Error("wrong type " + ID);
                 }
             }
             else
             {
-                Debug.LogError("no gameobject " + ID);
+                Log.Error("no gameobject " + ID);
             }
             return null;
         }
@@ -86,41 +86,16 @@ namespace COSMOS.DataBase
                     {
                         return mat;
                     }
-                    Debug.LogError("load null material " + ID);
+                    Log.Error("load null material " + ID);
                 }
                 else
                 {
-                    Debug.LogError("wrong type " + ID);
+                    Log.Error("wrong type " + ID);
                 }
             }
             else
             {
-                Debug.LogError("no material " + ID);
-            }
-            return null;
-        }
-        public static string LoadPrototype(string ID)
-        {
-            if (ID != null && Assets.ContainsKey(ID))
-            {
-                if (Assets[ID] != null && Assets[ID].Type == "Prototype")
-                {
-                    Asset o = Assets[ID];
-                    TextAsset proto = Resources.Load(o.Path, typeof(TextAsset)) as TextAsset;
-                    if (proto != null)
-                    {
-                        return proto.text;
-                    }
-                    Debug.LogError("load null Prototype " + ID);
-                }
-                else
-                {
-                    Debug.LogError("wrong type " + ID);
-                }
-            }
-            else
-            {
-                Debug.LogError("no Prototype " + ID);
+                Log.Error("no material " + ID);
             }
             return null;
         }
@@ -136,16 +111,42 @@ namespace COSMOS.DataBase
                     {
                         return proto.text;
                     }
-                    Debug.LogError("load null Config " + ID);
+                    Log.Error("load null Config " + ID);
                 }
                 else
                 {
-                    Debug.LogError("wrong type " + ID);
+                    Log.Error("wrong type " + ID);
                 }
             }
             else
             {
-                Debug.LogError("no config " + ID);
+                Log.Error("no config " + ID);
+            }
+            return null;
+        }
+        public static string LoadPrototype(string ID)
+        {
+            ID = @"Prototypes\" + ID;
+            if (ID != null && Assets.ContainsKey(ID))
+            {
+                if (Assets[ID] != null && Assets[ID].Type == "Prototype")
+                {
+                    Asset o = Assets[ID];
+                    TextAsset proto = Resources.Load(o.Path, typeof(TextAsset)) as TextAsset;
+                    if (proto != null)
+                    {
+                        return proto.text;
+                    }
+                    Log.Error("load null Prototype " + ID);
+                }
+                else
+                {
+                    Log.Error("wrong type " + ID);
+                }
+            }
+            else
+            {
+                Log.Error("no Prototype " + ID);
             }
             return null;
         }
@@ -211,7 +212,7 @@ namespace COSMOS.DataBase
             UpdateDatabaseGameObjects();
             UpdateDatabaseSprites();
             UpdateDatabaseMaterial();
-            UpdateDataBasePrototypes();
+            UpdateDatabasePrototypes();
             UpdateDatabaseConfigs();
         }
         static void UpdateDatabaseSprites()
@@ -273,7 +274,7 @@ namespace COSMOS.DataBase
                 }
             }
         }
-        static void UpdateDataBasePrototypes()
+        static void UpdateDatabasePrototypes()
         {
             List<string> paths = new List<string>(Directory.GetFiles(@"Assets\Resources\Prototypes", "*.xml", SearchOption.AllDirectories));
             for (int i = 0; i < paths.Count; i++)
