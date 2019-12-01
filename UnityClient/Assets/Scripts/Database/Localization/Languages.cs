@@ -19,7 +19,7 @@ namespace COSMOS.Localization
             }
         }
 
-        [InitMethod]
+        [InitMethod(int.MaxValue - 1)]
         public static void LoadLanguages()
         {
 

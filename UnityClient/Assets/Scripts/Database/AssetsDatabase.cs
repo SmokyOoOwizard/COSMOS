@@ -151,7 +151,7 @@ namespace COSMOS.DataBase
         }
         #endregion
 #if !UNITY_EDITOR
-        [InitMethod]
+        [InitMethod(int.MaxValue)]
 #endif
         public static void LoadDatabase()
         {
@@ -199,7 +199,7 @@ namespace COSMOS.DataBase
         }
 
         #if UNITY_EDITOR
-        [InitMethod]
+        [InitMethod(int.MaxValue)]
         public static void DebugUpdateSaveLoad()
         {
             UpdateDatabase();

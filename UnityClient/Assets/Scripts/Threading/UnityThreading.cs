@@ -110,7 +110,7 @@ namespace COSMOS.Threading
         static Dictionary<GameObject, ExecuteObject> ExecuteObjects = new Dictionary<GameObject, ExecuteObject>();
         static ExecuteObject MainObject;
 
-        [InitMethod]
+        [InitMethod(int.MaxValue - 1)]
         public static void Init()
         {
             ExecuteObjects.Clear();

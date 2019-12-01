@@ -7,10 +7,8 @@ using UnityEngine;
 
 namespace COSMOS.Managers
 {
-    [Manager]
-    public static class LogManager
+    internal static class LogManager
     {
-        [InitMethod]
         public static void Init()
         {
             Delogger.LogMaster.Stop();
