@@ -14,9 +14,9 @@ namespace COSMOS.Prototype
             public PropertyInfo Property { get; protected set; }
             public FieldInfo Field { get; protected set; }
             public Type Type { get; protected set; }
-            public bool isGeneric { get; protected set; }
-            public bool isCollection { get; protected set; }
-            public bool isArray { get; protected set; }
+            public bool isGeneric { get; protected set; } = false;
+            public bool isCollection { get; protected set; } = false;
+            public bool isArray { get; protected set; } = false;
             public PFInfo(MemberInfo info)
             {
                 if (info.MemberType == MemberTypes.Field)
@@ -36,7 +36,11 @@ namespace COSMOS.Prototype
 
                 isArray = Type.IsArray;
                 isGeneric = Type.IsGenericType;
-                isCollection = Type.GetInterfaces().Any((t) => { return t.GetGenericTypeDefinition() == typeof(ICollection<>); });
+                if(Type.GetInterfaces() != null)
+                {
+
+                    isCollection = Type.GetInterfaces().Any((t) => { return t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ICollection<>); });
+                }
 
             }
 
@@ -73,6 +77,10 @@ namespace COSMOS.Prototype
             {
                 Type = type;
                 Name = att.Name;
+                if (string.IsNullOrEmpty(Name))
+                {
+                    Name = type.FullName;
+                }
                 PFs = new Dictionary<string, PFInfo>();
 
                 const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
@@ -83,6 +91,10 @@ namespace COSMOS.Prototype
                     {
                         var propertyAtt = prop.GetCustomAttribute<BindProtoAttribute>(true);
                         string parseName = propertyAtt.Name;
+                        if (string.IsNullOrEmpty(parseName))
+                        {
+                            parseName = prop.Name;
+                        }
                         if (!PFs.ContainsKey(parseName))
                         {
                             PFs.Add(parseName, new PFInfo(prop));

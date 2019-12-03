@@ -8,6 +8,7 @@ using System.Xml;
 using UnityEngine;
 using COSMOS.HelpfullStuff;
 using System.Collections.Concurrent;
+using System.Collections;
 
 namespace COSMOS.Prototype
 {
@@ -77,27 +78,30 @@ namespace COSMOS.Prototype
             return Task.Factory.StartNew(() =>
             {
                 var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                ConcurrentDictionary<Type, Signature> signatures = new ConcurrentDictionary<Type, Signature>();
                 foreach (var assembly in assemblies)
                 {
                     var types = assembly.GetTypes();
-                    ConcurrentDictionary<Type, Signature> signatures = new ConcurrentDictionary<Type, Signature>();
-                    types.AsParallel().ForAll((type) =>
+                    types.ToList().AsParallel().All((type) =>
                     {
-                        if (!type.IsAbstract)
                         {
-                            var c = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public, null, new Type[] { }, null);
-                            if (c != null)
-                            {
-                                if (!signatures.ContainsKey(type))
+                            var att = type.GetCustomAttributes(typeof(BindProtoAttribute), true);
+                            if (att != null && att.Length > 0)
+                            { 
+                                var c = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public, null, new Type[] { }, null);
+                                if (c != null)
                                 {
-                                    var att = type.GetCustomAttributes(typeof(BindProtoAttribute), true);
-                                    if (att != null && att.Length > 0)
+                                    if (!signatures.ContainsKey(type))
                                     {
                                         string name = (att[0] as BindProtoAttribute).Name;
+                                        if (string.IsNullOrEmpty(name))
+                                        {
+                                            name = type.FullName;
+                                        }
                                         if (!SignaturesName.ContainsKey(name))
                                         {
                                             Signature tmp = new Signature(type);
-                                            signatures.TryAdd(type, tmp);
+                                            signatures.TryAdd(type, tmp); 
                                         }
                                         else
                                         {
@@ -113,14 +117,14 @@ namespace COSMOS.Prototype
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    Log.Error("there can be no prototype without a constructor without parameters. Type: " + type);
+                                }
                             }
-                            else
-                            {
-                                Log.Error("there can be no prototype without a constructor without parameters. Type: " + type);
-                            }
-
+                    
                             var methods = type.GetMethods();
-                            var parseMethod = methods.First((x) =>
+                            var parseMethod = methods.FirstOrDefault((x) =>
                             {
                                 if(x.GetCustomAttribute<ParseMethodAttribute>() != null)
                                 {
@@ -154,76 +158,77 @@ namespace COSMOS.Prototype
                             {
                                 OtherTypes.Add(type, (x) => { return parseMethod.Invoke(null, new object[] { x }); });
                             }
+                            return false;
                         }
                     });
-                    Signatures = signatures.ToDictionary(entry => entry.Key, entry => entry.Value);
                 }
+                Signatures = signatures.ToDictionary(entry => entry.Key, entry => entry.Value);
             });
         }
 
         public static T Parse<T>(XmlElement xml)
         {
-            return (T)parse(xml);
+            return (T)parseChild(xml, typeof(T));
         }
         public static Task<T> ParseAsync<T>(XmlElement xml)
         {
             return Task.Factory.StartNew<T>(() =>
             {
-                return (T)parse(xml);
+                return (T)parseChild(xml, null);
             });
         }
-        static object parse(XmlElement xml, Signature.PFInfo pfi = null)
+        static object parseChild(XmlElement xml, Type type)
         {
-            if (pfi != null && pfi.isArray)
+            if (type != null && type.IsArray)
             {
-                return CreateArray(xml, pfi);
+                return CreateArray(xml, type);
             }
-            else if (pfi != null && pfi.isCollection)
+            else if (type != null && type is ICollection)
             {
-                return CreateCollection(xml, pfi);
+                return CreateCollection(xml, type);
             }
-            else if (Signatures.ContainsKey(pfi.Type))
-            {
-                return CreatePrototype(xml, pfi.Type);
-            }
-            else
-            {
-                return CreateValue(xml, pfi.Type);
-            }
-        }
-        static object parse(XmlElement xml, Type type)
-        {
-            if (Signatures.ContainsKey(type))
+            else if (SignaturesName.ContainsKey(xml.Name) || type != null && Signatures.ContainsKey(type))
             {
                 return CreatePrototype(xml, type);
             }
             else
             {
-                return CreateValue(xml, type);
+                return CreateValue(xml.InnerText, type);
             }
         }
-        static object CreateCollection(XmlElement xml, Signature.PFInfo pfi)
+        static object parseAtt(string value, Type type)
+        {
+            if (OtherTypes.ContainsKey(type))
+            {
+                return OtherTypes[type].Invoke(value);
+            }
+            else
+            {
+                return CreateValue(value, type);
+            }
+        }
+        static object CreateCollection(XmlElement xml, Type type)
         {
             return null;
         }
-        static object CreateArray(XmlElement xml, Signature.PFInfo pfi)
+        static object CreateArray(XmlElement xml, Type type)
         {
-            if (pfi.Type.GetArrayRank() < 2)
+            if (type.GetArrayRank() < 2)
             {
                 List<object> tmpObjects = new List<object>();
                 foreach (XmlElement child in xml)
                 {
-                    object tmp = parse(child, pfi.Type);
+                    object tmp = parseChild(child, type.GetElementType());
                     if(tmp != null)
                     {
                         tmpObjects.Add(tmp);
                     }
                     else
                     {
-                        Log.Error("parse value is null Type: " + pfi.Type + " Block: " + child.OuterXml);
+                        Log.Error("parse value is null Type: " + type + " Block: " + child.OuterXml);
                     }
                 }
-                Array tmpArray = Array.CreateInstance(pfi.Type, tmpObjects.Count);
+                Array tmpArray = Array.CreateInstance(type, tmpObjects.Count);
                 for (int i = 0; i < tmpObjects.Count; i++)
                 {
                     tmpArray.SetValue(tmpObjects[i], i);
@@ -236,7 +241,7 @@ namespace COSMOS.Prototype
                 return null;
             }
         }
-        static object CreateValue(XmlNode xml, Type type)
+        static object CreateValue(string value, Type type)
         {
             Func<string, object> func = null;
 
@@ -255,11 +260,11 @@ namespace COSMOS.Prototype
 
             if(func != null)
             {
-                return func(xml.Value);
+                return func(value);
             }
             else
             {
-                Log.Error("parser cant parse this type: " + type + " with this value: " + xml.OuterXml);
+                Log.Error("parser cant parse this type: " + type + " with this value: " + value);
                 return null;
             }
         }
@@ -283,12 +288,30 @@ namespace COSMOS.Prototype
             {
                 object instance = Activator.CreateInstance(signature.Type);
 
+                foreach (XmlAttribute att in xml.Attributes)
+                {
+                    if (signature.PFs.ContainsKey(att.Name))
+                    {
+                        Signature.PFInfo pfi = signature.PFs[att.Name];
+                        object value = parseAtt(att.Value, pfi.Type);
+
+                        if (value != null)
+                        {
+                            pfi.SetValue(instance, value);
+                        }
+                        else
+                        {
+                            Log.Panic("value cannot be null");
+                        }
+                    }
+                }
+
                 foreach (XmlElement child in xml)
                 {
                     if (signature.PFs.ContainsKey(child.Name))
                     {
                         Signature.PFInfo pfi = signature.PFs[child.Name];
-                        object value = parse(child, pfi);
+                        object value = parseChild(child, pfi.Type);
 
                         if (value != null)
                         {
