@@ -213,13 +213,62 @@ namespace COSMOS.Prototype
         }
         static object CreateArray(XmlElement xml, Type type)
         {
-            if (type.GetArrayRank() < 2)
+            int[] dems = new int[type.GetArrayRank()];
+            object[] tmp = parseArrayElements(xml, type.GetElementType(), type.GetArrayRank() - 1, dems);
+
+            List<object> tmpObjects = new List<object>(tmp);
+
+            Log.Info(tmp.Length);
+            foreach (var item in dems)
             {
-                List<object> tmpObjects = new List<object>();
+                Log.Info(item);
+            }
+
+            Array tmpArray = Array.CreateInstance(type.GetElementType(), dems);
+            Log.Info(tmpArray.GetType());
+            for (int i = 0; i < tmpObjects.Count; i++)
+            {
+                tmpArray.SetValue(tmpObjects[i], DtoND(i, dems));
+            }
+            return tmpArray;
+        }
+        static int[] DtoND(int ID, int[] arrayLengths)
+        {
+            int[] indices = new int[arrayLengths.Length];
+            for (int i = arrayLengths.Length - 1; i >= 0; i--)
+            {
+                int offset = 1;
+                for (int j = 0; j < i; j++)
+                {
+                    offset *= arrayLengths[j];
+                }
+                int remainder = ID % offset;
+                indices[i] = (ID - remainder) / offset;
+                ID = remainder;
+            }
+            return indices;
+        }
+        static object[] parseArrayElements(XmlElement xml, Type type, int deep, int[] dem)
+        {
+            List<object> tmpObjects = new List<object>();
+            if(dem[deep] < xml.ChildNodes.Count)
+            {
+                dem[deep] = xml.ChildNodes.Count;
+            }
+            if (deep > 0)
+            {
                 foreach (XmlElement child in xml)
                 {
-                    object tmp = parseChild(child, type.GetElementType());
-                    if(tmp != null)
+                    object[] tmp = parseArrayElements(child, type, deep - 1, dem);
+                    tmpObjects.AddRange(tmp);
+                }
+            }
+            else
+            {
+                foreach (XmlElement child in xml)
+                {
+                    object tmp = parseChild(child, type);
+                    if (tmp != null)
                     {
                         tmpObjects.Add(tmp);
                     }
@@ -228,18 +277,8 @@ namespace COSMOS.Prototype
                         Log.Error("parse value is null Type: " + type + " Block: " + child.OuterXml);
                     }
                 }
-                Array tmpArray = Array.CreateInstance(type, tmpObjects.Count);
-                for (int i = 0; i < tmpObjects.Count; i++)
-                {
-                    tmpArray.SetValue(tmpObjects[i], i);
-                }
-                return tmpArray;
             }
-            else
-            {
-                Log.Error("this parser cant parse arrays more that 1 rank");
-                return null;
-            }
+            return tmpObjects.ToArray();
         }
         static object CreateValue(string value, Type type)
         {
