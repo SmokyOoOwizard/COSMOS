@@ -90,19 +90,22 @@ namespace COSMOS.Prototype
                     foreach (var prop in properies)
                     {
                         var propertyAtt = prop.GetCustomAttribute<BindProtoAttribute>(true);
-                        string parseName = propertyAtt.Name;
-                        if (string.IsNullOrEmpty(parseName))
+                        if (propertyAtt != null)
                         {
-                            parseName = prop.Name;
+                            string parseName = propertyAtt.Name;
+                            if (string.IsNullOrEmpty(parseName))
+                            {
+                                parseName = prop.Name;
+                            }
+                            if (!PFs.ContainsKey(parseName))
+                            {
+                                PFs.Add(parseName, new PFInfo(prop));
+                            }
+                            else
+                            {
+                                Log.Error("already have this parse name: " + parseName + " property: " + prop);
+                            }
                         }
-                        if (!PFs.ContainsKey(parseName))
-                        {
-                            PFs.Add(parseName, new PFInfo(prop));
-                        }
-                        else
-                        {
-                            Log.Error("already have this parse name: " + parseName + " property: " + prop);
-                        }                        
                     }
                 }
             }

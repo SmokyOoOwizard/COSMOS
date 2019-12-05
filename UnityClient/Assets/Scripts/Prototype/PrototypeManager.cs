@@ -218,21 +218,14 @@ namespace COSMOS.Prototype
 
             List<object> tmpObjects = new List<object>(tmp);
 
-            Log.Info(tmp.Length);
-            foreach (var item in dems)
-            {
-                Log.Info(item);
-            }
-
             Array tmpArray = Array.CreateInstance(type.GetElementType(), dems);
-            Log.Info(tmpArray.GetType());
-            for (int i = 0; i < tmpObjects.Count; i++)
+            for (int   i = 0; i < tmpObjects.Count; i++)
             {
-                tmpArray.SetValue(tmpObjects[i], DtoND(i, dems));
+                tmpArray.SetValue(tmpObjects[i], IdToND(i, dems));
             }
             return tmpArray;
         }
-        static int[] DtoND(int ID, int[] arrayLengths)
+        static int[] IdToND(int ID, int[] arrayLengths)
         {
             int[] indices = new int[arrayLengths.Length];
             for (int i = arrayLengths.Length - 1; i >= 0; i--)
@@ -246,7 +239,7 @@ namespace COSMOS.Prototype
                 indices[i] = (ID - remainder) / offset;
                 ID = remainder;
             }
-            return indices;
+            return indices.Reverse().ToArray();
         }
         static object[] parseArrayElements(XmlElement xml, Type type, int deep, int[] dem)
         {
