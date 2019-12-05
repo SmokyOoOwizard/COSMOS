@@ -183,7 +183,8 @@ namespace COSMOS.Prototype
             {
                 return CreateArray(xml, type);
             }
-            else if (type != null && type is ICollection)
+            else if (type != null && type.GetInterfaces().Any(x => x.IsGenericType && 
+                (x.GetGenericTypeDefinition() == typeof(IReadOnlyCollection<>) || x.GetGenericTypeDefinition() == typeof(ICollection))))
             {
                 return CreateCollection(xml, type);
             }
@@ -209,6 +210,38 @@ namespace COSMOS.Prototype
         }
         static object CreateCollection(XmlElement xml, Type type)
         {
+            Log.Info("Create collection " + type);
+            //if (type.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IReadOnlyCollection<>)))
+            //{
+            //
+            //}
+            //else
+            {
+                //if (type is IDictionary)
+                //{
+                //
+                //}
+                //else
+                {   
+                    object collection = Activator.CreateInstance(type);
+                    var map = type.GetInterfaceMap(typeof(ICollection<>));
+                    MethodInfo methodInfo = map.TargetMethods.FirstOrDefault(x => x.Name == "Add");
+                    if(methodInfo != null)
+                    {
+                        Type elementType = type.GetGenericArguments().Single();
+                        foreach (XmlElement child in xml)
+                        {
+                            methodInfo.Invoke(collection, new object[] { parseChild(child, elementType) });
+                        }
+
+                        return collection;
+                    }
+                    else
+                    {
+                        Log.Error("this collection not supported: " + type);
+                    }
+                }
+            }
             return null;
         }
         static object CreateArray(XmlElement xml, Type type)
