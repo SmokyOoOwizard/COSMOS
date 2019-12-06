@@ -177,6 +177,7 @@ namespace COSMOS.Prototype
                 return (T)parseChild(xml, null);
             });
         }
+        #region Parse
         static object parseChild(XmlElement xml, Type type)
         {
             if (type != null && type.IsArray)
@@ -209,7 +210,6 @@ namespace COSMOS.Prototype
         }
         static object CreateCollection(XmlElement xml, Type type)
         {
-            Log.Info("Create collection " + type);
             bool isDictinary = type.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IDictionary<,>));
             if (type.GetInterfaces().Any(x => x.IsGenericType && 
             (x.GetGenericTypeDefinition() == typeof(IReadOnlyList<>) || x.GetGenericTypeDefinition() == typeof(IReadOnlyDictionary<,>) 
@@ -227,13 +227,11 @@ namespace COSMOS.Prototype
                     {
                         collection = Activator.CreateInstance(typeof(List<>).MakeGenericType(elementType));
                     }
-                    Log.Info(collection.GetType());
                     var map = collection.GetType().GetInterfaceMap(typeof(ICollection<>));
                     MethodInfo methodInfo = map.TargetMethods.FirstOrDefault(x => x.Name.Contains("Add"));
                     if (elementType.IsInterface)
                     {
                         elementType = null;
-                        Log.Info("ITS COLLECTION WITH INTERFACE");
                     }
                     foreach (XmlElement child in xml)
                     {
@@ -260,7 +258,6 @@ namespace COSMOS.Prototype
                         if (elementType.IsInterface)
                         {
                             elementType = null;
-                            Log.Info("ITS COLLECTION WITH INTERFACE");
                         }
                         foreach (XmlElement child in xml)
                         {
@@ -440,6 +437,6 @@ namespace COSMOS.Prototype
             }
             return null;
         }
-
+        #endregion
     }
 }
