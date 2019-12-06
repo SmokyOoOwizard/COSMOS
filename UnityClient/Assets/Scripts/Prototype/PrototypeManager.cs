@@ -63,7 +63,7 @@ namespace COSMOS.Prototype
             { typeof(double?), (s) =>{ return (object)Parser.ParseDoubleN(s); } },
             { typeof(decimal?), (s) =>{ return (object)Parser.ParseDecimalN(s); } },
             { typeof(bool?), (s) =>{ return (object)Parser.ParseBoolN(s); } },
-            { typeof(string), (s) =>{ return s; } }
+            { typeof(string), (s) =>{ return s; } },
         };
         public readonly static Dictionary<Type, Func<string, object>> OtherTypes = new Dictionary<Type, Func<string, object>>();
         static Dictionary<string, Type> SignaturesName = new Dictionary<string, Type>();
@@ -183,6 +183,11 @@ namespace COSMOS.Prototype
             {
                 return CreateArray(xml, type);
             }
+            else if(type != null && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
+            {
+                Type[] tmp = type.GetGenericArguments();
+                return parseKeyValuePair(xml, type, tmp[0], tmp[1]);
+            }
             else if (type != null && type.GetInterfaces().Any(x => x.IsGenericType && 
                 (x.GetGenericTypeDefinition() == typeof(IReadOnlyCollection<>) || x.GetGenericTypeDefinition() == typeof(ICollection))))
             {
@@ -199,47 +204,64 @@ namespace COSMOS.Prototype
         }
         static object parseAtt(string value, Type type)
         {
-            if (OtherTypes.ContainsKey(type))
-            {
-                return OtherTypes[type].Invoke(value);
-            }
-            else
-            {
-                return CreateValue(value, type);
-            }
+            return CreateValue(value, type);
         }
         static object CreateCollection(XmlElement xml, Type type)
         {
             Log.Info("Create collection " + type);
+            bool isDictinary = type.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ICollection));
             //if (type.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IReadOnlyCollection<>)))
             //{
             //
             //}
             //else
             {
-                //if (type is IDictionary)
+                //if (type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IDictionary<,>)))
                 //{
+                //    Log.Info("ITS DICTIONARY");
                 //
                 //}
                 //else
-                {   
+                //{
+                //    Log.Info("ITS LIST");
+                //}
+                var map = type.GetInterfaceMap(typeof(ICollection<>));
+                MethodInfo methodInfo = map.TargetMethods.FirstOrDefault(x => x.Name.Contains("Add"));
+                if(methodInfo != null)
+                {
                     object collection = Activator.CreateInstance(type);
-                    var map = type.GetInterfaceMap(typeof(ICollection<>));
-                    MethodInfo methodInfo = map.TargetMethods.FirstOrDefault(x => x.Name == "Add");
-                    if(methodInfo != null)
+                    Type elementType = null;
+                    if (isDictinary)
                     {
-                        Type elementType = type.GetGenericArguments().Single();
+                        elementType = methodInfo.GetParameters()[0].ParameterType;
+                    }
+                    else 
+                    {
+                        elementType = methodInfo.GetParameters()[0].ParameterType;
+                    }
+                    if (elementType.IsInterface)
+                    {
+                        elementType = null;
+                        Log.Info("ITS COLLECTION WITH INTERFACE");
+                    }
+                    Log.Info(elementType);
+                    try
+                    {
                         foreach (XmlElement child in xml)
                         {
                             methodInfo.Invoke(collection, new object[] { parseChild(child, elementType) });
                         }
-
-                        return collection;
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        Log.Error("this collection not supported: " + type);
+                        Log.Error(ex);
                     }
+
+                    return collection;
+                }
+                else
+                {
+                    Log.Error("this collection not supported: " + type);
                 }
             }
             return null;
@@ -305,6 +327,13 @@ namespace COSMOS.Prototype
                 }
             }
             return tmpObjects.ToArray();
+        }
+        static object parseKeyValuePair(XmlElement xml, Type type, Type keyType, Type valueType)
+        {
+            object key = parseChild(xml.ChildNodes[0] as XmlElement, keyType);
+            object value = parseChild(xml.ChildNodes[1] as XmlElement, valueType);
+            object pair = Activator.CreateInstance(type, new object[] { key, value });
+            return pair;
         }
         static object CreateValue(string value, Type type)
         {
