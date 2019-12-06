@@ -210,13 +210,26 @@ namespace COSMOS.Prototype
         static object CreateCollection(XmlElement xml, Type type)
         {
             Log.Info("Create collection " + type);
-            bool isDictinary = type.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ICollection));
-            if (type.Name.Contains("ReadOnly"))
+            bool isDictinary = type.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IDictionary<,>));
+            if (type.GetInterfaces().Any(x => x.IsGenericType && 
+            (x.GetGenericTypeDefinition() == typeof(IReadOnlyList<>) || x.GetGenericTypeDefinition() == typeof(IReadOnlyDictionary<,>) 
+            || x.GetGenericTypeDefinition() == typeof(IReadOnlyCollection<>))))
             {
                 try
                 {
                     Type elementType = type.GetInterfaces().FirstOrDefault((x) => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ICollection<>)).GetGenericArguments()[0];
-                    List<object> tmps = new List<object>();
+                    object collection = null;
+                    if (isDictinary)
+                    {
+                        collection = Activator.CreateInstance(typeof(Dictionary<,>).MakeGenericType(type.GetInterfaces().FirstOrDefault((x) => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IReadOnlyDictionary<,>)).GetGenericArguments()));
+                    }
+                    else
+                    {
+                        collection = Activator.CreateInstance(typeof(List<>).MakeGenericType(elementType));
+                    }
+                    Log.Info(collection.GetType());
+                    var map = collection.GetType().GetInterfaceMap(typeof(ICollection<>));
+                    MethodInfo methodInfo = map.TargetMethods.FirstOrDefault(x => x.Name.Contains("Add"));
                     if (elementType.IsInterface)
                     {
                         elementType = null;
@@ -224,15 +237,9 @@ namespace COSMOS.Prototype
                     }
                     foreach (XmlElement child in xml)
                     {
-                        tmps.Add(parseChild(child, elementType));
+                        methodInfo.Invoke(collection, new object[] { parseChild(child, elementType) });
                     }
-                    foreach (var item in type.GetConstructors())
-                    {
-                        var t = item.GetParameters();
-                        Log.Debug(item.Name);
-                    }
-                    object collection = Activator.CreateInstance(type, tmps.AsReadOnly());
-                    return collection;
+                    return Activator.CreateInstance(type, collection); ;
                 }
                 catch (Exception ex)
                 {
@@ -241,15 +248,6 @@ namespace COSMOS.Prototype
             }
             else
             {
-                //if (type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IDictionary<,>)))
-                //{
-                //    Log.Info("ITS DICTIONARY");
-                //
-                //}
-                //else
-                //{
-                //    Log.Info("ITS LIST");
-                //}
                 var map = type.GetInterfaceMap(typeof(ICollection<>));
                 #warning maybe need save methods in signature
                 MethodInfo methodInfo = map.TargetMethods.FirstOrDefault(x => x.Name.Contains("Add"));
