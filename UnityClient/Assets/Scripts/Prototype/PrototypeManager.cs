@@ -193,14 +193,15 @@ namespace COSMOS.Prototype
             {
                 return CreateCollection(xml, type);
             }
+            else if(type != null)
+            {
+                return CreateValue(xml.InnerText, type);
+            }
             else if (SignaturesName.ContainsKey(xml.Name) || type != null && Signatures.ContainsKey(type))
             {
                 return CreatePrototype(xml, type);
             }
-            else
-            {
-                return CreateValue(xml.InnerText, type);
-            }
+            return null;
         }
         static object parseAtt(string value, Type type)
         {
