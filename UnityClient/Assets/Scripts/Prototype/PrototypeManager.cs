@@ -193,13 +193,13 @@ namespace COSMOS.Prototype
             {
                 return CreateCollection(xml, type);
             }
-            else if(type != null)
-            {
-                return CreateValue(xml.InnerText, type);
-            }
             else if (SignaturesName.ContainsKey(xml.Name) || type != null && Signatures.ContainsKey(type))
             {
                 return CreatePrototype(xml, type);
+            }
+            else if(type != null)
+            {
+                return CreateValue(xml.InnerText, type);
             }
             return null;
         }
@@ -211,11 +211,35 @@ namespace COSMOS.Prototype
         {
             Log.Info("Create collection " + type);
             bool isDictinary = type.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ICollection));
-            //if (type.GetInterfaces().Any(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IReadOnlyCollection<>)))
-            //{
-            //
-            //}
-            //else
+            if (type.Name.Contains("ReadOnly"))
+            {
+                try
+                {
+                    Type elementType = type.GetInterfaces().FirstOrDefault((x) => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ICollection<>)).GetGenericArguments()[0];
+                    List<object> tmps = new List<object>();
+                    if (elementType.IsInterface)
+                    {
+                        elementType = null;
+                        Log.Info("ITS COLLECTION WITH INTERFACE");
+                    }
+                    foreach (XmlElement child in xml)
+                    {
+                        tmps.Add(parseChild(child, elementType));
+                    }
+                    foreach (var item in type.GetConstructors())
+                    {
+                        var t = item.GetParameters();
+                        Log.Debug(item.Name);
+                    }
+                    object collection = Activator.CreateInstance(type, tmps.AsReadOnly());
+                    return collection;
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex);
+                }
+            }
+            else
             {
                 //if (type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IDictionary<,>)))
                 //{
@@ -227,38 +251,29 @@ namespace COSMOS.Prototype
                 //    Log.Info("ITS LIST");
                 //}
                 var map = type.GetInterfaceMap(typeof(ICollection<>));
+                #warning maybe need save methods in signature
                 MethodInfo methodInfo = map.TargetMethods.FirstOrDefault(x => x.Name.Contains("Add"));
                 if(methodInfo != null)
                 {
-                    object collection = Activator.CreateInstance(type);
-                    Type elementType = null;
-                    if (isDictinary)
-                    {
-                        elementType = methodInfo.GetParameters()[0].ParameterType;
-                    }
-                    else 
-                    {
-                        elementType = methodInfo.GetParameters()[0].ParameterType;
-                    }
-                    if (elementType.IsInterface)
-                    {
-                        elementType = null;
-                        Log.Info("ITS COLLECTION WITH INTERFACE");
-                    }
-                    Log.Info(elementType);
                     try
                     {
+                        object collection = Activator.CreateInstance(type);
+                        Type elementType = type.GetInterfaces().FirstOrDefault((x) => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(ICollection<>)).GetGenericArguments()[0];
+                        if (elementType.IsInterface)
+                        {
+                            elementType = null;
+                            Log.Info("ITS COLLECTION WITH INTERFACE");
+                        }
                         foreach (XmlElement child in xml)
                         {
                             methodInfo.Invoke(collection, new object[] { parseChild(child, elementType) });
                         }
+                        return collection;
                     }
                     catch (Exception ex)
                     {
                         Log.Error(ex);
                     }
-
-                    return collection;
                 }
                 else
                 {
