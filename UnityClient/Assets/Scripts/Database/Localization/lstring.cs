@@ -33,6 +33,21 @@ public class lstring
             return Value = Language.GetString(Key);
         }
     }
+    [ParseMethod]
+    public static object Parse(string key)
+    {
+        return new lstring(key);
+    }
+    [SaveMethod]
+    public static string Save(object lstring)
+    {
+        if (lstring is lstring)
+        {
+            return (lstring as lstring).Key;
+        }
+        return null;
+    }
+
     public static implicit operator lstring(string key)
     {
         return new lstring(key);

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using COSMOS.DataBase;
 using System.Xml;
+using COSMOS.Prototype;
 
 
 namespace COSMOS.Space
@@ -34,7 +35,7 @@ namespace COSMOS.Space
                     {
                         if (item.Name == "SolarSystem")
                         {
-                            SolarSystems.Add(new SolarSystemProto(item));
+                            SolarSystems.Add(PrototypeManager.Parse<SolarSystemProto>(item));
                         }
                     }
                 }
