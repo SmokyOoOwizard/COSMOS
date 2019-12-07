@@ -11,13 +11,15 @@ namespace COSMOS.Prototype
     {
         public class PFInfo
         {
+            public string Name { get; protected set; }
+            public Attribute[] Attributes { get; protected set; }
             public PropertyInfo Property { get; protected set; }
             public FieldInfo Field { get; protected set; }
             public Type Type { get; protected set; }
             public bool isGeneric { get; protected set; } = false;
             public bool isCollection { get; protected set; } = false;
             public bool isArray { get; protected set; } = false;
-            public PFInfo(MemberInfo info)
+            public PFInfo(MemberInfo info, string name)
             {
                 if (info.MemberType == MemberTypes.Field)
                 {
@@ -33,6 +35,8 @@ namespace COSMOS.Prototype
                 {
                     throw new InvalidCastException();
                 }
+                Attributes = info.GetCustomAttributes().ToArray();
+                Name = name;
 
                 isArray = Type.IsArray;
                 isGeneric = Type.IsGenericType;
@@ -99,7 +103,7 @@ namespace COSMOS.Prototype
                             }
                             if (!PFs.ContainsKey(parseName))
                             {
-                                PFs.Add(parseName, new PFInfo(prop));
+                                PFs.Add(parseName, new PFInfo(prop, parseName));
                             }
                             else
                             {

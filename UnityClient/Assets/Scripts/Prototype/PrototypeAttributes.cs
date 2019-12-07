@@ -8,17 +8,24 @@ using System.Threading.Tasks;
 public class BindProtoAttribute : Attribute
 {
     public string Name { get; protected set; }
-    public BindProtoAttribute()
+    public bool SaveInAttribute { get; protected set; }
+    public BindProtoAttribute(bool saveInAttribute = false)
     {
-
+        SaveInAttribute = saveInAttribute;
     }
-    public BindProtoAttribute(string name)
+    public BindProtoAttribute(string name, bool saveInAttribute = false)
     {
         Name = name;
+        SaveInAttribute = saveInAttribute;
     }
 }
 [AttributeUsage(AttributeTargets.Method)]
 public class ParseMethodAttribute : Attribute
+{
+
+}
+[AttributeUsage(AttributeTargets.Method)]
+public class SaveMethodAttribute : Attribute
 {
 
 }

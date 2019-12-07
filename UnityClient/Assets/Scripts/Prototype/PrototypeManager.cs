@@ -9,13 +9,14 @@ using UnityEngine;
 using COSMOS.HelpfullStuff;
 using System.Collections.Concurrent;
 using System.Collections;
+using System.IO;
 
 namespace COSMOS.Prototype
 {
     [Manager]
     public static class PrototypeManager
     {
-        public readonly static Dictionary<Type, Func<string, object>> UnityTypes = new Dictionary<Type, Func<string, object>>()
+        public readonly static Dictionary<Type, Func<string, object>> ParseUnityTypes = new Dictionary<Type, Func<string, object>>()
         {
             { typeof(Vector2), (s) =>{ return (object)Parser.ParseVector2(s); } },
             { typeof(Vector2Int), (s) =>{ return (object)Parser.ParseVector2Int(s); } },
@@ -35,7 +36,7 @@ namespace COSMOS.Prototype
             { typeof(Color?), (s) =>{ return (object)Parser.ParseColor(s); } },
             { typeof(RectOffset), (s) =>{ return (object)Parser.ParseRect(s); } }
         };
-        public readonly static Dictionary<Type, Func<string, object>> StandardTypes = new Dictionary<Type, Func<string, object>>()
+        public readonly static Dictionary<Type, Func<string, object>> ParseStandardTypes = new Dictionary<Type, Func<string, object>>()
         {
             { typeof(sbyte), (s) =>{ return (object)Parser.ParseSByte(s); } },
             { typeof(byte), (s) =>{ return (object)Parser.ParseByte(s); } },
@@ -65,7 +66,60 @@ namespace COSMOS.Prototype
             { typeof(bool?), (s) =>{ return (object)Parser.ParseBoolN(s); } },
             { typeof(string), (s) =>{ return s; } },
         };
-        public readonly static Dictionary<Type, Func<string, object>> OtherTypes = new Dictionary<Type, Func<string, object>>();
+        public readonly static Dictionary<Type, Func<string, object>> ParseOtherTypes = new Dictionary<Type, Func<string, object>>();
+
+        public readonly static Dictionary<Type, Func<object, string>> SaveUnityTypes = new Dictionary<Type, Func<object, string>>()
+        {
+            { typeof(Vector2), (s) =>{ return Saver.SaveVector2((Vector2)s); } },
+            { typeof(Vector2?), (s) =>{ return Saver.SaveVector2((Vector2?)s); } },
+            { typeof(Vector2Int), (s) =>{ return Saver.SaveVector2Int((Vector2Int)s); } },
+            { typeof(Vector2Int?), (s) =>{ return Saver.SaveVector2Int((Vector2Int?)s); } },
+            { typeof(Vector3), (s) =>{ return Saver.SaveVector3((Vector3)s); } },
+            { typeof(Vector3?), (s) =>{ return Saver.SaveVector3((Vector3?)s); } },
+            { typeof(Vector3Int), (s) =>{ return Saver.SaveVector3Int((Vector3Int)s); } },
+            { typeof(Vector3Int?), (s) =>{ return Saver.SaveVector3Int((Vector3Int?)s); } },
+            { typeof(Vector4), (s) =>{ return Saver.SaveVector4((Vector4)s); } },
+            { typeof(Vector4?), (s) =>{ return Saver.SaveVector4((Vector4?)s); } },
+            { typeof(Quaternion), (s) =>{ return Saver.SaveQuaternion((Quaternion)s); } },
+            { typeof(Quaternion?), (s) =>{ return Saver.SaveQuaternion((Quaternion?)s); } },
+            { typeof(Rect), (s) =>{ return Saver.SaveRect((Rect)s); } },
+            { typeof(Rect?), (s) =>{ return Saver.SaveRect((Rect?)s); } },
+            { typeof(Color), (s) =>{ return Saver.SaveColor((Color)s); } },
+            { typeof(Color?), (s) =>{ return Saver.SaveColor((Color?)s); } },
+            { typeof(RectOffset), (s) =>{ return Saver.SaveRectOffset(s as RectOffset); } }
+        };
+        public readonly static Dictionary<Type, Func<object, string>> SaveStandardTypes = new Dictionary<Type, Func<object, string>>()
+        {
+            { typeof(sbyte), (s) =>{ return Saver.SaveInt((sbyte)s); } },
+            { typeof(byte), (s) =>{ return Saver.SaveUInt((byte)s); } },
+            { typeof(short), (s) =>{ return Saver.SaveInt((short)s); } },
+            { typeof(ushort), (s) =>{ return Saver.SaveUInt((ushort)s); } },
+            { typeof(int), (s) =>{ return Saver.SaveInt((int)s); } },
+            { typeof(uint), (s) =>{ return Saver.SaveUInt((uint)s); } },
+            { typeof(long), (s) =>{ return Saver.SaveInt((long)s); } },
+            { typeof(ulong), (s) =>{ return Saver.SaveUInt((ulong)s); } },
+            { typeof(char), (s) =>{ return Saver.SaveChar((char)s); } },
+            { typeof(float), (s) =>{ return Saver.SaveFloat((float)s); } },
+            { typeof(double), (s) =>{ return Saver.SaveDouble((double)s); } },
+            { typeof(decimal), (s) =>{ return Saver.SaveDecimal((decimal)s); } },
+            { typeof(bool), (s) =>{ return Saver.SaveBool((bool)s); } },
+            { typeof(sbyte?), (s) =>{ return Saver.SaveInt((sbyte?)s); } },
+            { typeof(byte?), (s) =>{ return Saver.SaveUInt((byte?)s); } },
+            { typeof(short?), (s) =>{ return Saver.SaveInt((short?)s); } },
+            { typeof(ushort?), (s) =>{ return Saver.SaveUInt((ushort?)s); } },
+            { typeof(int?), (s) =>{ return Saver.SaveInt((int?)s); } },
+            { typeof(uint?), (s) =>{ return Saver.SaveUInt((uint?)s); } },
+            { typeof(long?), (s) =>{ return Saver.SaveInt((long?)s); } },
+            { typeof(ulong?), (s) =>{ return Saver.SaveUInt((ulong?)s); } },
+            { typeof(char?), (s) =>{ return Saver.SaveChar((char?)s); } },
+            { typeof(float?), (s) =>{ return Saver.SaveFloat((float?)s); } },
+            { typeof(double?), (s) =>{ return Saver.SaveDouble((double?)s); } },
+            { typeof(decimal?), (s) =>{ return Saver.SaveDecimal((decimal?)s); } },
+            { typeof(bool?), (s) =>{ return Saver.SaveBool((bool?)s); } },
+            { typeof(string), (s) =>{ return s.ToString(); } },
+        };
+        public readonly static Dictionary<Type, Func<object, string>> SaveOtherTypes = new Dictionary<Type, Func<object, string>>();
+
         static Dictionary<string, Type> SignaturesName = new Dictionary<string, Type>();
         static Delogger.Logger Log = new Delogger.Logger();
 
@@ -74,6 +128,7 @@ namespace COSMOS.Prototype
         static Task Init()
         {
             Log.Tags.Add("Parse");
+            Log.Tags.Add("Save");
             Log.Tags.Add("Prototype");
             return Task.Factory.StartNew(() =>
             {
@@ -152,11 +207,45 @@ namespace COSMOS.Prototype
                                         Log.Error("parse method should be static Type: " + type + " method: " + x.Name);
                                     }
                                 }
+
+                                return false;
+                            });
+                            var saveMethod = methods.FirstOrDefault((x) => {
+                                if (x.GetCustomAttribute<SaveMethodAttribute>() != null)
+                                {
+                                    if (x.IsStatic)
+                                    {
+                                        if (x.ReturnType == typeof(string))
+                                        {
+                                            var parameters = x.GetParameters();
+                                            if (parameters.Length == 1 && parameters[0].ParameterType == typeof(object))
+                                            {
+                                                return true;
+                                            }
+                                            else
+                                            {
+                                                Log.Error("paramets should be \"object\" Type: " + type + " method: " + x.Name);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Log.Error("return type should be is \"string\" Type: " + type + " method: " + x.Name);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Log.Error("save method should be static Type: " + type + " method: " + x.Name);
+                                    }
+                                }
                                 return false;
                             });
                             if(parseMethod != null)
                             {
-                                OtherTypes.Add(type, (x) => { return parseMethod.Invoke(null, new object[] { x }); });
+                                ParseOtherTypes.Add(type, (x) => { return parseMethod.Invoke(null, new object[] { x }); });
+                            }
+                            if(saveMethod != null)
+                            {
+                                SaveOtherTypes.Add(type, (x) => { return (string)saveMethod.Invoke(null, new object[] { x }); });
                             }
                             return false;
                         }
@@ -170,6 +259,12 @@ namespace COSMOS.Prototype
         {
             return (T)parseChild(xml, typeof(T));
         }
+        public static T Parse<T>(string xml)
+        {
+            XmlDocument xdoc = new XmlDocument();
+            xdoc.LoadXml(xml);
+            return (T)parseChild(xdoc.DocumentElement, null);
+        }
         public static Task<T> ParseAsync<T>(XmlElement xml)
         {
             return Task.Factory.StartNew<T>(() =>
@@ -177,6 +272,275 @@ namespace COSMOS.Prototype
                 return (T)parseChild(xml, null);
             });
         }
+        public static Task<T> ParseAsync<T>(string xml)
+        {
+            return Task.Factory.StartNew<T>(() =>
+            {
+                XmlDocument xdoc = new XmlDocument();
+                xdoc.LoadXml(xml);
+                return (T)parseChild(xdoc.DocumentElement, null);
+            });
+        }
+
+        public static string SavePrototype<T>(T prototype)
+        {
+            using (var stringWriter = new StringWriter())
+            using (var xmlTextWriter = XmlWriter.Create(stringWriter))
+            {
+                SavePrototypeXml<T>(prototype).WriteTo(xmlTextWriter);
+                xmlTextWriter.Flush();
+                return stringWriter.GetStringBuilder().ToString();
+            }
+        }
+        public static Task<string> SavePrototypeAsync<T>(T prototype)
+        {
+            return Task.Factory.StartNew<string>(() =>
+            {
+                using (var stringWriter = new StringWriter())
+                using (var xmlTextWriter = XmlWriter.Create(stringWriter))
+                {
+                    SavePrototypeXml<T>(prototype).WriteTo(xmlTextWriter);
+                    xmlTextWriter.Flush();
+                    return stringWriter.GetStringBuilder().ToString();
+                }
+            });
+        }
+        public static XmlDocument SavePrototypeXml<T>(T prototype )
+        {
+            if (Signatures.ContainsKey(prototype.GetType()))
+            {
+                Signature signature = Signatures[prototype.GetType()];
+                XmlDocument xdoc = new XmlDocument();
+                XmlElement xroot = (XmlElement)saveChild(xdoc, (prototype, null));
+                xdoc.AppendChild(xroot);
+                Log.Error(xroot.OuterXml);
+                return xdoc;
+            }
+            else
+            {
+                throw new Exception("type: " + prototype.GetType() + " its not a prototype");
+            }
+        }
+        public static Task<XmlDocument> SavePrototypeXmlAsync<T>(T prototype)
+        {
+            return Task.Factory.StartNew<XmlDocument>(() =>
+            {
+                if (Signatures.ContainsKey(prototype.GetType()))
+                {
+                    Signature signature = Signatures[prototype.GetType()];
+                    XmlDocument xdoc = new XmlDocument();
+                    XmlElement xroot = (XmlElement)saveChild(xdoc, (prototype, null));
+                    xdoc.AppendChild(xroot);
+                    Log.Error(xroot.OuterXml);
+                    return xdoc;
+                }
+                else
+                {
+                    throw new Exception("type: " + prototype.GetType() + " its not a prototype");
+                }
+            });
+        }
+        #region Save
+        static XmlNode saveChild(XmlDocument xdoc, (object obj, object[] param) context)
+        {
+            if (context.obj != null)
+            {
+                if (context.obj.GetType().IsArray)
+                {
+                    return saveArray(xdoc, context);
+                }
+                else if (context.obj.GetType().IsGenericType && context.obj.GetType().GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
+                {
+                    return saveKeyValuePair(xdoc, context);
+                }
+                else if (context.obj.GetType().GetInterfaces().Any(x => x.IsGenericType && (x.GetGenericTypeDefinition() == typeof(IReadOnlyCollection<>) || x.GetGenericTypeDefinition() == typeof(ICollection<>))))
+                {
+                    return saveCollection(xdoc, context);
+                }
+                else if (Signatures.ContainsKey(context.obj.GetType()))
+                {
+                    return savePrototype(xdoc, context);
+                }
+                return saveValue(xdoc, context);
+            }
+            return null;
+        }
+        static XmlNode saveCollection(XmlDocument xdoc, (object obj, object[] param) context)
+        {
+            string elementName = context.obj.GetType().Name;
+            if (context.param != null)
+            {
+                Signature.PFInfo pfi = (Signature.PFInfo)context.param.FirstOrDefault((x) => x is Signature.PFInfo);
+                if (pfi != null)
+                {
+                    elementName = pfi.Name;
+                }
+                else
+                {
+                    string name = (string)context.param.FirstOrDefault(x => x is string);
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                        elementName = name;
+                    }
+                }
+            }
+            XmlElement xml = xdoc.CreateElement(elementName);
+            foreach (object item in (dynamic)context.obj)
+            {
+                XmlElement tmp = (XmlElement)saveChild(xdoc, (item, new object[] { "Element" }));
+                if(tmp != null)
+                {
+                    xml.AppendChild(tmp);
+                }
+            }
+            return xml;
+        }
+        static XmlNode saveKeyValuePair(XmlDocument xdoc, (object obj, object[] param) context)
+        { 
+            string elementName = "KeyValuePair";
+            if (context.param != null)
+            {
+                Signature.PFInfo pfi = (Signature.PFInfo)context.param.FirstOrDefault((x) => x is Signature.PFInfo);
+                if (pfi != null)
+                {
+                    elementName = pfi.Name;
+                }                
+            }
+            XmlElement xml = xdoc.CreateElement(elementName);
+            dynamic tmpPair = context.obj;
+            XmlElement k = (XmlElement)saveChild(xdoc, (tmpPair.Key, new object[] { "Key" }));
+            XmlElement v = (XmlElement)saveChild(xdoc, (tmpPair.Value, new object[] { "Value" }));
+            xml.AppendChild(k);
+            xml.AppendChild(v);
+            return xml;
+        }
+        static XmlNode saveArray(XmlDocument xdoc, (object obj, object[] param) context)
+        {
+            string elementName = context.obj.GetType().Name;
+            if (context.param != null)
+            {
+                Signature.PFInfo pfi = (Signature.PFInfo)context.param.FirstOrDefault((x) => x is Signature.PFInfo);
+                if (pfi != null)
+                {
+                    elementName = pfi.Name;
+                }
+                else
+                {
+                    string name = (string)context.param.FirstOrDefault(x => x is string);
+                    if (!string.IsNullOrEmpty(name))
+                    {
+                        elementName = name;
+                    }
+                }
+            }
+            XmlElement xml = xdoc.CreateElement(elementName);
+            Array array = (Array)context.obj;
+            foreach (var item in array)
+            {
+                XmlElement tmp = (XmlElement)saveChild(xdoc, (item, new object[] { "Element" }));
+                if(tmp != null)
+                {
+                    xml.AppendChild(tmp);
+                }
+            }
+            return xml;
+        }
+        static XmlNode saveValue(XmlDocument xdoc, (object obj, object[] param) context)
+        {
+            Func<object, string> func = null;
+            Type type = context.obj.GetType();
+            if (SaveStandardTypes.ContainsKey(type))
+            {
+                func = SaveStandardTypes[type];
+            }
+            else if (SaveUnityTypes.ContainsKey(type))
+            {
+                func = SaveUnityTypes[type];
+            }
+            else if (SaveOtherTypes.ContainsKey(type))
+            {
+                func = SaveOtherTypes[type];
+            }
+
+            if (func != null)
+            {
+                string returnedValue = func(context.obj);
+                if (context.param != null)
+                {
+                    Signature.PFInfo pfi = (Signature.PFInfo)context.param.FirstOrDefault((x) => x is Signature.PFInfo);
+                    if (pfi != null)
+                    {
+                        if (pfi.Attributes.Any((x) => x is BindProtoAttribute && ((BindProtoAttribute)x).SaveInAttribute))
+                        {
+                            XmlAttribute att = xdoc.CreateAttribute(pfi.Name);
+                            att.Value = returnedValue;
+                            return att;
+                        }
+                        else
+                        {
+                            XmlElement xmle = xdoc.CreateElement(pfi.Name);
+                            xmle.InnerText = returnedValue;
+                            return xmle;
+                        }
+                    }
+                    else
+                    {
+                        string name = (string)context.param.FirstOrDefault(x => x is string);
+                        if (!string.IsNullOrEmpty(name))
+                        {
+                            XmlElement xmle = xdoc.CreateElement(name);
+                            xmle.InnerText = returnedValue;
+                            return xmle;
+                        }
+                    }
+                }
+                XmlElement xml = xdoc.CreateElement(type.Name);
+                xml.InnerText = returnedValue; 
+                return xml;
+            }
+            else
+            {
+                Log.Error("parser cant save this type: " + type + " with this value: " + context.obj);
+                return null;
+            }
+        }
+        static XmlNode savePrototype(XmlDocument xdoc, (object obj, object[] param) context)
+        {
+            if (Signatures.ContainsKey(context.obj.GetType()))
+            {
+                Signature signature = Signatures[context.obj.GetType()];
+                XmlElement xroot = xdoc.CreateElement(signature.Name);
+
+                List<Task> tasks = new List<Task>();
+                foreach (var pfi in signature.PFs)
+                {
+                    tasks.Add(Task.Factory.StartNew(() => { return saveChild(xdoc, (pfi.Value.GetValue(context.obj), new object[] { pfi.Value })); }));
+                }
+                Task.WaitAll(tasks.ToArray());
+                foreach (Task<XmlNode> task in tasks)
+                {
+                    XmlNode tmp = task.Result;
+                    if (tmp != null)
+                    {
+                        if(tmp is XmlAttribute)
+                        {
+                            xroot.Attributes.Append((XmlAttribute)tmp);
+                        }
+                        else
+                        {
+                            xroot.AppendChild(tmp);
+                        }
+                    }
+                }
+                return xroot;
+            }
+            else
+            {
+                Log.Error("type: " + context.obj.GetType() + " its not a prototype");
+                return null;
+            }
+        }
+        #endregion
         #region Parse
         static object parseChild(XmlElement xml, Type type)
         {
@@ -190,7 +554,7 @@ namespace COSMOS.Prototype
                 return parseKeyValuePair(xml, type, tmp[0], tmp[1]);
             }
             else if (type != null && type.GetInterfaces().Any(x => x.IsGenericType && 
-                (x.GetGenericTypeDefinition() == typeof(IReadOnlyCollection<>) || x.GetGenericTypeDefinition() == typeof(ICollection))))
+                (x.GetGenericTypeDefinition() == typeof(IReadOnlyCollection<>) || x.GetGenericTypeDefinition() == typeof(ICollection<>))))
             {
                 return CreateCollection(xml, type);
             }
@@ -350,17 +714,17 @@ namespace COSMOS.Prototype
         {
             Func<string, object> func = null;
 
-            if (StandardTypes.ContainsKey(type))
+            if (ParseStandardTypes.ContainsKey(type))
             {
-                func = StandardTypes[type];
+                func = ParseStandardTypes[type];
             }
-            else if (UnityTypes.ContainsKey(type))
+            else if (ParseUnityTypes.ContainsKey(type))
             {
-                func = UnityTypes[type];
+                func = ParseUnityTypes[type];
             }
-            else if (OtherTypes.ContainsKey(type))
+            else if (ParseOtherTypes.ContainsKey(type))
             {
-                func = OtherTypes[type];
+                func = ParseOtherTypes[type];
             }
 
             if(func != null)
@@ -438,5 +802,6 @@ namespace COSMOS.Prototype
             return null;
         }
         #endregion
+
     }
 }
