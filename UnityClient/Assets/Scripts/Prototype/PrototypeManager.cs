@@ -137,118 +137,116 @@ namespace COSMOS.Prototype
                 foreach (var assembly in assemblies)
                 {
                     var types = assembly.GetTypes();
-                    types.ToList().AsParallel().All((type) =>
+                    types.ToList().AsParallel().Any((type) =>
                     {
+                        var att = type.GetCustomAttributes(typeof(BindProtoAttribute), true);
+                        if (att != null && att.Length > 0)
                         {
-                            var att = type.GetCustomAttributes(typeof(BindProtoAttribute), true);
-                            if (att != null && att.Length > 0)
-                            { 
-                                var c = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public, null, new Type[] { }, null);
-                                if (c != null)
+                            var c = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public, null, new Type[] { }, null);
+                            if (c != null)
+                            {
+                                if (!signatures.ContainsKey(type))
                                 {
-                                    if (!signatures.ContainsKey(type))
+                                    string name = (att[0] as BindProtoAttribute).Name;
+                                    if (string.IsNullOrEmpty(name))
                                     {
-                                        string name = (att[0] as BindProtoAttribute).Name;
-                                        if (string.IsNullOrEmpty(name))
+                                        name = type.FullName;
+                                    }
+                                    if (!SignaturesName.ContainsKey(name))
+                                    {
+                                        Signature tmp = new Signature(type);
+                                        signatures.TryAdd(type, tmp); 
+                                    }
+                                    else
+                                    {
+                                        var tmpType = SignaturesName[name];
+                                        if (tmpType == type)
                                         {
-                                            name = type.FullName;
-                                        }
-                                        if (!SignaturesName.ContainsKey(name))
-                                        {
-                                            Signature tmp = new Signature(type);
-                                            signatures.TryAdd(type, tmp); 
+                                            Log.Error("already have this parse name: " + name + " of type: " + type);
                                         }
                                         else
                                         {
-                                            var tmpType = SignaturesName[name];
-                                            if (tmpType == type)
-                                            {
-                                                Log.Error("already have this parse name: " + name + " of type: " + type);
-                                            }
-                                            else
-                                            {
-                                                Log.Error("already have this parse name: " + name + " of" + type + " but another type: " + tmpType + " has this parse name");
-                                            }
+                                            Log.Error("already have this parse name: " + name + " of" + type + " but another type: " + tmpType + " has this parse name");
                                         }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                Log.Error("there can be no prototype without a constructor without parameters. Type: " + type);
+                            }
+                        }
+                    
+                        var methods = type.GetMethods();
+                        var parseMethod = methods.FirstOrDefault((x) =>
+                        {
+                            if(x.GetCustomAttribute<ParseMethodAttribute>() != null)
+                            {
+                                if (x.IsStatic)
+                                {
+                                    if (x.ReturnType == typeof(object))
+                                    {
+                                        var parameters = x.GetParameters();
+                                        if (parameters.Length == 1 && parameters[0].ParameterType == typeof(string))
+                                        {
+                                            return true;
+                                        }
+                                        else
+                                        {
+                                            Log.Error("paramets should be \"string\" Type: " + type + " method: " + x.Name);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Log.Error("return type should be is object Type: " + type + " method: " + x.Name);
                                     }
                                 }
                                 else
                                 {
-                                    Log.Error("there can be no prototype without a constructor without parameters. Type: " + type);
+                                    Log.Error("parse method should be static Type: " + type + " method: " + x.Name);
                                 }
                             }
-                    
-                            var methods = type.GetMethods();
-                            var parseMethod = methods.FirstOrDefault((x) =>
-                            {
-                                if(x.GetCustomAttribute<ParseMethodAttribute>() != null)
-                                {
-                                    if (x.IsStatic)
-                                    {
-                                        if (x.ReturnType == typeof(object))
-                                        {
-                                            var parameters = x.GetParameters();
-                                            if (parameters.Length == 1 && parameters[0].ParameterType == typeof(string))
-                                            {
-                                                return true;
-                                            }
-                                            else
-                                            {
-                                                Log.Error("paramets should be \"string\" Type: " + type + " method: " + x.Name);
-                                            }
-                                        }
-                                        else
-                                        {
-                                            Log.Error("return type should be is object Type: " + type + " method: " + x.Name);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        Log.Error("parse method should be static Type: " + type + " method: " + x.Name);
-                                    }
-                                }
 
-                                return false;
-                            });
-                            var saveMethod = methods.FirstOrDefault((x) => {
-                                if (x.GetCustomAttribute<SaveMethodAttribute>() != null)
+                            return false;
+                        });
+                        var saveMethod = methods.FirstOrDefault((x) => {
+                            if (x.GetCustomAttribute<SaveMethodAttribute>() != null)
+                            {
+                                if (x.IsStatic)
                                 {
-                                    if (x.IsStatic)
+                                    if (x.ReturnType == typeof(string))
                                     {
-                                        if (x.ReturnType == typeof(string))
+                                        var parameters = x.GetParameters();
+                                        if (parameters.Length == 1 && parameters[0].ParameterType == typeof(object))
                                         {
-                                            var parameters = x.GetParameters();
-                                            if (parameters.Length == 1 && parameters[0].ParameterType == typeof(object))
-                                            {
-                                                return true;
-                                            }
-                                            else
-                                            {
-                                                Log.Error("paramets should be \"object\" Type: " + type + " method: " + x.Name);
-                                            }
+                                            return true;
                                         }
                                         else
                                         {
-                                            Log.Error("return type should be is \"string\" Type: " + type + " method: " + x.Name);
+                                            Log.Error("paramets should be \"object\" Type: " + type + " method: " + x.Name);
                                         }
                                     }
                                     else
                                     {
-                                        Log.Error("save method should be static Type: " + type + " method: " + x.Name);
+                                        Log.Error("return type should be is \"string\" Type: " + type + " method: " + x.Name);
                                     }
                                 }
-                                return false;
-                            });
-                            if(parseMethod != null)
-                            {
-                                ParseOtherTypes.Add(type, (x) => { return parseMethod.Invoke(null, new object[] { x }); });
-                            }
-                            if(saveMethod != null)
-                            {
-                                SaveOtherTypes.Add(type, (x) => { return (string)saveMethod.Invoke(null, new object[] { x }); });
+                                else
+                                {
+                                    Log.Error("save method should be static Type: " + type + " method: " + x.Name);
+                                }
                             }
                             return false;
+                        });
+                        if(parseMethod != null)
+                        {
+                            ParseOtherTypes.Add(type, (x) => { return parseMethod.Invoke(null, new object[] { x }); });
                         }
+                        if(saveMethod != null)
+                        {
+                            SaveOtherTypes.Add(type, (x) => { return (string)saveMethod.Invoke(null, new object[] { x }); });
+                        }
+                        return false;
                     });
                 }
                 Signatures = signatures.ToDictionary(entry => entry.Key, entry => entry.Value);
@@ -309,11 +307,9 @@ namespace COSMOS.Prototype
         {
             if (Signatures.ContainsKey(prototype.GetType()))
             {
-                Signature signature = Signatures[prototype.GetType()];
                 XmlDocument xdoc = new XmlDocument();
                 XmlElement xroot = (XmlElement)saveChild(xdoc, (prototype, null));
                 xdoc.AppendChild(xroot);
-                Log.Error(xroot.OuterXml);
                 return xdoc;
             }
             else
