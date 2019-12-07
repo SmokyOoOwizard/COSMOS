@@ -2,5 +2,6 @@
 <SolarSystems>
 	<SolarSystem Name="TestName" Position="2;4" WarpSafe="3" Asteroids="0.4">
 		<Planets/>
+		<SpaceStations/>
 	</SolarSystem>
 </SolarSystems>
