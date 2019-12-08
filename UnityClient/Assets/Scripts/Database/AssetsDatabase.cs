@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using UnityEngine;
 
-namespace COSMOS.DataBase
+namespace COSMOS
 {
     [Manager]
     public static class AssetsDatabase

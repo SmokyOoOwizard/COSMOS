@@ -10,9 +10,9 @@ namespace COSMOS.Paterns
     public abstract class SingletonMono<T> : MonoBehaviour where T : MonoBehaviour
     {
         public static T instance;
-        public void InitFather()
+        protected void InitPatern()
         {
-            if (!instance)
+            if (instance == null)
             {
                 instance = this as T;
                 GameObject.DontDestroyOnLoad(instance.gameObject);
@@ -28,7 +28,10 @@ namespace COSMOS.Paterns
         public static T instance;
         public Singleton(T obj)
         {
-            instance = obj;
+            if(instance == null)
+            {
+                instance = obj;
+            }
         }
     }
 }

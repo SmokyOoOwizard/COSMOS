@@ -756,7 +756,6 @@ namespace COSMOS.Prototype
                     {
                         Signature.PFInfo pfi = signature.PFs[att.Name];
                         object value = parseAtt(att.Value, pfi.Type);
-
                         if (value != null)
                         {
                             pfi.SetValue(instance, value);

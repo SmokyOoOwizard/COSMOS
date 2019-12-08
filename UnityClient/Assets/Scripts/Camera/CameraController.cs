@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+using COSMOS.Prototype;
+using COSMOS.Space;
 
 public class CameraController : MonoBehaviour
 {
@@ -23,9 +25,19 @@ public class CameraController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        SolarSystemManager.EndLoadSystem += () => Log.Info("LOADED");
+        SolarSystemManager.LoadSystem("TestName");
     }
-
+    [ContextMenu("1")]
+    public void T()
+    {
+        SolarSystemManager.LoadSystem("TestName");
+    }
+    [ContextMenu("2")]
+    public void TT()
+    {
+        SolarSystemManager.LoadSystem("TestName2");
+    }
     // Update is called once per frame
     void Update()
     {

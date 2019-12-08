@@ -1,6 +1,6 @@
 <AssetsDatabase>
-  <Asset ID="ProtoPrefabs\Planet" Name="Planet" Type="GameObject">
-    <Path>ProtoPrefabs\Planet</Path>
+  <Asset ID="Prefabs\Planet" Name="Planet" Type="GameObject">
+    <Path>Prefabs\Planet</Path>
   </Asset>
   <Asset ID="Materials\EthanWhite" Name="EthanWhite" Type="Material">
     <Path>Materials\EthanWhite</Path>
