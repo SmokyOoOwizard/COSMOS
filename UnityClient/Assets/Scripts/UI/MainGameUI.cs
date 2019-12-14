@@ -16,10 +16,13 @@ namespace COSMOS.UI
         public TextMeshProUGUI TimeUI;
         public TextMeshProUGUI MoneyUI;
         public GameObject EventBar;
-        public GameObject MiniMap;
+        public MiniMapUI MiniMap;
 
         [Header("CharacterUI")]
         public GameObject Anchor;
+
+        [Header("Menu bar")]
+        public GameObject MenuBar;
 
 
         private void Awake()

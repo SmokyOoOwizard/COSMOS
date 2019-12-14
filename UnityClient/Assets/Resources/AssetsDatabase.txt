@@ -2,6 +2,30 @@
   <Asset ID="Prefabs\Planet" Name="Planet" Type="GameObject">
     <Path>Prefabs\Planet</Path>
   </Asset>
+  <Asset ID="Icons\TopBar\background" Name="background" Type="Sprite">
+    <Path>Icons\TopBar\background</Path>
+  </Asset>
+  <Asset ID="Icons\TopBar\DateTime\background" Name="background" Type="Sprite">
+    <Path>Icons\TopBar\DateTime\background</Path>
+  </Asset>
+  <Asset ID="Icons\TopBar\DateTime\Date" Name="Date" Type="Sprite">
+    <Path>Icons\TopBar\DateTime\Date</Path>
+  </Asset>
+  <Asset ID="Icons\TopBar\DateTime\Time" Name="Time" Type="Sprite">
+    <Path>Icons\TopBar\DateTime\Time</Path>
+  </Asset>
+  <Asset ID="Icons\TopBar\DateTime\TimeGlow" Name="TimeGlow" Type="Sprite">
+    <Path>Icons\TopBar\DateTime\TimeGlow</Path>
+  </Asset>
+  <Asset ID="Icons\TopBar\MiniMap\MiniMapBorder" Name="MiniMapBorder" Type="Sprite">
+    <Path>Icons\TopBar\MiniMap\MiniMapBorder</Path>
+  </Asset>
+  <Asset ID="Icons\TopBar\MiniMap\MiniMapMask" Name="MiniMapMask" Type="Sprite">
+    <Path>Icons\TopBar\MiniMap\MiniMapMask</Path>
+  </Asset>
+  <Asset ID="Icons\TopBar\MiniMap\MiniMapShadow" Name="MiniMapShadow" Type="Sprite">
+    <Path>Icons\TopBar\MiniMap\MiniMapShadow</Path>
+  </Asset>
   <Asset ID="Materials\EthanWhite" Name="EthanWhite" Type="Material">
     <Path>Materials\EthanWhite</Path>
   </Asset>

@@ -25,3 +25,12 @@ The following packages were updated:
   com.unity.test-framework from version 1.0.18 to 1.1.3
 The following packages were removed:
   com.unity.package-manager-ui@2.2.0
+
+=== Fri Dec 13 22:06:54 2019
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.postprocessing from version 2.2.1 to 2.2.2
+  com.unity.shadergraph from version 7.1.5 to 7.1.6
