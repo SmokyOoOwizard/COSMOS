@@ -2,8 +2,38 @@
   <Asset ID="Prefabs\Planet" Name="Planet" Type="GameObject">
     <Path>Prefabs\Planet</Path>
   </Asset>
+  <Asset ID="Icons\QuickMenu\Back" Name="Back" Type="Sprite">
+    <Path>Icons\QuickMenu\Back</Path>
+  </Asset>
+  <Asset ID="Icons\QuickMenu\MenuFrame" Name="MenuFrame" Type="Sprite">
+    <Path>Icons\QuickMenu\MenuFrame</Path>
+  </Asset>
+  <Asset ID="Icons\QuickMenu\MenuSelect" Name="MenuSelect" Type="Sprite">
+    <Path>Icons\QuickMenu\MenuSelect</Path>
+  </Asset>
+  <Asset ID="Icons\ShipUI\DarkEnergy" Name="DarkEnergy" Type="Sprite">
+    <Path>Icons\ShipUI\DarkEnergy</Path>
+  </Asset>
+  <Asset ID="Icons\ShipUI\FuelAndEnergy" Name="FuelAndEnergy" Type="Sprite">
+    <Path>Icons\ShipUI\FuelAndEnergy</Path>
+  </Asset>
+  <Asset ID="Icons\ShipUI\FuelOrEnergy" Name="FuelOrEnergy" Type="Sprite">
+    <Path>Icons\ShipUI\FuelOrEnergy</Path>
+  </Asset>
+  <Asset ID="Icons\ShipUI\HP" Name="HP" Type="Sprite">
+    <Path>Icons\ShipUI\HP</Path>
+  </Asset>
+  <Asset ID="Icons\ShipUI\HP_DarkEnergy_Shield" Name="HP_DarkEnergy_Shield" Type="Sprite">
+    <Path>Icons\ShipUI\HP_DarkEnergy_Shield</Path>
+  </Asset>
+  <Asset ID="Icons\ShipUI\Shield" Name="Shield" Type="Sprite">
+    <Path>Icons\ShipUI\Shield</Path>
+  </Asset>
   <Asset ID="Icons\TopBar\background" Name="background" Type="Sprite">
     <Path>Icons\TopBar\background</Path>
+  </Asset>
+  <Asset ID="Icons\TopBar\Bar" Name="Bar" Type="Sprite">
+    <Path>Icons\TopBar\Bar</Path>
   </Asset>
   <Asset ID="Icons\TopBar\DateTime\background" Name="background" Type="Sprite">
     <Path>Icons\TopBar\DateTime\background</Path>
