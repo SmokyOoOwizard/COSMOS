@@ -82,6 +82,7 @@ namespace COSMOS.Space
             if (solarSystems.ContainsKey(name))
             {
                 SolarSystemSceneManager.instance.LoadSystem(solarSystems[name]);
+                CurrentSystem = solarSystems[name];
                 return true;
             }
             return false;

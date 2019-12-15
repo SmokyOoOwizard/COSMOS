@@ -68,6 +68,9 @@ namespace COSMOS.SpaceShip
                 case Generator g:
                     AddGenerator(g);
                     break;
+                case WarpEngine g:
+                    WarpEngine = g;
+                    break;
             }
 
             if (equipment is INeedEnergy)
@@ -110,12 +113,15 @@ namespace COSMOS.SpaceShip
         }
         public float GetFuelCount(string fuelType)
         {
-            Tank tank = Tanks.Find((x) => { return x.FuelType == fuelType; });
-            if (tank != null)
-            {
-                return tank.FuelVolume;
-            }
-            return 0;
+            float count = 0;
+            Tanks.ForEach((x) => { if (x != null) if (x.FuelType == fuelType) count += x.FuelVolume; });
+            return count;
+        }
+        public float GetMaxFuelCount(string fuelType)
+        {
+            float count = 0;
+            Tanks.ForEach((x) => { if (x != null) if (x.FuelType == fuelType) count += x.MaxFuelVolume; });
+            return count;
         }
         public float UseFuel(float amount, string fuelType)
         {
@@ -124,7 +130,7 @@ namespace COSMOS.SpaceShip
             {
                 return tank.Drain(amount);
             }
-            return 0;
+            return amount;
         }
     }
 }

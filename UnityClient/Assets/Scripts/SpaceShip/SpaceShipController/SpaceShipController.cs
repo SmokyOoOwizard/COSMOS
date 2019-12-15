@@ -18,7 +18,7 @@ namespace COSMOS.SpaceShip
         public float TargetRotation;
         public Vector3 torque;
 
-        SpaceShipHull Hull;
+        public SpaceShipHull Hull { get; protected set; }
         private new Rigidbody rigidbody;
         PID AngleCont, VelocityCont;
         private void Awake()
@@ -27,14 +27,14 @@ namespace COSMOS.SpaceShip
             CreateDebugShip();
 
             AngleCont = new PID();
-            AngleCont.Kp = 9.244681f;
+            AngleCont.Kp = 9.244681f / 2;
             AngleCont.Ki = 0;
-            AngleCont.Kd = 0.06382979f;
+            AngleCont.Kd = 0.06382979f / 2;
 
             VelocityCont = new PID();
-            VelocityCont.Kp = 33.7766f;
+            VelocityCont.Kp = 33.7766f / 2;
             VelocityCont.Ki = 0;
-            VelocityCont.Kd = 0.2553191f;
+            VelocityCont.Kd = 0.2553191f / 2;
         }
         private void Update()
         {
@@ -106,6 +106,11 @@ namespace COSMOS.SpaceShip
                 UseForwardEngine(Mathf.Abs(Mathf.Clamp((local.z / Hull.MainEngine.MaxForce), -1, 0)));
                 UseBrakingEngine(Mathf.Abs(Mathf.Clamp((local.z / Hull.BrakingEngine.MaxForce), 0, 1)));
                 UseSideEngine(Mathf.Clamp((-local.x / Hull.SideEngines.MaxForce), -1, 1));
+
+                if(rigidbody.velocity.sqrMagnitude < 0.1f)
+                {
+                    rigidbody.velocity = Vector3.zero;
+                }
             }
         }
         public float GetSpeed()
@@ -190,12 +195,14 @@ namespace COSMOS.SpaceShip
         public void CreateDebugShip()
         {
             Hull = new SpaceShipHull();
-            Hull.ReplaceEngine(new TurnEngine(100, "fuel", 1));
+            Hull.ReplaceEngine(new TurnEngine(250, "fuel", 1));
             Hull.ReplaceEngine(new SideEngine(20, "fuel", 1));
             Hull.ReplaceEngine(new MainEngine(20, "fuel", 1));
             Hull.ReplaceEngine(new BrakingEngine(20, "fuel", 1));
+            Hull.AddEquipment(new WarpEngine());
 
-            Hull.AddEquipment(new Tank("fuel", 10, 10));
+            Hull.AddEquipment(new Tank("fuel", 1000, 1000));
+            Hull.AddEquipment(new Tank("DarkEnergy", 1000, 1000));
         }
     }
 }

@@ -13,13 +13,14 @@ namespace COSMOS.UI
     {
         [Header("TopBar")]
         public GameObject TopBarObj;
+        public TextMeshProUGUI DateUI;
         public TextMeshProUGUI TimeUI;
         public TextMeshProUGUI MoneyUI;
         public GameObject EventBar;
         public MiniMapUI MiniMap;
 
         [Header("CharacterUI")]
-        public GameObject Anchor;
+        public ShipUI ShipUI;
 
         [Header("Menu bar")]
         public GameObject MenuBar;

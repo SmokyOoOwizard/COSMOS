@@ -15,24 +15,26 @@ namespace COSMOS.SpaceShip.Equipment
             Charge,
             Warp
         }
-        public float WarpSpeed { get; protected set; }
-        public float ChargeTime { get; protected set; }
+        public float WarpSpeed { get; protected set; } = 1;
+        public float ChargeTime { get; protected set; } = 5;
         public State EngineState 
         { 
             get { return engineState; } 
-            set { if (value == State.Idle) { EnergyConsumption = IdleEnergyConsumption; } 
+            set { 
+                if (value == State.Idle) { EnergyConsumption = IdleEnergyConsumption; } 
                 else if (value == State.Charge) { EnergyConsumption = ChargeEnergyConsumption; } 
                 else { EnergyConsumption = WarpEnergyConsumption; } 
                 engineState = value;
             } 
         }
-        private State engineState;
-        public float ChargeFuelConsumption { get; protected set; }
-        public float WarpFuelConsumption { get; protected set; }
+        private State engineState = State.Idle;
+        public float ChargeFuelConsumption { get; protected set; } = 10;
+        public float WarpFuelConsumption { get; protected set; } = 1;
+
         public float EnergyConsumption { get; protected set; }
-        public float IdleEnergyConsumption { get; protected set; }
-        public float ChargeEnergyConsumption { get; protected set; }
-        public float WarpEnergyConsumption { get; protected set; }
+        public float IdleEnergyConsumption { get; protected set; } = 0;
+        public float ChargeEnergyConsumption { get; protected set; } = 0;
+        public float WarpEnergyConsumption { get; protected set; } = 0;
         public float PowerPercent { get; set; }
     }
 }

@@ -54,7 +54,7 @@ namespace COSMOS.SpaceShip
             {
                 WarpChargeTimeLeft = Hull.WarpEngine.ChargeTime;
                 WarpTarget = ss;
-                CalculateTimeWarp = Hull.WarpEngine.WarpSpeed * Vector2.Distance(SolarSystemManager.CurrentSystem.Proto.PosOnMap, ss.Proto.PosOnMap);
+                WarpTimeLeft = CalculateTimeWarp = Hull.WarpEngine.WarpSpeed * Vector2.Distance(SolarSystemManager.CurrentSystem.Proto.PosOnMap, ss.Proto.PosOnMap);
                 WarpCharging = true;
                 Hull.WarpEngine.EngineState = Equipment.WarpEngine.State.Charge;
                 Warping = false;
@@ -67,7 +67,7 @@ namespace COSMOS.SpaceShip
             {
                 WarpChargeTimeLeft -= Time.deltaTime;
                 WarpChargePercentLeft = WarpChargeTimeLeft / Hull.WarpEngine.ChargeTime;
-                if(Hull.UseFuel(Hull.WarpEngine.ChargeFuelConsumption * Time.deltaTime, "DarkEnergy") <= 0)
+                if(Hull.UseFuel(Hull.WarpEngine.ChargeFuelConsumption * Time.deltaTime, "DarkEnergy") != 0)
                 {
                     WarpCharging = false;
                     Warping = false;
@@ -75,7 +75,6 @@ namespace COSMOS.SpaceShip
                     WarpChargePercentLeft = 0;
                     Hull.WarpEngine.EngineState = Equipment.WarpEngine.State.Idle;
                     WarpChargeStop?.Invoke(this);
-
                     return;
                 }
                 if(WarpChargeTimeLeft <= 0)
@@ -95,7 +94,6 @@ namespace COSMOS.SpaceShip
             {
                 WarpTimeLeft -= Time.deltaTime;
                 WarpPercentLeft = WarpTimeLeft / CalculateTimeWarp;
-
                 if (WarpTimeLeft <= 0)
                 {
                     WarpCharging = false;
@@ -109,7 +107,7 @@ namespace COSMOS.SpaceShip
                     WarpEnd?.Invoke(this);
                     return;
                 }
-                if (Hull.UseFuel(Hull.WarpEngine.WarpFuelConsumption * Time.deltaTime, "DarkEnergy") <= 0)
+                if (Hull.UseFuel(Hull.WarpEngine.WarpFuelConsumption * Time.deltaTime, "DarkEnergy") != 0)
                 {
                     WarpCharging = false;
                     Warping = false;

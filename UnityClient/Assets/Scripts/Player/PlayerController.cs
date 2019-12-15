@@ -1,4 +1,5 @@
 ﻿using COSMOS.Paterns;
+using COSMOS.Space;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,12 +10,16 @@ namespace COSMOS.Player
     public class PlayerController : SingletonMono<PlayerController>
     {
         public CameraController cmc;
-        public IControllable IC;
+        public IControllable IC { get; private set; }
         public Vector3 mousePos;
         public COSMOS.Charactor.CharacterController Character;
         public COSMOS.SpaceShip.SpaceShipController Ship;
 
         // Start is called before the first frame update
+        private void Awake()
+        {
+            InitPatern();
+        }
         void Start()
         {
             IC = Character as IControllable;
@@ -36,6 +41,14 @@ namespace COSMOS.Player
                 cmc.distanceToTarget = 25;
                 cmc.Height = 45;
 
+            }
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                if(IC is SpaceShip.SpaceShipController)
+                {
+                    SpaceShip.SpaceShipController ssc = IC as SpaceShip.SpaceShipController;
+                    ssc.StartWarp(SolarSystemManager.SolarSystems["TestName2"]);
+                }
             }
         }
 
