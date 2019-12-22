@@ -12,8 +12,8 @@ namespace COSMOS.Player
         public CameraController cmc;
         public IControllable IC { get; private set; }
         public Vector3 mousePos;
-        public COSMOS.Charactor.CharacterController Character;
-        public COSMOS.SpaceShip.SpaceShipController Ship;
+        public Charactor.CharacterController Character;
+        public SpaceShip.SpaceShipController Ship;
 
         // Start is called before the first frame update
         private void Awake()
@@ -22,13 +22,16 @@ namespace COSMOS.Player
         }
         void Start()
         {
-            IC = Character as IControllable;
+            SetCharacter(Character as IControllable);
+            cmc.Target = Character.transform;
+            cmc.distanceToTarget = 5;
+            cmc.Height = 10;
         }
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {
-                IC = Character as IControllable;
+                SetCharacter(Character as IControllable);
                 cmc.Target = Character.transform;
                 cmc.distanceToTarget = 5;
                 cmc.Height = 10;
@@ -36,7 +39,7 @@ namespace COSMOS.Player
             }
             if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                IC = Ship as IControllable;
+                SetCharacter(Ship as IControllable);
                 cmc.Target = Ship.transform;
                 cmc.distanceToTarget = 25;
                 cmc.Height = 45;
@@ -88,6 +91,20 @@ namespace COSMOS.Player
                 return ((MonoBehaviour)(PlayerController.instance.IC)).gameObject;
             }
             return null;
+        }
+        public void SetCharacter(IControllable character)
+        {
+            if(character != null && character.Exist())
+            {
+                if (IC is SpaceShip.SpaceShipController)
+                {
+                    SpaceShip.SpaceShipController ssc = IC as SpaceShip.SpaceShipController;
+                    ssc.WarpChargeStart += (x) => Log.Info("START");
+                    ssc.WarpStart += (x) => { SolarSystemManager.LoadSystem("TestName2"); Log.Info("WARP"); };
+                }
+
+                IC = character;
+            }
         }
     }
 }
