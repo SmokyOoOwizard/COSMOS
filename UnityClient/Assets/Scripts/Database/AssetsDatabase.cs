@@ -34,7 +34,6 @@ namespace COSMOS
                     {
                         return s;
                     }
-                    Debug.Log(Assets[ID].Path);
                     Log.Error("load null sprite " + ID);
                 }
                 else

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace COSMOS.Debug.Console
+namespace COSMOS.Core.Console
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class ConsoleCommand : Attribute

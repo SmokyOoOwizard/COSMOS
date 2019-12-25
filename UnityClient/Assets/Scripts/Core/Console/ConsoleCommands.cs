@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace COSMOS.Debug.Console
+namespace COSMOS.Core.Console
 { 
     [Manager]
     public static class ConsoleCommands
