@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System;
 using System.Xml;
 using UnityEngine;
-using COSMOS.HelpfullStuff;
+using COSMOS.Core.HelpfulStuff;
 
 namespace COSMOS.Space
 {
@@ -19,6 +19,8 @@ namespace COSMOS.Space
         public float WarpSafeDistance = 2;
         [BindProto("Asteroids")]
         public float AsteroidPercent;
+        [BindProto]
+        public Star SystemStar;
         [BindProto]
         public List<PlanetProto> Planets = new List<PlanetProto>();
         [BindProto]

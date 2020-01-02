@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace COSMOS.HelpfullStuff
+namespace COSMOS.Core.HelpfulStuff
 {
     public static class XmlSerializer
     {

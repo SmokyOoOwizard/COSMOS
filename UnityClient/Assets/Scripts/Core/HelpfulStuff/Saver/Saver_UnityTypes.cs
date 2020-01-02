@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace COSMOS.HelpfullStuff
+namespace COSMOS.Core.HelpfulStuff
 {
     public static partial class Saver
     {

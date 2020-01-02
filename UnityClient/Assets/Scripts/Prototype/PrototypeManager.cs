@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using UnityEngine;
-using COSMOS.HelpfullStuff;
+using COSMOS.Core.HelpfulStuff;
 using System.Collections.Concurrent;
 using System.Collections;
 using System.IO;

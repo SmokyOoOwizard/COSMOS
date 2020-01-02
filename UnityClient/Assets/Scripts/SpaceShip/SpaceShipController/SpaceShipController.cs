@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using COSMOS.HelpfullStuff;
+using COSMOS.Core.HelpfulStuff;
 using COSMOS.Player;
 using COSMOS.SpaceShip.Equipment;
 using UnityEngine;

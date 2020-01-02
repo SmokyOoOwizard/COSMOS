@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
-namespace COSMOS.Threading
+
+namespace COSMOS.Core.Threading
 {
     [Manager]
     public static class UnityThreading

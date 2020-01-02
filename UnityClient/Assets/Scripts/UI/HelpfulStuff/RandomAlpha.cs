@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-namespace COSMOS.HelpfullStuff.UI 
+namespace COSMOS.UI.HelpfulStuff
 {
     [RequireComponent(typeof(Image))]
     public class RandomAlpha : MonoBehaviour
