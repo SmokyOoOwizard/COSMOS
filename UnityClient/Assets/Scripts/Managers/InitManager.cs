@@ -36,22 +36,19 @@ namespace COSMOS.Managers
                 {
                     if (t.GetCustomAttribute(typeof(ManagerAttribute), false) != null)
                     {
-                        if (t.IsAbstract && t.IsSealed)
+                        foreach (var m in t.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
                         {
-                            foreach (var m in t.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+                            InitMethodAttribute initMethod = m.GetCustomAttribute<InitMethodAttribute>();
+                            if (initMethod != null)
                             {
-                                InitMethodAttribute initMethod = m.GetCustomAttribute<InitMethodAttribute>();
-                                if (initMethod != null)
+                                methods.Add(new KeyValuePair<int, (Type, MethodInfo, bool)>(initMethod.Priority, (t, m, false)));
+                            }
+                            else
+                            {
+                                InitAsyncMethodAttribute initAsyncMethod = m.GetCustomAttribute<InitAsyncMethodAttribute>();
+                                if (initAsyncMethod != null)
                                 {
-                                    methods.Add(new KeyValuePair<int, (Type, MethodInfo, bool)>(initMethod.Priority, (t, m, false)));
-                                }
-                                else
-                                {
-                                    InitAsyncMethodAttribute initAsyncMethod = m.GetCustomAttribute<InitAsyncMethodAttribute>();
-                                    if (initAsyncMethod != null)
-                                    {
-                                        methods.Add(new KeyValuePair<int, (Type, MethodInfo, bool)>(initAsyncMethod.Priority, (t, m, true)));
-                                    }
+                                    methods.Add(new KeyValuePair<int, (Type, MethodInfo, bool)>(initAsyncMethod.Priority, (t, m, true)));
                                 }
                             }
                         }

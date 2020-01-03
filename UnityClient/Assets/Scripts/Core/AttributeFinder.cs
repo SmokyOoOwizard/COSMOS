@@ -15,8 +15,8 @@ namespace COSMOS.Core
         public static ReadOnlyDictionary<Type, ReadOnlyCollection<Attribute>> ClassesAttributes { get; private set; }
         public static ReadOnlyDictionary<Type, ReadOnlyDictionary<MemberInfo, ReadOnlyCollection<Attribute>>> MembersAttributes { get; private set; }
 
-        static HashSet<Type> searchAttributes;
-        static object searchAttributesLock;
+        static HashSet<Type> searchAttributes = new HashSet<Type>();
+        static object searchAttributesLock = new object();
 
         static Dictionary<Type, Action<Dictionary<Type, List<Attribute>>, Dictionary<Type, Dictionary<MemberInfo, List<Attribute>>>>> callbacks = 
             new Dictionary<Type, Action<Dictionary<Type, List<Attribute>>, Dictionary<Type, Dictionary<MemberInfo, List<Attribute>>>>>();
