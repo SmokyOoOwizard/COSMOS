@@ -2,65 +2,92 @@
   <Asset ID="Prefabs\Planet" Name="Planet" Type="GameObject">
     <Path>Prefabs\Planet</Path>
   </Asset>
-  <Asset ID="Icons\QuickMenu\Back" Name="Back" Type="Sprite">
-    <Path>Icons\QuickMenu\Back</Path>
+  <Asset ID="Prefabs\UI\Map" Name="Map" Type="GameObject">
+    <Path>Prefabs\UI\Map</Path>
   </Asset>
-  <Asset ID="Icons\QuickMenu\MenuFrame" Name="MenuFrame" Type="Sprite">
-    <Path>Icons\QuickMenu\MenuFrame</Path>
+  <Asset ID="Sprites\Glow" Name="Glow" Type="Sprite">
+    <Path>Sprites\Glow</Path>
   </Asset>
-  <Asset ID="Icons\QuickMenu\MenuSelect" Name="MenuSelect" Type="Sprite">
-    <Path>Icons\QuickMenu\MenuSelect</Path>
+  <Asset ID="Sprites\Icons\Planet Icon" Name="Planet Icon" Type="Sprite">
+    <Path>Sprites\Icons\Planet Icon</Path>
   </Asset>
-  <Asset ID="Icons\ShipUI\DarkEnergy" Name="DarkEnergy" Type="Sprite">
-    <Path>Icons\ShipUI\DarkEnergy</Path>
+  <Asset ID="Sprites\Icons\Point_5x5" Name="Point_5x5" Type="Sprite">
+    <Path>Sprites\Icons\Point_5x5</Path>
   </Asset>
-  <Asset ID="Icons\ShipUI\FuelAndEnergy" Name="FuelAndEnergy" Type="Sprite">
-    <Path>Icons\ShipUI\FuelAndEnergy</Path>
+  <Asset ID="Sprites\Icons\Population Icon" Name="Population Icon" Type="Sprite">
+    <Path>Sprites\Icons\Population Icon</Path>
   </Asset>
-  <Asset ID="Icons\ShipUI\FuelOrEnergy" Name="FuelOrEnergy" Type="Sprite">
-    <Path>Icons\ShipUI\FuelOrEnergy</Path>
+  <Asset ID="Sprites\Icons\Space Station Icon" Name="Space Station Icon" Type="Sprite">
+    <Path>Sprites\Icons\Space Station Icon</Path>
   </Asset>
-  <Asset ID="Icons\ShipUI\HP" Name="HP" Type="Sprite">
-    <Path>Icons\ShipUI\HP</Path>
+  <Asset ID="Sprites\Icons\Spliter" Name="Spliter" Type="Sprite">
+    <Path>Sprites\Icons\Spliter</Path>
   </Asset>
-  <Asset ID="Icons\ShipUI\HP_DarkEnergy_Shield" Name="HP_DarkEnergy_Shield" Type="Sprite">
-    <Path>Icons\ShipUI\HP_DarkEnergy_Shield</Path>
+  <Asset ID="Sprites\Icons\Star Icon" Name="Star Icon" Type="Sprite">
+    <Path>Sprites\Icons\Star Icon</Path>
   </Asset>
-  <Asset ID="Icons\ShipUI\Shield" Name="Shield" Type="Sprite">
-    <Path>Icons\ShipUI\Shield</Path>
+  <Asset ID="Sprites\Icons\QuickMenu\Back" Name="Back" Type="Sprite">
+    <Path>Sprites\Icons\QuickMenu\Back</Path>
   </Asset>
-  <Asset ID="Icons\TopBar\background" Name="background" Type="Sprite">
-    <Path>Icons\TopBar\background</Path>
+  <Asset ID="Sprites\Icons\QuickMenu\MenuFrame" Name="MenuFrame" Type="Sprite">
+    <Path>Sprites\Icons\QuickMenu\MenuFrame</Path>
   </Asset>
-  <Asset ID="Icons\TopBar\Bar" Name="Bar" Type="Sprite">
-    <Path>Icons\TopBar\Bar</Path>
+  <Asset ID="Sprites\Icons\QuickMenu\MenuSelect" Name="MenuSelect" Type="Sprite">
+    <Path>Sprites\Icons\QuickMenu\MenuSelect</Path>
   </Asset>
-  <Asset ID="Icons\TopBar\DateTime\background" Name="background" Type="Sprite">
-    <Path>Icons\TopBar\DateTime\background</Path>
+  <Asset ID="Sprites\Icons\ShipUI\DarkEnergy" Name="DarkEnergy" Type="Sprite">
+    <Path>Sprites\Icons\ShipUI\DarkEnergy</Path>
   </Asset>
-  <Asset ID="Icons\TopBar\DateTime\Date" Name="Date" Type="Sprite">
-    <Path>Icons\TopBar\DateTime\Date</Path>
+  <Asset ID="Sprites\Icons\ShipUI\FuelAndEnergy" Name="FuelAndEnergy" Type="Sprite">
+    <Path>Sprites\Icons\ShipUI\FuelAndEnergy</Path>
   </Asset>
-  <Asset ID="Icons\TopBar\DateTime\Time" Name="Time" Type="Sprite">
-    <Path>Icons\TopBar\DateTime\Time</Path>
+  <Asset ID="Sprites\Icons\ShipUI\FuelOrEnergy" Name="FuelOrEnergy" Type="Sprite">
+    <Path>Sprites\Icons\ShipUI\FuelOrEnergy</Path>
   </Asset>
-  <Asset ID="Icons\TopBar\DateTime\TimeGlow" Name="TimeGlow" Type="Sprite">
-    <Path>Icons\TopBar\DateTime\TimeGlow</Path>
+  <Asset ID="Sprites\Icons\ShipUI\HP" Name="HP" Type="Sprite">
+    <Path>Sprites\Icons\ShipUI\HP</Path>
   </Asset>
-  <Asset ID="Icons\TopBar\MiniMap\MiniMapBorder" Name="MiniMapBorder" Type="Sprite">
-    <Path>Icons\TopBar\MiniMap\MiniMapBorder</Path>
+  <Asset ID="Sprites\Icons\ShipUI\HP_DarkEnergy_Shield" Name="HP_DarkEnergy_Shield" Type="Sprite">
+    <Path>Sprites\Icons\ShipUI\HP_DarkEnergy_Shield</Path>
   </Asset>
-  <Asset ID="Icons\TopBar\MiniMap\MiniMapMask" Name="MiniMapMask" Type="Sprite">
-    <Path>Icons\TopBar\MiniMap\MiniMapMask</Path>
+  <Asset ID="Sprites\Icons\ShipUI\Shield" Name="Shield" Type="Sprite">
+    <Path>Sprites\Icons\ShipUI\Shield</Path>
   </Asset>
-  <Asset ID="Icons\TopBar\MiniMap\MiniMapShadow" Name="MiniMapShadow" Type="Sprite">
-    <Path>Icons\TopBar\MiniMap\MiniMapShadow</Path>
+  <Asset ID="Sprites\Icons\TopBar\background" Name="background" Type="Sprite">
+    <Path>Sprites\Icons\TopBar\background</Path>
+  </Asset>
+  <Asset ID="Sprites\Icons\TopBar\Bar" Name="Bar" Type="Sprite">
+    <Path>Sprites\Icons\TopBar\Bar</Path>
+  </Asset>
+  <Asset ID="Sprites\Icons\TopBar\DateTime\background" Name="background" Type="Sprite">
+    <Path>Sprites\Icons\TopBar\DateTime\background</Path>
+  </Asset>
+  <Asset ID="Sprites\Icons\TopBar\DateTime\Date" Name="Date" Type="Sprite">
+    <Path>Sprites\Icons\TopBar\DateTime\Date</Path>
+  </Asset>
+  <Asset ID="Sprites\Icons\TopBar\DateTime\Time" Name="Time" Type="Sprite">
+    <Path>Sprites\Icons\TopBar\DateTime\Time</Path>
+  </Asset>
+  <Asset ID="Sprites\Icons\TopBar\DateTime\TimeGlow" Name="TimeGlow" Type="Sprite">
+    <Path>Sprites\Icons\TopBar\DateTime\TimeGlow</Path>
+  </Asset>
+  <Asset ID="Sprites\Icons\TopBar\MiniMap\MiniMapBorder" Name="MiniMapBorder" Type="Sprite">
+    <Path>Sprites\Icons\TopBar\MiniMap\MiniMapBorder</Path>
+  </Asset>
+  <Asset ID="Sprites\Icons\TopBar\MiniMap\MiniMapMask" Name="MiniMapMask" Type="Sprite">
+    <Path>Sprites\Icons\TopBar\MiniMap\MiniMapMask</Path>
+  </Asset>
+  <Asset ID="Sprites\Icons\TopBar\MiniMap\MiniMapShadow" Name="MiniMapShadow" Type="Sprite">
+    <Path>Sprites\Icons\TopBar\MiniMap\MiniMapShadow</Path>
   </Asset>
   <Asset ID="Materials\EthanWhite" Name="EthanWhite" Type="Material">
     <Path>Materials\EthanWhite</Path>
   </Asset>
   <Asset ID="Materials\Feisar_Ship" Name="Feisar_Ship" Type="Material">
     <Path>Materials\Feisar_Ship</Path>
+  </Asset>
+  <Asset ID="Materials\Particle\StarGlow" Name="StarGlow" Type="Material">
+    <Path>Materials\Particle\StarGlow</Path>
   </Asset>
   <Asset ID="Prototypes\SolarSystems" Name="SolarSystems" Type="Prototype">
     <Path>Prototypes\SolarSystems</Path>

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using COSMOS.Prototype;
 using System.Collections.ObjectModel;
+using UnityEngine;
 
 namespace COSMOS.Space
 {
@@ -20,8 +21,14 @@ namespace COSMOS.Space
         {
             get { return new ReadOnlyDictionary<string, SolarSystem>(solarSystems);  }
         }
+        public static ReadOnlyCollection<SolarSystemProto> SortedSolarSystemPrototypesByStarBrightness
+        {
+            get { return new ReadOnlyCollection<SolarSystemProto>(sortedSolarSystemPrototypesByStarBrightness); }
+        }
+        public static SolarSystemProto MaxFarSystem { get; private set; }
         static Dictionary<string, SolarSystemProto> solarSystemPrototypes = new Dictionary<string, SolarSystemProto>();
         static Dictionary<string, SolarSystem> solarSystems = new Dictionary<string, SolarSystem>();
+        static List<SolarSystemProto> sortedSolarSystemPrototypesByStarBrightness = new List<SolarSystemProto>();
         public static SolarSystem CurrentSystem { get; private set; }
         public static event Action StartLoadSystem;
         public static event Action EndLoadSystem;
@@ -32,6 +39,11 @@ namespace COSMOS.Space
             SolarSystemSceneManager.StartLoadSystem += ()=>StartLoadSystem?.Invoke();
             SolarSystemSceneManager.EndLoadSystem += ()=>EndLoadSystem?.Invoke();
             LoadPrototypes();
+            for (int i = 0; i < 100; i++)
+            {
+                sortedSolarSystemPrototypesByStarBrightness.Add(new SolarSystemProto() { PosOnMap = new UnityEngine.Vector2(i,i), SystemStar = new Star() { Brightness = 100 } });
+            }
+            MaxFarSystem = sortedSolarSystemPrototypesByStarBrightness[sortedSolarSystemPrototypesByStarBrightness.Count - 1];
             InitSolarSystems();
         }
         static void LoadPrototypes()
@@ -66,6 +78,10 @@ namespace COSMOS.Space
             if (!solarSystemPrototypes.ContainsKey(ssp.Name.Key))
             {
                 solarSystemPrototypes.Add(ssp.Name.Key, ssp);
+                if (MaxFarSystem == null || MaxFarSystem.PosOnMap.sqrMagnitude < ssp.PosOnMap.sqrMagnitude)
+                {
+                    MaxFarSystem = ssp;
+                }
                 return true;
             }
             return false;
