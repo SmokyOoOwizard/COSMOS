@@ -15,6 +15,9 @@ namespace COSMOS.UI
 	{
 		public Vector2 Position;
 		private Vector2 position;
+		public GameObject Back;
+		public GameObject StarPrefab;
+		public Vector3 prefMousePosition;
 		[Header("UI")]
 		public TMP_InputField Search;
 		public MapZoomUI Zoom;
@@ -36,10 +39,18 @@ namespace COSMOS.UI
 		public const float ZOOM_COEF = 10f;
 
 		public static QuadTree<SolarSystemProto> tree = new QuadTree<SolarSystemProto>(new Rect());
+		public ObjectPool<GameObject> ObjectPool;
+		public List<GameObject> Objects = new List<GameObject>();
 
 		private void Awake()
 		{
 			InitPatern();
+			ObjectPool = new ObjectPool<GameObject>(20, true, () =>
+			{
+				GameObject t = Instantiate(StarPrefab);
+				t.transform.SetParent(Back.transform);
+				return t;
+			});
 		}
 		// Start is called before the first frame update
 		void Start()
@@ -50,25 +61,53 @@ namespace COSMOS.UI
 		// Update is called once per frame
 		void Update()
 		{
+			var mousePosition = Input.mousePosition;
+			var mouseDelta = mousePosition - prefMousePosition;
+			prefMousePosition = mousePosition;
+			if (Input.GetMouseButton(0))
+			{
+				Position += new Vector2(mouseDelta.x, mouseDelta.y);
+			}
 			if(position != Position)
 			{
-				//if (Old)
-				//{
-				//	SelectSystems();
-				//}
-				//else
-				//{
-				//	SelectSystems3();
-				//}
+				UpdateMap();
+			}
+		}
+		void UpdateMap()
+		{
+			var systems = SelectSystems();
+			if (systems.Count < Objects.Count)
+			{
+				while (systems.Count < Objects.Count)
+				{
+					int i = Objects.Count - 1;
+					GameObject tmp = Objects[i];
+					tmp.SetActive(false);
+					if (!ObjectPool.Release(tmp))
+					{
+						Destroy(tmp);
+					}
+					Objects.RemoveAt(i);
+				}
+			}
+			for (int i = 0; i < systems.Count; i++)
+			{
+				if (Objects.Count - 1 < i)
+				{
+					Objects.Add(ObjectPool.GetObject());
+				}
+				GameObject tmp = Objects[i];
+				tmp.SetActive(true);
+				tmp.transform.position = (systems[i].Value.PosOnMap + Position) * (1 + Zoom.GalaxyZoom * ZOOM_COEF);
 			}
 		}
 		private void OnDrawGizmos()
 		{
-			var systems = SelectSystems3();
-			for (int i = 0; i < systems.Count; i++)
-			{
-				Gizmos.DrawWireSphere(systems[i].Value.PosOnMap, 1);
-			}
+			//var systems = SelectSystems3();
+			//for (int i = 0; i < systems.Count; i++)
+			//{
+			//	Gizmos.DrawWireSphere(systems[i].Value.PosOnMap, 1);
+			//}
 			tree.DebugDraw();
 			Rect view = new Rect(Position, new Vector2(100, 100) / (1 + Zoom.GalaxyZoom * ZOOM_COEF));
 
@@ -90,11 +129,11 @@ namespace COSMOS.UI
 				tree.Insert(new QuadTree<SolarSystemProto>.Point<SolarSystemProto>() { Value = tmp, Position = tmp.PosOnMap });
 			}
 		}
-		List<QuadTree<SolarSystemProto>.Point<SolarSystemProto>> SelectSystems3()
+		List<QuadTree<SolarSystemProto>.Point<SolarSystemProto>> SelectSystems()
 		{
 			List<QuadTree<SolarSystemProto>.Point<SolarSystemProto>> foundedSystems = new List<QuadTree<SolarSystemProto>.Point<SolarSystemProto>>();
 
-			Rect view = new Rect(Position, new Vector2(100, 100) / (1 + Zoom.GalaxyZoom * ZOOM_COEF));
+			Rect view = new Rect(-Position, new Vector2(Screen.width, Screen.height) / (1 + Zoom.GalaxyZoom * ZOOM_COEF));
 
 			foundedSystems.AddRange(tree.QueryRange(view, (int)Mathf.Lerp(3, QuadTree<SolarSystemProto>.QT_NODE_DEEP, Zoom.GalaxyZoom)));
 

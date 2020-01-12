@@ -41,7 +41,7 @@ namespace COSMOS.Space
             LoadPrototypes();
             for (int i = 0; i < 100; i++)
             {
-                sortedSolarSystemPrototypesByStarBrightness.Add(new SolarSystemProto() { PosOnMap = new UnityEngine.Vector2(i,i), SystemStar = new Star() { Brightness = 100 } });
+                sortedSolarSystemPrototypesByStarBrightness.Add(new SolarSystemProto() { PosOnMap = new UnityEngine.Vector2(i*10,i*10), SystemStar = new Star() { Brightness = 100 } });
             }
             MaxFarSystem = sortedSolarSystemPrototypesByStarBrightness[sortedSolarSystemPrototypesByStarBrightness.Count - 1];
             InitSolarSystems();
