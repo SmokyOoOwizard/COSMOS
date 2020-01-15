@@ -1,5 +1,4 @@
-﻿using COSMOS.Relations;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System;
 using System.Xml;
@@ -29,23 +28,6 @@ namespace COSMOS.Space
         public SolarSystemProto()
         {
 
-        }
-    
-        public Dictionary<SpaceObject, Fraction> GetFractions()
-        {
-            Dictionary<SpaceObject, Fraction> fractions = new Dictionary<SpaceObject, Fraction>();
-            for (int i = 0; i < Planets.Count; i++)
-            {
-                var frac = Planets[i].GetFraction();
-                fractions.Add(Planets[i], frac);
-            }
-            for (int i = 0; i < SpaceStations.Count; i++)
-            {
-                var frac = SpaceStations[i].GetFraction();
-                fractions.Add(SpaceStations[i], frac);
-            }
-
-            return fractions;
         }
     }
 }

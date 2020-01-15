@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using UnityEngine;
 using System.Xml;
 using System.Xml.Serialization;
-using COSMOS.Relations;
 namespace COSMOS.Space
 {
     [BindProto("Planet")]
@@ -18,10 +17,6 @@ namespace COSMOS.Space
         public float OrbitSpeed;
         [BindProto(true)]
         public float OrbitSize;
-        public override Fraction GetFraction()
-        {
-            return null;
-        }
 
         public override Vector2 GetPos()
         {
