@@ -5,6 +5,7 @@ UnityClient/[Bb]uild/
 UnityClient/[Bb]uilds/
 UnityClient/[Ll]ogs/
 UnityClient/[Mm]emoryCaptures/
+UnityClient/.idea/*
 
 # Never ignore Asset meta data
 !/[Aa]ssets/**/*.meta
