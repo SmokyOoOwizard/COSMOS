@@ -40,11 +40,7 @@ namespace COSMOS.Prototype
 
                 isArray = Type.IsArray;
                 isGeneric = Type.IsGenericType;
-                if(Type.GetInterfaces() != null)
-                {
-
-                    isCollection = Type.GetInterfaces().Any((t) => { return t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ICollection<>); });
-                }
+                isCollection = Type.GetInterfaces().Any((t) => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ICollection<>));
 
             }
 
@@ -61,14 +57,7 @@ namespace COSMOS.Prototype
             }
             public object GetValue(object instance)
             {
-                if (Field != null)
-                {
-                    return Field.GetValue(instance);
-                }
-                else
-                {
-                    return Property.GetValue(instance);
-                }
+                return Field != null ? Field.GetValue(instance) : Property.GetValue(instance);
             }
         }
         public string Name { get; protected set; }
@@ -89,7 +78,7 @@ namespace COSMOS.Prototype
 
                 const BindingFlags bindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
                 var properies = type.GetFields(bindingFlags).Cast<MemberInfo>().Concat(type.GetProperties(bindingFlags)).ToArray();
-                if (properies != null && properies.Length > 0)
+                if (properies.Length > 0)
                 {
                     foreach (var prop in properies)
                     {

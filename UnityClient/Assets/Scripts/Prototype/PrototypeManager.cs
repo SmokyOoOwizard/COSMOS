@@ -16,111 +16,111 @@ namespace COSMOS.Prototype
     [Manager]
     public static class PrototypeManager
     {
-        public readonly static Dictionary<Type, Func<string, object>> ParseUnityTypes = new Dictionary<Type, Func<string, object>>()
+        public static readonly Dictionary<Type, Func<string, object>> ParseUnityTypes = new Dictionary<Type, Func<string, object>>()
         {
-            { typeof(Vector2), (s) =>{ return (object)Parser.ParseVector2(s); } },
-            { typeof(Vector2Int), (s) =>{ return (object)Parser.ParseVector2Int(s); } },
-            { typeof(Vector3), (s) =>{ return (object)Parser.ParseVector3(s); } },
-            { typeof(Vector3Int), (s) =>{ return (object)Parser.ParseVector3Int(s); } },
-            { typeof(Vector4), (s) =>{ return (object)Parser.ParseVector4(s); } },
-            { typeof(Quaternion), (s) =>{ return (object)Parser.ParseQuaternion(s); } },
-            { typeof(Rect), (s) =>{ return (object)Parser.ParseRect(s); } },
-            { typeof(Color), (s) =>{ return (object)Parser.ParseColor(s); } },
-            { typeof(Vector2?), (s) =>{ return (object)Parser.ParseVector2(s); } },
-            { typeof(Vector2Int?), (s) =>{ return (object)Parser.ParseVector2Int(s); } },
-            { typeof(Vector3?), (s) =>{ return (object)Parser.ParseVector3(s); } },
-            { typeof(Vector3Int?), (s) =>{ return (object)Parser.ParseVector3Int(s); } },
-            { typeof(Vector4?), (s) =>{ return (object)Parser.ParseVector4(s); } },
-            { typeof(Quaternion?), (s) =>{ return (object)Parser.ParseQuaternion(s); } },
-            { typeof(Rect?), (s) =>{ return (object)Parser.ParseRect(s); } },
-            { typeof(Color?), (s) =>{ return (object)Parser.ParseColor(s); } },
-            { typeof(RectOffset), (s) =>{ return (object)Parser.ParseRect(s); } }
+            { typeof(Vector2), (s) => (object)Parser.ParseVector2(s)},
+            { typeof(Vector2Int), (s) => (object)Parser.ParseVector2Int(s)},
+            { typeof(Vector3), (s) => (object)Parser.ParseVector3(s)},
+            { typeof(Vector3Int), (s) => (object)Parser.ParseVector3Int(s)},
+            { typeof(Vector4), (s) => (object)Parser.ParseVector4(s)},
+            { typeof(Quaternion), (s) => (object)Parser.ParseQuaternion(s)},
+            { typeof(Rect), (s) => (object)Parser.ParseRect(s)},
+            { typeof(Color), (s) => (object)Parser.ParseColor(s)},
+            { typeof(Vector2?), (s) => (object)Parser.ParseVector2(s)},
+            { typeof(Vector2Int?), (s) => (object)Parser.ParseVector2Int(s)},
+            { typeof(Vector3?), (s) => (object)Parser.ParseVector3(s)},
+            { typeof(Vector3Int?), (s) => (object)Parser.ParseVector3Int(s)},
+            { typeof(Vector4?), (s) => (object)Parser.ParseVector4(s)},
+            { typeof(Quaternion?), (s) => (object)Parser.ParseQuaternion(s)},
+            { typeof(Rect?), (s) => (object)Parser.ParseRect(s)},
+            { typeof(Color?), (s) => (object)Parser.ParseColor(s)},
+            { typeof(RectOffset), (s) => (object)Parser.ParseRect(s)}
         };
-        public readonly static Dictionary<Type, Func<string, object>> ParseStandardTypes = new Dictionary<Type, Func<string, object>>()
+        public static readonly Dictionary<Type, Func<string, object>> ParseStandardTypes = new Dictionary<Type, Func<string, object>>()
         {
-            { typeof(sbyte), (s) =>{ return (object)Parser.ParseSByte(s); } },
-            { typeof(byte), (s) =>{ return (object)Parser.ParseByte(s); } },
-            { typeof(short), (s) =>{ return (object)Parser.ParseShort(s); } },
-            { typeof(ushort), (s) =>{ return (object)Parser.ParseUShort(s); } },
-            { typeof(int), (s) =>{ return (object)Parser.ParseInt(s); } },
-            { typeof(uint), (s) =>{ return (object)Parser.ParseUInt(s); } },
-            { typeof(long), (s) =>{ return (object)Parser.ParseLong(s); } },
-            { typeof(ulong), (s) =>{ return (object)Parser.ParseULong(s); } },
-            { typeof(char), (s) =>{ return (object)Parser.ParseChar(s); } },
-            { typeof(float), (s) =>{ return (object)Parser.ParseFloat(s); } },
-            { typeof(double), (s) =>{ return (object)Parser.ParseDouble(s); } },
-            { typeof(decimal), (s) =>{ return (object)Parser.ParseDecimal(s); } },
-            { typeof(bool), (s) =>{ return (object)Parser.ParseBool(s); } },
-            { typeof(sbyte?), (s) =>{ return (object)Parser.ParseSByteN(s); } },
-            { typeof(byte?), (s) =>{ return (object)Parser.ParseByteN(s); } },
-            { typeof(short?), (s) =>{ return (object)Parser.ParseShortN(s); } },
-            { typeof(ushort?), (s) =>{ return (object)Parser.ParseUShortN(s); } },
-            { typeof(int?), (s) =>{ return (object)Parser.ParseIntN(s); } },
-            { typeof(uint?), (s) =>{ return (object)Parser.ParseUIntN(s); } },
-            { typeof(long?), (s) =>{ return (object)Parser.ParseLongN(s); } },
-            { typeof(ulong?), (s) =>{ return (object)Parser.ParseULongN(s); } },
-            { typeof(char?), (s) =>{ return (object)Parser.ParseCharN(s); } },
-            { typeof(float?), (s) =>{ return (object)Parser.ParseFloatN(s); } },
-            { typeof(double?), (s) =>{ return (object)Parser.ParseDoubleN(s); } },
-            { typeof(decimal?), (s) =>{ return (object)Parser.ParseDecimalN(s); } },
-            { typeof(bool?), (s) =>{ return (object)Parser.ParseBoolN(s); } },
-            { typeof(string), (s) =>{ return s; } },
+            {typeof(sbyte), s => (object) Parser.ParseSByte(s)},
+            {typeof(byte), s => (object) Parser.ParseByte(s)},
+            {typeof(short), s => (object) Parser.ParseShort(s)},
+            {typeof(ushort), s => (object) Parser.ParseUShort(s)},
+            {typeof(int), s => (object) Parser.ParseInt(s)},
+            {typeof(uint), s => (object) Parser.ParseUInt(s)},
+            {typeof(long), s => (object) Parser.ParseLong(s)},
+            {typeof(ulong), s => (object) Parser.ParseULong(s)},
+            {typeof(char), s => (object) Parser.ParseChar(s)},
+            {typeof(float), s => (object) Parser.ParseFloat(s)},
+            {typeof(double), s => (object) Parser.ParseDouble(s)},
+            {typeof(decimal), s => (object) Parser.ParseDecimal(s)},
+            {typeof(bool), s => (object) Parser.ParseBool(s)},
+            {typeof(sbyte?), s => (object) Parser.ParseSByteN(s)},
+            {typeof(byte?), s => (object) Parser.ParseByteN(s)},
+            {typeof(short?), s => (object) Parser.ParseShortN(s)},
+            {typeof(ushort?), s => (object) Parser.ParseUShortN(s)},
+            {typeof(int?), s => (object) Parser.ParseIntN(s)},
+            {typeof(uint?), s => (object) Parser.ParseUIntN(s)},
+            {typeof(long?), s => (object) Parser.ParseLongN(s)},
+            {typeof(ulong?), s => (object) Parser.ParseULongN(s)},
+            {typeof(char?), s => (object) Parser.ParseCharN(s)},
+            {typeof(float?), s => (object) Parser.ParseFloatN(s)},
+            {typeof(double?), s => (object) Parser.ParseDoubleN(s)},
+            {typeof(decimal?), s => (object) Parser.ParseDecimalN(s)},
+            {typeof(bool?), s => (object) Parser.ParseBoolN(s)},
+            {typeof(string), s => s}
         };
-        public readonly static Dictionary<Type, Func<string, object>> ParseOtherTypes = new Dictionary<Type, Func<string, object>>();
+        public static readonly Dictionary<Type, Func<string, object>> ParseOtherTypes = new Dictionary<Type, Func<string, object>>();
 
-        public readonly static Dictionary<Type, Func<object, string>> SaveUnityTypes = new Dictionary<Type, Func<object, string>>()
+        public static readonly Dictionary<Type, Func<object, string>> SaveUnityTypes = new Dictionary<Type, Func<object, string>>()
         {
-            { typeof(Vector2), (s) =>{ return Saver.SaveVector2((Vector2)s); } },
-            { typeof(Vector2?), (s) =>{ return Saver.SaveVector2((Vector2?)s); } },
-            { typeof(Vector2Int), (s) =>{ return Saver.SaveVector2Int((Vector2Int)s); } },
-            { typeof(Vector2Int?), (s) =>{ return Saver.SaveVector2Int((Vector2Int?)s); } },
-            { typeof(Vector3), (s) =>{ return Saver.SaveVector3((Vector3)s); } },
-            { typeof(Vector3?), (s) =>{ return Saver.SaveVector3((Vector3?)s); } },
-            { typeof(Vector3Int), (s) =>{ return Saver.SaveVector3Int((Vector3Int)s); } },
-            { typeof(Vector3Int?), (s) =>{ return Saver.SaveVector3Int((Vector3Int?)s); } },
-            { typeof(Vector4), (s) =>{ return Saver.SaveVector4((Vector4)s); } },
-            { typeof(Vector4?), (s) =>{ return Saver.SaveVector4((Vector4?)s); } },
-            { typeof(Quaternion), (s) =>{ return Saver.SaveQuaternion((Quaternion)s); } },
-            { typeof(Quaternion?), (s) =>{ return Saver.SaveQuaternion((Quaternion?)s); } },
-            { typeof(Rect), (s) =>{ return Saver.SaveRect((Rect)s); } },
-            { typeof(Rect?), (s) =>{ return Saver.SaveRect((Rect?)s); } },
-            { typeof(Color), (s) =>{ return Saver.SaveColor((Color)s); } },
-            { typeof(Color?), (s) =>{ return Saver.SaveColor((Color?)s); } },
-            { typeof(RectOffset), (s) =>{ return Saver.SaveRectOffset(s as RectOffset); } }
+            { typeof(Vector2), (s) => Saver.SaveVector2((Vector2)s)},
+            { typeof(Vector2?), (s) => Saver.SaveVector2((Vector2?)s)},
+            { typeof(Vector2Int), (s) => Saver.SaveVector2Int((Vector2Int)s)},
+            { typeof(Vector2Int?), (s) => Saver.SaveVector2Int((Vector2Int?)s)},
+            { typeof(Vector3), (s) => Saver.SaveVector3((Vector3)s)},
+            { typeof(Vector3?), (s) => Saver.SaveVector3((Vector3?)s)},
+            { typeof(Vector3Int), (s) => Saver.SaveVector3Int((Vector3Int)s)},
+            { typeof(Vector3Int?), (s) => Saver.SaveVector3Int((Vector3Int?)s)},
+            { typeof(Vector4), (s) => Saver.SaveVector4((Vector4)s)},
+            { typeof(Vector4?), (s) => Saver.SaveVector4((Vector4?)s)},
+            { typeof(Quaternion), (s) => Saver.SaveQuaternion((Quaternion)s)},
+            { typeof(Quaternion?), (s) => Saver.SaveQuaternion((Quaternion?)s)},
+            { typeof(Rect), (s) => Saver.SaveRect((Rect)s)},
+            { typeof(Rect?), (s) => Saver.SaveRect((Rect?)s)},
+            { typeof(Color), (s) => Saver.SaveColor((Color)s)},
+            { typeof(Color?), (s) => Saver.SaveColor((Color?)s)},
+            { typeof(RectOffset), (s) => Saver.SaveRectOffset(s as RectOffset)}
         };
-        public readonly static Dictionary<Type, Func<object, string>> SaveStandardTypes = new Dictionary<Type, Func<object, string>>()
+        public static readonly Dictionary<Type, Func<object, string>> SaveStandardTypes = new Dictionary<Type, Func<object, string>>()
         {
-            { typeof(sbyte), (s) =>{ return Saver.SaveInt((sbyte)s); } },
-            { typeof(byte), (s) =>{ return Saver.SaveUInt((byte)s); } },
-            { typeof(short), (s) =>{ return Saver.SaveInt((short)s); } },
-            { typeof(ushort), (s) =>{ return Saver.SaveUInt((ushort)s); } },
-            { typeof(int), (s) =>{ return Saver.SaveInt((int)s); } },
-            { typeof(uint), (s) =>{ return Saver.SaveUInt((uint)s); } },
-            { typeof(long), (s) =>{ return Saver.SaveInt((long)s); } },
-            { typeof(ulong), (s) =>{ return Saver.SaveUInt((ulong)s); } },
-            { typeof(char), (s) =>{ return Saver.SaveChar((char)s); } },
-            { typeof(float), (s) =>{ return Saver.SaveFloat((float)s); } },
-            { typeof(double), (s) =>{ return Saver.SaveDouble((double)s); } },
-            { typeof(decimal), (s) =>{ return Saver.SaveDecimal((decimal)s); } },
-            { typeof(bool), (s) =>{ return Saver.SaveBool((bool)s); } },
-            { typeof(sbyte?), (s) =>{ return Saver.SaveInt((sbyte?)s); } },
-            { typeof(byte?), (s) =>{ return Saver.SaveUInt((byte?)s); } },
-            { typeof(short?), (s) =>{ return Saver.SaveInt((short?)s); } },
-            { typeof(ushort?), (s) =>{ return Saver.SaveUInt((ushort?)s); } },
-            { typeof(int?), (s) =>{ return Saver.SaveInt((int?)s); } },
-            { typeof(uint?), (s) =>{ return Saver.SaveUInt((uint?)s); } },
-            { typeof(long?), (s) =>{ return Saver.SaveInt((long?)s); } },
-            { typeof(ulong?), (s) =>{ return Saver.SaveUInt((ulong?)s); } },
-            { typeof(char?), (s) =>{ return Saver.SaveChar((char?)s); } },
-            { typeof(float?), (s) =>{ return Saver.SaveFloat((float?)s); } },
-            { typeof(double?), (s) =>{ return Saver.SaveDouble((double?)s); } },
-            { typeof(decimal?), (s) =>{ return Saver.SaveDecimal((decimal?)s); } },
-            { typeof(bool?), (s) =>{ return Saver.SaveBool((bool?)s); } },
-            { typeof(string), (s) =>{ return s.ToString(); } },
+            { typeof(sbyte), (s) => Saver.SaveInt((sbyte)s)},
+            { typeof(byte), (s) => Saver.SaveUInt((byte)s)},
+            { typeof(short), (s) => Saver.SaveInt((short)s)},
+            { typeof(ushort), (s) => Saver.SaveUInt((ushort)s)},
+            { typeof(int), (s) => Saver.SaveInt((int)s)},
+            { typeof(uint), (s) => Saver.SaveUInt((uint)s)},
+            { typeof(long), (s) => Saver.SaveInt((long)s)},
+            { typeof(ulong), (s) => Saver.SaveUInt((ulong)s)},
+            { typeof(char), (s) => Saver.SaveChar((char)s)},
+            { typeof(float), (s) => Saver.SaveFloat((float)s)},
+            { typeof(double), (s) => Saver.SaveDouble((double)s)},
+            { typeof(decimal), (s) => Saver.SaveDecimal((decimal)s)},
+            { typeof(bool), (s) => Saver.SaveBool((bool)s)},
+            { typeof(sbyte?), (s) => Saver.SaveInt((sbyte?)s)},
+            { typeof(byte?), (s) => Saver.SaveUInt((byte?)s)},
+            { typeof(short?), (s) => Saver.SaveInt((short?)s)},
+            { typeof(ushort?), (s) => Saver.SaveUInt((ushort?)s)},
+            { typeof(int?), (s) => Saver.SaveInt((int?)s)},
+            { typeof(uint?), (s) => Saver.SaveUInt((uint?)s)},
+            { typeof(long?), (s) => Saver.SaveInt((long?)s)},
+            { typeof(ulong?), (s) => Saver.SaveUInt((ulong?)s)},
+            { typeof(char?), (s) => Saver.SaveChar((char?)s)},
+            { typeof(float?), (s) => Saver.SaveFloat((float?)s)},
+            { typeof(double?), (s) => Saver.SaveDouble((double?)s)},
+            { typeof(decimal?), (s) => Saver.SaveDecimal((decimal?)s)},
+            { typeof(bool?), (s) => Saver.SaveBool((bool?)s)},
+            { typeof(string), (s) => s.ToString()},
         };
-        public readonly static Dictionary<Type, Func<object, string>> SaveOtherTypes = new Dictionary<Type, Func<object, string>>();
+        public static readonly Dictionary<Type, Func<object, string>> SaveOtherTypes = new Dictionary<Type, Func<object, string>>();
 
-        static Dictionary<string, Type> SignaturesName = new Dictionary<string, Type>();
+        static readonly Dictionary<string, Type> SignaturesName = new Dictionary<string, Type>();
         static Delogger.Logger Log = new Delogger.Logger();
 
         static Dictionary<Type, Signature> Signatures = new Dictionary<Type, Signature>();
@@ -138,7 +138,7 @@ namespace COSMOS.Prototype
                 types.ToList().AsParallel().Any((type) =>
                 {
                     var att = type.GetCustomAttributes(typeof(BindProtoAttribute), true);
-                    if (att != null && att.Length > 0)
+                    if (att.Length > 0)
                     {
                         var c = type.GetConstructor(BindingFlags.Instance | BindingFlags.Public, null, new Type[] { }, null);
                         if (c != null)
@@ -321,11 +321,11 @@ namespace COSMOS.Prototype
                 if (Signatures.ContainsKey(prototype.GetType()))
                 {
                     Signature signature = Signatures[prototype.GetType()];
-                    XmlDocument xdoc = new XmlDocument();
-                    XmlElement xroot = (XmlElement)saveChild(xdoc, (prototype, null));
-                    xdoc.AppendChild(xroot);
-                    Log.Error(xroot.OuterXml);
-                    return xdoc;
+                    XmlDocument xDoc = new XmlDocument();
+                    XmlElement xRoot = (XmlElement)saveChild(xDoc, (prototype, null));
+                    xDoc.AppendChild(xRoot);
+                    Log.Error(xRoot.OuterXml);
+                    return xDoc;
                 }
                 else
                 {
@@ -592,7 +592,7 @@ namespace COSMOS.Prototype
                     }
                     foreach (XmlElement child in xml)
                     {
-                        methodInfo.Invoke(collection, new object[] { parseChild(child, elementType) });
+                        methodInfo?.Invoke(collection, new object[] { parseChild(child, elementType) });
                     }
                     return Activator.CreateInstance(type, collection); ;
                 }
