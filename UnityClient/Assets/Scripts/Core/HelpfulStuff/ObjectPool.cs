@@ -12,7 +12,7 @@ namespace COSMOS.Core.HelpfulStuff
     {
         private readonly ConcurrentBag<T> items = new ConcurrentBag<T>();
         public int counter { get; private set; } = 0;
-        public int MAX { get; private set; } = 10;
+        public int MAX { get; private set; } = 30;
 
         Func<T> createObject;
         public bool CanOverSize { get; private set; }
@@ -52,8 +52,7 @@ namespace COSMOS.Core.HelpfulStuff
             else if(CanOverSize && createObject != null)
             {
                 T obj = createObject();
-                items.Add(obj);
-                counter++;
+                counter--;
                 return obj;
             }
             return default(T);

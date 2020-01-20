@@ -64,7 +64,7 @@ namespace COSMOS.UI
 			var mousePosition = Input.mousePosition;
 			var mouseDelta = mousePosition - prefMousePosition;
 			prefMousePosition = mousePosition;
-			if (Input.GetMouseButton(0))
+			if (Input.GetKey(KeyCode.Q))
 			{
 				Position += new Vector2(mouseDelta.x, mouseDelta.y);
 			}
@@ -76,7 +76,14 @@ namespace COSMOS.UI
 		void UpdateMap()
 		{
 			var systems = SelectSystems();
-			if (systems.Count < Objects.Count)
+			if (systems.Count > Objects.Count)
+			{
+				for (int i = Objects.Count; i < systems.Count; i++)
+				{
+					Objects.Add(ObjectPool.GetObject());
+				}
+			}
+			else if (systems.Count < Objects.Count)
 			{
 				while (systems.Count < Objects.Count)
 				{
@@ -87,18 +94,19 @@ namespace COSMOS.UI
 					{
 						Destroy(tmp);
 					}
+					else
+					{
+						tmp.name = "disable";
+					}
 					Objects.RemoveAt(i);
 				}
-			}
+			} 	
 			for (int i = 0; i < systems.Count; i++)
 			{
-				if (Objects.Count - 1 < i)
-				{
-					Objects.Add(ObjectPool.GetObject());
-				}
 				GameObject tmp = Objects[i];
+				tmp.name = i.ToString();
 				tmp.SetActive(true);
-				tmp.transform.position = (systems[i].Value.PosOnMap + Position) * (1 + Zoom.GalaxyZoom * ZOOM_COEF);
+				tmp.transform.position = (systems[i].Value.PosOnMap + Position) * (1 + Zoom.GalaxyZoom * ZOOM_COEF) + new Vector2(Screen.width, Screen.height) * 0.5f;
 			}
 		}
 		private void OnDrawGizmos()
@@ -109,7 +117,11 @@ namespace COSMOS.UI
 			//	Gizmos.DrawWireSphere(systems[i].Value.PosOnMap, 1);
 			//}
 			tree.DebugDraw();
-			Rect view = new Rect(Position, new Vector2(100, 100) / (1 + Zoom.GalaxyZoom * ZOOM_COEF));
+			Vector2 newSize = new Vector2(Screen.width, Screen.height) / (1 + Zoom.GalaxyZoom * ZOOM_COEF);
+			
+			Vector2 newPos = new Vector2(Position.x + (newSize.x) * 0.5f, Position.y + (newSize.y) * 0.5f);
+			
+			Rect view = new Rect(-newPos, newSize);
 
 			Debug.DrawLine(view.min, new Vector3(view.xMin, view.yMax), Color.green);
 			Debug.DrawLine(view.min, new Vector3(view.xMax, view.yMin), Color.green);
@@ -133,9 +145,13 @@ namespace COSMOS.UI
 		{
 			List<QuadTree<SolarSystemProto>.Point<SolarSystemProto>> foundedSystems = new List<QuadTree<SolarSystemProto>.Point<SolarSystemProto>>();
 
-			Rect view = new Rect(-Position, new Vector2(Screen.width, Screen.height) / (1 + Zoom.GalaxyZoom * ZOOM_COEF));
+			Vector2 newSize = new Vector2(Screen.width, Screen.height) / (1 + Zoom.GalaxyZoom * ZOOM_COEF);
+			
+			Vector2 newPos = new Vector2(Position.x + (newSize.x) * 0.5f, Position.y + (newSize.y) * 0.5f);
+			
+			Rect view = new Rect(-newPos, newSize);
 
-			foundedSystems.AddRange(tree.QueryRange(view, (int)Mathf.Lerp(3, QuadTree<SolarSystemProto>.QT_NODE_DEEP, Zoom.GalaxyZoom)));
+			foundedSystems.AddRange(tree.QueryRange(view, Mathf.RoundToInt(Mathf.Lerp(3, QuadTree<SolarSystemProto>.QT_NODE_DEEP, Zoom.GalaxyZoom))));
 
 			//Log.Info(foundedSystems.Count);
 
