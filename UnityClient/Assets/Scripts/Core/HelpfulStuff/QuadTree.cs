@@ -9,9 +9,9 @@ namespace COSMOS.Core.HelpfulStuff
 {
     public class QuadTree<T>
     {
-        public struct Point<V>
+        public struct Point<T>
         {
-            public V Value;
+            public T Value;
             public Vector2 Position;
         }
         public const int QT_NODE_CAPACITY = 4;

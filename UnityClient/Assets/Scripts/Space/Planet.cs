@@ -3,20 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using UnityEngine;
+using System.Xml;
+using System.Xml.Serialization;
 namespace COSMOS.Space
 {
-    public class Planet
+    [BindProto("Planet")]
+    public class Planet : SpaceObject
     {
-        public readonly PlanetProto Proto;
-        public float OrbitSpeed { get; protected set; }
-        public float OrbitSize { get; protected set; }
+        [BindProto(true)]
+        public float Size;
+        [BindProto(true)]
+        public float OrbitSpeed;
+        [BindProto(true)]
+        public float OrbitSize;
 
-        public Planet(PlanetProto proto)
+        public override Vector2 GetPos()
         {
-            Proto = proto;
-            OrbitSize = proto.OrbitSize;
-            OrbitSpeed = proto.OrbitSpeed;
+            return new Vector2();
         }
     }
 }

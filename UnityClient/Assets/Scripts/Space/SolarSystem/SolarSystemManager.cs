@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using COSMOS.Prototype;
+using COSMOS.UI.HelpfulStuff;
 using System.Collections.ObjectModel;
 using UnityEngine;
 
@@ -13,22 +14,16 @@ namespace COSMOS.Space
     [Manager]
     public static class SolarSystemManager
     {
-        public static ReadOnlyDictionary<string, SolarSystemProto> SolarSystemPrototypes
-        {
-            get { return new ReadOnlyDictionary<string, SolarSystemProto>(solarSystemPrototypes); }
-        }
         public static ReadOnlyDictionary<string, SolarSystem> SolarSystems
         {
             get { return new ReadOnlyDictionary<string, SolarSystem>(solarSystems);  }
         }
-        public static ReadOnlyCollection<SolarSystemProto> SortedSolarSystemPrototypesByStarBrightness
-        {
-            get { return new ReadOnlyCollection<SolarSystemProto>(sortedSolarSystemPrototypesByStarBrightness); }
-        }
-        public static SolarSystemProto MaxFarSystem { get; private set; }
-        static Dictionary<string, SolarSystemProto> solarSystemPrototypes = new Dictionary<string, SolarSystemProto>();
+
+        public static SolarSystem MaxFarSystem { get; private set; }
+
         static Dictionary<string, SolarSystem> solarSystems = new Dictionary<string, SolarSystem>();
-        static List<SolarSystemProto> sortedSolarSystemPrototypesByStarBrightness = new List<SolarSystemProto>();
+        static SolarSystemsQuadTree systemsQuadTree;
+
         public static SolarSystem CurrentSystem { get; private set; }
         public static event Action StartLoadSystem;
         public static event Action EndLoadSystem;
@@ -36,17 +31,9 @@ namespace COSMOS.Space
         [InitMethod(-1)]
         public static void Init()
         {
-            SolarSystemSceneManager.StartLoadSystem += ()=>StartLoadSystem?.Invoke();
-            SolarSystemSceneManager.EndLoadSystem += ()=>EndLoadSystem?.Invoke();
-            LoadPrototypes();
-            for (int i = 0; i < 100; i++)
-            {
-                sortedSolarSystemPrototypesByStarBrightness.Add(new SolarSystemProto() { PosOnMap = new UnityEngine.Vector2(i*10,i*10), SystemStar = new Star() { Brightness = 100 } });
-            }
-            MaxFarSystem = sortedSolarSystemPrototypesByStarBrightness[sortedSolarSystemPrototypesByStarBrightness.Count - 1];
-            InitSolarSystems();
+            LoadSolarSystems();
         }
-        static void LoadPrototypes()
+        static void LoadSolarSystems()
         {
             string config = AssetsDatabase.LoadPrototype("SolarSystems");
             if (!string.IsNullOrEmpty(config))
@@ -60,12 +47,12 @@ namespace COSMOS.Space
                     {
                         if (item.Name == "SolarSystem")
                         {
-                            SolarSystemProto tmpProto = PrototypeManager.Parse<SolarSystemProto>(item);
-                            if(tmpProto != null)
+                            SolarSystem tmpSystem = PrototypeManager.Parse<SolarSystem>(item);
+                            if(tmpSystem != null)
                             {
-                                if (!AddSolarSystemProto(tmpProto))
+                                if (!AddSolarSystem(tmpSystem))
                                 {
-                                    Log.Warning("duplicate SolarSystemProto. name: " + tmpProto.Name.Key);
+                                    Log.Warning("duplicate SolarSystem name: " + tmpSystem.Name.Key);
                                 }
                             }
                         }
@@ -73,25 +60,18 @@ namespace COSMOS.Space
                 }
             }
         }
-        static bool AddSolarSystemProto(SolarSystemProto ssp)
+        public static bool AddSolarSystem(SolarSystem system)
         {
-            if (!solarSystemPrototypes.ContainsKey(ssp.Name.Key))
+            if (!solarSystems.ContainsKey(system.Name.Key))
             {
-                solarSystemPrototypes.Add(ssp.Name.Key, ssp);
-                if (MaxFarSystem == null || MaxFarSystem.PosOnMap.sqrMagnitude < ssp.PosOnMap.sqrMagnitude)
-                {
-                    MaxFarSystem = ssp;
-                }
+                solarSystems.Add(system.Name, system);
                 return true;
             }
             return false;
         }
-        static void InitSolarSystems()
+        public static List<SolarSystem> SystemsOnMap(Rect rect, float importance)
         {
-            foreach (var system in solarSystemPrototypes)
-            {
-                solarSystems.Add(system.Key, new SolarSystem(system.Value));
-            }
+            return new List<SolarSystem>(systemsQuadTree.QueryRange(rect, importance));
         }
         public static bool LoadSystem(string name)
         {

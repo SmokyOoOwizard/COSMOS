@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using COSMOS.Paterns;
 using COSMOS.Core.HelpfulStuff;
+using COSMOS.UI.HelpfulStuff;
 
 namespace COSMOS.UI
 {
@@ -38,7 +39,6 @@ namespace COSMOS.UI
 		public const float CLIP_AREA_PERCENT = 1.10f;
 		public const float ZOOM_COEF = 10f;
 
-		public static QuadTree<SolarSystemProto> tree = new QuadTree<SolarSystemProto>(new Rect());
 		public ObjectPool<GameObject> ObjectPool;
 		public List<GameObject> Objects = new List<GameObject>();
 
@@ -106,44 +106,12 @@ namespace COSMOS.UI
 				GameObject tmp = Objects[i];
 				tmp.name = i.ToString();
 				tmp.SetActive(true);
-				tmp.transform.position = (systems[i].Value.PosOnMap + Position) * (1 + Zoom.GalaxyZoom * ZOOM_COEF) + new Vector2(Screen.width, Screen.height) * 0.5f;
+				tmp.transform.position = (systems[i].PosOnMap + Position) * (1 + Zoom.GalaxyZoom * ZOOM_COEF) + new Vector2(Screen.width, Screen.height) * 0.5f;
 			}
 		}
-		private void OnDrawGizmos()
+		List<SolarSystem> SelectSystems()
 		{
-			//var systems = SelectSystems3();
-			//for (int i = 0; i < systems.Count; i++)
-			//{
-			//	Gizmos.DrawWireSphere(systems[i].Value.PosOnMap, 1);
-			//}
-			tree.DebugDraw();
-			Vector2 newSize = new Vector2(Screen.width, Screen.height) / (1 + Zoom.GalaxyZoom * ZOOM_COEF);
-			
-			Vector2 newPos = new Vector2(Position.x + (newSize.x) * 0.5f, Position.y + (newSize.y) * 0.5f);
-			
-			Rect view = new Rect(-newPos, newSize);
-
-			Debug.DrawLine(view.min, new Vector3(view.xMin, view.yMax), Color.green);
-			Debug.DrawLine(view.min, new Vector3(view.xMax, view.yMin), Color.green);
-
-			Debug.DrawLine(view.max, new Vector3(view.xMax, view.yMin), Color.green);
-			Debug.DrawLine(view.max, new Vector3(view.xMin, view.yMax), Color.green);
-		}
-
-		[InitMethod(int.MinValue)]
-		static void Init()
-		{
-			tree = new QuadTree<SolarSystemProto>(new Rect(Vector2.zero, SolarSystemManager.MaxFarSystem.PosOnMap));
-
-			for (int i = 0; i < SolarSystemManager.SortedSolarSystemPrototypesByStarBrightness.Count; i++)
-			{
-				SolarSystemProto tmp = SolarSystemManager.SortedSolarSystemPrototypesByStarBrightness[i];
-				tree.Insert(new QuadTree<SolarSystemProto>.Point<SolarSystemProto>() { Value = tmp, Position = tmp.PosOnMap });
-			}
-		}
-		List<QuadTree<SolarSystemProto>.Point<SolarSystemProto>> SelectSystems()
-		{
-			List<QuadTree<SolarSystemProto>.Point<SolarSystemProto>> foundedSystems = new List<QuadTree<SolarSystemProto>.Point<SolarSystemProto>>();
+			List<SolarSystem> foundedSystems = new List<SolarSystem>();
 
 			Vector2 newSize = new Vector2(Screen.width, Screen.height) / (1 + Zoom.GalaxyZoom * ZOOM_COEF);
 			
@@ -151,7 +119,7 @@ namespace COSMOS.UI
 			
 			Rect view = new Rect(-newPos, newSize);
 
-			foundedSystems.AddRange(tree.QueryRange(view, Mathf.RoundToInt(Mathf.Lerp(3, QuadTree<SolarSystemProto>.QT_NODE_DEEP, Zoom.GalaxyZoom))));
+			foundedSystems.AddRange(SolarSystemManager.SystemsOnMap(view, Mathf.RoundToInt(Mathf.Lerp(3, QuadTree<SolarSystem>.QT_NODE_DEEP, Zoom.GalaxyZoom))));
 
 			//Log.Info(foundedSystems.Count);
 

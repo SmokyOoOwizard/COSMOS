@@ -28,7 +28,7 @@ namespace COSMOS.Space
                 UnloadSystem();
             }
             SolarSystem = ss;
-            Log.Info("loading system: " + ss.Proto.Name.Key);
+            Log.Info("loading system: " + ss.Name.Key);
             StartCoroutine(Loading());
         }
         IEnumerator Loading()

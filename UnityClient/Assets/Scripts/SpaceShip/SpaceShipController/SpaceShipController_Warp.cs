@@ -38,7 +38,7 @@ namespace COSMOS.SpaceShip
         }
         public bool CanWarp(SolarSystem ss)
         {
-            float distance = Vector2.Distance(SolarSystemManager.CurrentSystem.Proto.PosOnMap, ss.Proto.PosOnMap);
+            float distance = Vector2.Distance(SolarSystemManager.CurrentSystem.PosOnMap, ss.PosOnMap);
             float warpTime = Hull.WarpEngine.WarpSpeed * distance;
             float fuelCount = Hull.GetFuelCount("DarkEnergy");
             float allCost = warpTime * Hull.WarpEngine.WarpFuelConsumption + Hull.WarpEngine.ChargeTime * Hull.WarpEngine.ChargeFuelConsumption;
@@ -54,7 +54,8 @@ namespace COSMOS.SpaceShip
             {
                 WarpChargeTimeLeft = Hull.WarpEngine.ChargeTime;
                 WarpTarget = ss;
-                WarpTimeLeft = CalculateTimeWarp = Hull.WarpEngine.WarpSpeed * Vector2.Distance(SolarSystemManager.CurrentSystem.Proto.PosOnMap, ss.Proto.PosOnMap);
+                WarpTimeLeft = CalculateTimeWarp = Hull.WarpEngine.WarpSpeed * 
+                    Vector2.Distance(SolarSystemManager.CurrentSystem.PosOnMap, ss.PosOnMap);
                 WarpCharging = true;
                 Hull.WarpEngine.EngineState = Equipment.WarpEngine.State.Charge;
                 Warping = false;

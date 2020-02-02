@@ -1,22 +1,35 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Xml.Serialization;
-using System.IO;
+using System;
+using System.Xml;
 using UnityEngine;
+using COSMOS.Core.HelpfulStuff;
 
-namespace COSMOS.Space {
+namespace COSMOS.Space
+{
+    [BindProto("SolarSystem")] 
     public class SolarSystem
     {
-        public SolarSystemProto Proto { get; protected set; }
+        [BindProto(true)]
+        public lstring Name;
+        [BindProto("Position", true)]
+        public Vector2 PosOnMap;
+        [BindProto("ImportanceOnMap", true)]
+        public float ImportanceOnMap;
+        [BindProto("WarpSafe",true)]
+        public float WarpSafeDistance = 2;
+        [BindProto("Asteroids")]
+        public float AsteroidPercent;
+        [BindProto]
+        public Star SystemStar;
+        [BindProto]
         public List<Planet> Planets = new List<Planet>();
+        [BindProto]
+        public List<SpaceStation> SpaceStations = new List<SpaceStation>();
 
-        public SolarSystem(SolarSystemProto proto)
+        public SolarSystem()
         {
-            Proto = proto;
-            foreach (var planet in proto.Planets)
-            {
-                Planets.Add(new Planet(planet));
-            }
+
         }
     }
 }
