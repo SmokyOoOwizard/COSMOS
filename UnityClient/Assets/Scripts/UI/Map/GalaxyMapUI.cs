@@ -8,11 +8,12 @@ using System.Linq;
 using COSMOS.Paterns;
 using COSMOS.Core.HelpfulStuff;
 using COSMOS.UI.HelpfulStuff;
+using COSMOS.UI.Map;
 
 namespace COSMOS.UI
 {
 	[Manager]
-	public class MapUI : SingletonMono<MapUI>
+	public class GalaxyMapUI : SingletonMono<GalaxyMapUI>
 	{
 		public Vector2 Position;
 		private Vector2 position;
@@ -35,21 +36,22 @@ namespace COSMOS.UI
 		public TextMeshProUGUI SystemDescription;
 		#endregion
 
-		public const int MIN_SOLAR_SYSTEM_COUNT = 10;
 		public const float CLIP_AREA_PERCENT = 1.10f;
 		public const float ZOOM_COEF = 10f;
 
-		public ObjectPool<GameObject> ObjectPool;
-		public List<GameObject> Objects = new List<GameObject>();
+		public ObjectPool<MapSolarSystemUI> ObjectPool;
+		public List<MapSolarSystemUI> Systems = new List<MapSolarSystemUI>();
 
 		private void Awake()
 		{
 			InitPatern();
-			ObjectPool = new ObjectPool<GameObject>(20, true, () =>
+			ObjectPool = new ObjectPool<MapSolarSystemUI>(20, true, () =>
 			{
 				GameObject t = Instantiate(StarPrefab);
 				t.transform.SetParent(Back.transform);
-				return t;
+				t.SetActive(false);
+				var star = t.AddComponent<MapSolarSystemUI>();
+				return star;
 			});
 		}
 		// Start is called before the first frame update
@@ -76,20 +78,20 @@ namespace COSMOS.UI
 		void UpdateMap()
 		{
 			var systems = SelectSystems();
-			if (systems.Count > Objects.Count)
+			if (systems.Count > Systems.Count)
 			{
-				for (int i = Objects.Count; i < systems.Count; i++)
+				for (int i = Systems.Count; i < systems.Count; i++)
 				{
-					Objects.Add(ObjectPool.GetObject());
+					Systems.Add(ObjectPool.GetObject());
 				}
 			}
-			else if (systems.Count < Objects.Count)
+			else if (systems.Count < Systems.Count)
 			{
-				while (systems.Count < Objects.Count)
+				while (systems.Count < Systems.Count)
 				{
-					int i = Objects.Count - 1;
-					GameObject tmp = Objects[i];
-					tmp.SetActive(false);
+					int i = Systems.Count - 1;
+					MapSolarSystemUI tmp = Systems[i];
+					tmp.gameObject.SetActive(false);
 					if (!ObjectPool.Release(tmp))
 					{
 						Destroy(tmp);
@@ -98,16 +100,21 @@ namespace COSMOS.UI
 					{
 						tmp.name = "disable";
 					}
-					Objects.RemoveAt(i);
+					Systems.RemoveAt(i);
 				}
 			} 	
 			for (int i = 0; i < systems.Count; i++)
 			{
-				GameObject tmp = Objects[i];
-				tmp.name = i.ToString();
-				tmp.SetActive(true);
+				MapSolarSystemUI tmp = Systems[i];
+				tmp.gameObject.name = i.ToString();
+				tmp.SolarSytem = systems[i];
+				tmp.gameObject.SetActive(true);
 				tmp.transform.position = (systems[i].PosOnMap + Position) * (1 + Zoom.GalaxyZoom * ZOOM_COEF) + new Vector2(Screen.width, Screen.height) * 0.5f;
 			}
+		}
+		public void SelectSystem(SolarSystem system)
+		{
+
 		}
 		List<SolarSystem> SelectSystems()
 		{
