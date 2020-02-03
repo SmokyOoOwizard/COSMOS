@@ -41,6 +41,7 @@ namespace COSMOS.UI
 
 		public ObjectPool<MapSolarSystemUI> ObjectPool;
 		public List<MapSolarSystemUI> Systems = new List<MapSolarSystemUI>();
+		public Dictionary<SolarSystem, MapSolarSystemUI> s = new Dictionary<SolarSystem, MapSolarSystemUI>();
 
 		private void Awake()
 		{
@@ -78,41 +79,47 @@ namespace COSMOS.UI
 		void UpdateMap()
 		{
 			var systems = SelectSystems();
-			if (systems.Count > Systems.Count)
+
+			Dictionary<SolarSystem, MapSolarSystemUI> toDelete = new Dictionary<SolarSystem, MapSolarSystemUI>(s);
+			s.Clear();
+			foreach (var item in systems)
 			{
-				for (int i = Systems.Count; i < systems.Count; i++)
+				MapSolarSystemUI system;
+				if (toDelete.ContainsKey(item))
 				{
-					Systems.Add(ObjectPool.GetObject());
+					system = toDelete[item];
+					s.Add(item, system);
+					toDelete.Remove(item);
 				}
+				else
+				{
+					system = ObjectPool.GetObject();
+					system.Init(item);
+					system.gameObject.SetActive(true);
+					s.Add(item, system);
+				}
+				system.transform.position = (item.PosOnMap + Position) * (1 + Zoom.GalaxyZoom * ZOOM_COEF) + 
+					new Vector2(Screen.width, Screen.height) * 0.5f;
+
 			}
-			else if (systems.Count < Systems.Count)
+			foreach (var item in toDelete)
 			{
-				while (systems.Count < Systems.Count)
+				item.Value.gameObject.SetActive(false);
+				if (!ObjectPool.Release(item.Value))
 				{
-					int i = Systems.Count - 1;
-					MapSolarSystemUI tmp = Systems[i];
-					tmp.gameObject.SetActive(false);
-					if (!ObjectPool.Release(tmp))
-					{
-						Destroy(tmp);
-					}
-					else
-					{
-						tmp.name = "disable";
-					}
-					Systems.RemoveAt(i);
+					Destroy(item.Value.gameObject);
 				}
-			} 	
-			for (int i = 0; i < systems.Count; i++)
-			{
-				MapSolarSystemUI tmp = Systems[i];
-				tmp.gameObject.name = i.ToString();
-				tmp.SolarSytem = systems[i];
-				tmp.gameObject.SetActive(true);
-				tmp.transform.position = (systems[i].PosOnMap + Position) * (1 + Zoom.GalaxyZoom * ZOOM_COEF) + new Vector2(Screen.width, Screen.height) * 0.5f;
+				else
+				{
+					item.Value.name = "disable";
+				}
 			}
 		}
 		public void SelectSystem(SolarSystem system)
+		{
+
+		}
+		public void SelectSpaceObject(SpaceObject obj)
 		{
 
 		}

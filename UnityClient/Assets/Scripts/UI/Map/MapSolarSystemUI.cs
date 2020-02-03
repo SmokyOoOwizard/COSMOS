@@ -11,12 +11,39 @@ namespace COSMOS.UI.Map
 {
     public class MapSolarSystemUI : MonoBehaviour, IPointerDownHandler
     {
-        public SolarSystem SolarSytem;
+        public SolarSystem SolarSystem { get; private set; }
+
+        List<MapPlanetUI> InstancePlanets = new List<MapPlanetUI>();
 
         public void OnPointerDown(PointerEventData eventData)
         {
-            GalaxyMapUI.instance.SelectSystem(SolarSytem);
-            Log.Info("Clicl on " + SolarSytem.Name.Key);
+            GalaxyMapUI.instance.SelectSystem(SolarSystem);
+            Log.Info("Clicl on " + SolarSystem.Name.Key);
+        }
+        public void Init(SolarSystem system)
+        {
+            SolarSystem = system;
+            gameObject.name = system.Name.Key;
+            createSystemStuff();
+        }
+        void deleteSystemStuff()
+        {
+            foreach (var planet in InstancePlanets)
+            {
+                Destroy(planet.gameObject);
+            }
+            InstancePlanets.Clear();
+        }
+        void createSystemStuff()
+        {
+            deleteSystemStuff();
+            foreach (var planet in SolarSystem.Planets)
+            {
+                MapPlanetUI planetUI = MapPlanetUI.Spawn(planet);
+                planetUI.transform.SetParent(transform);
+
+                InstancePlanets.Add(planetUI);
+            }
         }
     }
 }

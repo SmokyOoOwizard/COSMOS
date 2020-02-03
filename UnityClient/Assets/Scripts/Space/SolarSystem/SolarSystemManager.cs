@@ -35,6 +35,7 @@ namespace COSMOS.Space
             SolarSystem tm1, tm2;
             tm1 = new SolarSystem();
             tm1.Name = "test 1";
+            tm1.Planets.Add(new Planet());
             tm1.PosOnMap = new Vector2(10, 10);
             tm2 = new SolarSystem();
             tm2.Name = "test 2";
