@@ -68,7 +68,7 @@ namespace COSMOS.UI
 			prefMousePosition = mousePosition;
 			if (Input.GetKey(KeyCode.Q))
 			{
-				Position += new Vector2(mouseDelta.x, mouseDelta.y);
+				Position += new Vector2(mouseDelta.x, mouseDelta.y) / (1 + Zoom.GalaxyZoom * ZOOM_COEF);
 			}
 			if(position != Position)
 			{
@@ -119,8 +119,9 @@ namespace COSMOS.UI
 		List<SolarSystem> SelectSystems()
 		{
 			List<SolarSystem> foundedSystems = new List<SolarSystem>();
+			float zoom = (1 + Zoom.GalaxyZoom * ZOOM_COEF);
 
-			Vector2 newSize = new Vector2(Screen.width, Screen.height) / (1 + Zoom.GalaxyZoom * ZOOM_COEF);
+			Vector2 newSize = new Vector2(Screen.width, Screen.height) / zoom;
 			
 			Vector2 newPos = new Vector2(Position.x + (newSize.x) * 0.5f, Position.y + (newSize.y) * 0.5f);
 			
