@@ -100,7 +100,7 @@ namespace COSMOS.Core.HelpfulStuff
                 return tmp.ToArray();
             }
 
-            void subdivide()
+            public void subdivide()
             {
                 if (northWest == null) 
                 { 
@@ -286,6 +286,7 @@ namespace COSMOS.Core.HelpfulStuff
             {
                 child.parent = newChild;
                 child = newChild;
+                child.subdivide();
             }
             else
             {

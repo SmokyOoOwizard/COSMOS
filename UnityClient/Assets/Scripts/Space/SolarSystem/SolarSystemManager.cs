@@ -52,7 +52,6 @@ namespace COSMOS.Space
             systemsQuadTree.Insert(tm2);
             systemsQuadTree.Insert(tm3);
             systemsQuadTree.Insert(tm4);
-            systemsQuadTree.Insert(tm4);
 
 
         }

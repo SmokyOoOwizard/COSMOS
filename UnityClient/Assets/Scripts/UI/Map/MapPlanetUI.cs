@@ -12,10 +12,17 @@ namespace COSMOS.UI.Map
     {
         public Planet Planet;
 
+        private void Update()
+        {
+            transform.position = new Vector3(Planet.GetPos().x, 0, Planet.GetPos().y);
+        }
+
         public static MapPlanetUI Spawn(Planet planet)
         {
             GameObject go = new GameObject("MapPlanetUI", typeof(MapPlanetUI));
-            return go.GetComponent<MapPlanetUI>();
+            var tmp = go.GetComponent<MapPlanetUI>();
+            tmp.Planet = planet;
+            return tmp; 
         }
     }
 }

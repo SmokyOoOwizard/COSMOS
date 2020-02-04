@@ -77,31 +77,28 @@ namespace COSMOS.UI.HelpfulStuff
             {
                 List<SolarSystem> tmp = new List<SolarSystem>();
 
-                if (queryDeep > 0)
+                if (boundary.Overlaps(range))
                 {
-                    if (boundary.Overlaps(range))
+                    for (int i = 0; i < points.Count; i++)
                     {
-                        for (int i = 0; i < points.Count; i++)
+                        if (range.Contains(points[i].PosOnMap) && points[i].ImportanceOnMap <= queryDeep)
                         {
-                            if (range.Contains(points[i].PosOnMap))
-                            {
-                                tmp.Add(points[i]);
-                            }
+                            tmp.Add(points[i]);
                         }
+                    }
 
-                        if (northWest != null)
-                        {
-                            tmp.AddRange(northWest.QueryRange(range, queryDeep - 1));
-                            tmp.AddRange(northEast.QueryRange(range, queryDeep - 1));
-                            tmp.AddRange(southWest.QueryRange(range, queryDeep - 1));
-                            tmp.AddRange(southEast.QueryRange(range, queryDeep - 1));
-                        }
+                    if (northWest != null)
+                    {
+                        tmp.AddRange(northWest.QueryRange(range, queryDeep));
+                        tmp.AddRange(northEast.QueryRange(range, queryDeep));
+                        tmp.AddRange(southWest.QueryRange(range, queryDeep));
+                        tmp.AddRange(southEast.QueryRange(range, queryDeep));
                     }
                 }
                 return tmp.ToArray();
             }
 
-            void subdivide()
+            public void subdivide()
             {
                 if (northWest == null)
                 {
@@ -276,6 +273,7 @@ namespace COSMOS.UI.HelpfulStuff
             {
                 child.parent = newChild;
                 child = newChild;
+                child.subdivide();
             }
             else
             {

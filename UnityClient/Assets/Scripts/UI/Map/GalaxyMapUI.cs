@@ -37,11 +37,10 @@ namespace COSMOS.UI
 		#endregion
 
 		public const float CLIP_AREA_PERCENT = 1.10f;
-		public const float ZOOM_COEF = 10f;
+		public const float ZOOM_COEF = 30f;
 
 		public ObjectPool<MapSolarSystemUI> ObjectPool;
 		public Dictionary<SolarSystem, MapSolarSystemUI> Systems = new Dictionary<SolarSystem, MapSolarSystemUI>();
-		QuadTree<SolarSystem> qw = new QuadTree<SolarSystem>();
 		private void Awake()
 		{
 			InitPatern();
@@ -57,9 +56,7 @@ namespace COSMOS.UI
 		// Start is called before the first frame update
 		void Start()
 		{
-			qw.Insert(new Vector2(0, 0), new SolarSystem());
-			qw.Insert(new Vector2(10, 10), new SolarSystem());
-			qw.Insert(new Vector2(6, -6), new SolarSystem());
+
 		}
 
 		// Update is called once per frame
