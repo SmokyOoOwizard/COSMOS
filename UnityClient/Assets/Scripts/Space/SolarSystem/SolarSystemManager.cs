@@ -20,29 +20,40 @@ namespace COSMOS.Space
         }
 
         public static SolarSystem MaxFarSystem { get; private set; }
+        public static SolarSystem MaxNotInpotanceSystem { get; private set; }
 
         static Dictionary<string, SolarSystem> solarSystems = new Dictionary<string, SolarSystem>();
-        static SolarSystemsQuadTree systemsQuadTree = new SolarSystemsQuadTree(new Rect());
+        public static SolarSystemsQuadTree systemsQuadTree = new SolarSystemsQuadTree();
 
         public static SolarSystem CurrentSystem { get; private set; }
         public static event Action StartLoadSystem;
         public static event Action EndLoadSystem;
-
+        
         [InitMethod(-1)]
         public static void Init()
         {
             LoadSolarSystems();
-            SolarSystem tm1, tm2;
+            SolarSystem tm1, tm2, tm3, tm4;
             tm1 = new SolarSystem();
             tm1.Name = "test 1";
             tm1.Planets.Add(new Planet());
             tm1.PosOnMap = new Vector2(10, 10);
             tm2 = new SolarSystem();
+            tm2.PosOnMap = new Vector2(3, 3);
             tm2.Name = "test 2";
+            tm3 = new SolarSystem();
+            tm3.PosOnMap = new Vector2(4, 3);
+            tm3.Name = "test 3";
+            tm4 = new SolarSystem();
+            tm4.PosOnMap = new Vector2(3, 4);
+            tm4.Name = "test 4";
 
-            systemsQuadTree = new SolarSystemsQuadTree(new Rect(0, 0, 20, 20));
             systemsQuadTree.Insert(tm1);
             systemsQuadTree.Insert(tm2);
+            systemsQuadTree.Insert(tm3);
+            systemsQuadTree.Insert(tm4);
+            systemsQuadTree.Insert(tm4);
+
 
         }
         static void LoadSolarSystems()
@@ -77,6 +88,9 @@ namespace COSMOS.Space
             if (!solarSystems.ContainsKey(system.Name.Key))
             {
                 solarSystems.Add(system.Name.Key, system);
+                systemsQuadTree.Insert(system);
+                if (MaxNotInpotanceSystem == null || 
+                    system.ImportanceOnMap > MaxNotInpotanceSystem.ImportanceOnMap) MaxNotInpotanceSystem = system;
                 return true;
             }
             return false;

@@ -40,9 +40,8 @@ namespace COSMOS.UI
 		public const float ZOOM_COEF = 10f;
 
 		public ObjectPool<MapSolarSystemUI> ObjectPool;
-		public List<MapSolarSystemUI> Systems = new List<MapSolarSystemUI>();
-		public Dictionary<SolarSystem, MapSolarSystemUI> s = new Dictionary<SolarSystem, MapSolarSystemUI>();
-
+		public Dictionary<SolarSystem, MapSolarSystemUI> Systems = new Dictionary<SolarSystem, MapSolarSystemUI>();
+		QuadTree<SolarSystem> qw = new QuadTree<SolarSystem>();
 		private void Awake()
 		{
 			InitPatern();
@@ -58,7 +57,9 @@ namespace COSMOS.UI
 		// Start is called before the first frame update
 		void Start()
 		{
-
+			qw.Insert(new Vector2(0, 0), new SolarSystem());
+			qw.Insert(new Vector2(10, 10), new SolarSystem());
+			qw.Insert(new Vector2(6, -6), new SolarSystem());
 		}
 
 		// Update is called once per frame
@@ -75,20 +76,22 @@ namespace COSMOS.UI
 			{
 				UpdateMap();
 			}
+			//qw.DebugDraw();
+			SolarSystemManager.systemsQuadTree.DebugDraw();
 		}
 		void UpdateMap()
 		{
 			var systems = SelectSystems();
 
-			Dictionary<SolarSystem, MapSolarSystemUI> toDelete = new Dictionary<SolarSystem, MapSolarSystemUI>(s);
-			s.Clear();
+			Dictionary<SolarSystem, MapSolarSystemUI> toDelete = new Dictionary<SolarSystem, MapSolarSystemUI>(Systems);
+			Systems.Clear();
 			foreach (var item in systems)
 			{
 				MapSolarSystemUI system;
 				if (toDelete.ContainsKey(item))
 				{
 					system = toDelete[item];
-					s.Add(item, system);
+					Systems.Add(item, system);
 					toDelete.Remove(item);
 				}
 				else
@@ -96,7 +99,7 @@ namespace COSMOS.UI
 					system = ObjectPool.GetObject();
 					system.Init(item);
 					system.gameObject.SetActive(true);
-					s.Add(item, system);
+					Systems.Add(item, system);
 				}
 				system.transform.position = (item.PosOnMap + Position) * (1 + Zoom.GalaxyZoom * ZOOM_COEF) + 
 					new Vector2(Screen.width, Screen.height) * 0.5f;
@@ -134,7 +137,8 @@ namespace COSMOS.UI
 			
 			Rect view = new Rect(-newPos, newSize);
 
-			foundedSystems.AddRange(SolarSystemManager.SystemsOnMap(view, Mathf.RoundToInt(Mathf.Lerp(3, QuadTree<SolarSystem>.QT_NODE_DEEP, Zoom.GalaxyZoom))));
+			foundedSystems.AddRange(SolarSystemManager.SystemsOnMap(view, 
+				Mathf.RoundToInt(Mathf.Lerp(0, SolarSystemManager.MaxNotInpotanceSystem.ImportanceOnMap, Zoom.GalaxyZoom))));
 
 			//Log.Info(foundedSystems.Count);
 

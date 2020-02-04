@@ -9,113 +9,288 @@ namespace COSMOS.Core.HelpfulStuff
 {
     public class QuadTree<T>
     {
-        public struct Point<T>
-        {
-            public T Value;
-            public Vector2 Position;
-        }
         public const int QT_NODE_CAPACITY = 4;
-        public const int QT_NODE_DEEP = 10;
-
-        List<Point<T>> points = new List<Point<T>>();
-
-        Rect boundary;
-
-        int deep = 0;
-
-        QuadTree<T> northWest;
-        QuadTree<T> northEast;
-        QuadTree<T> southWest;
-        QuadTree<T> southEast;
-
-        public QuadTree(Rect rect)
+        class Quad
         {
-            boundary = rect;
-        }
-        QuadTree(Rect rect, int deep)
-        {
-            boundary = rect;
-            this.deep = deep;
-        }
+            List<Point> points = new List<Point>();
 
-        public bool Insert(Point<T> point)
-        {
-            if (!boundary.Contains(point.Position))
+            public Rect boundary;
+
+            public int deep = 0;
+
+            public Quad parent;
+
+            public Quad northWest;
+            public Quad northEast;
+            public Quad southWest;
+            public Quad southEast;
+
+            public Quad(Rect rect)
             {
-                return false;
+                boundary = rect;
+            }
+            Quad(Rect rect, int deep)
+            {
+                boundary = rect;
+                this.deep = deep;
             }
 
-            if (points.Count < QT_NODE_CAPACITY || deep >= QT_NODE_DEEP)
+            public bool Insert(Point point)
             {
-                points.Add(point);
-                return true;
-            }
-            else
-            {
-                if (northWest == null)
-                {
-                    subdivide();
-                }
-                if (!northWest.Insert(point) && !northEast.Insert(point) && !southWest.Insert(point) && !southEast.Insert(point))
+                if (!boundary.Contains(point.Position))
                 {
                     return false;
                 }
-            }
-            return false;
-        }
-        public Point<T>[] QueryRange(Rect range, int queryDeep = QT_NODE_DEEP)
-        {
-            List<Point<T>> tmp = new List<Point<T>>();
 
-            if (queryDeep > 0)
-            {
-                if (boundary.Overlaps(range))
+                if (points.Count < QT_NODE_CAPACITY)
                 {
+                    points.Add(point);
+                    return true;
+                }
+                else
+                {
+                    subdivide();
                     for (int i = 0; i < points.Count; i++)
                     {
-                        if (range.Contains(points[i].Position))
+                        if (northWest.Insert(points[i]) || northEast.Insert(points[i]) ||
+                            southWest.Insert(points[i]) || southEast.Insert(points[i]))
                         {
-                            tmp.Add(points[i]);
+                            points.RemoveAt(i);
+                            i--;
+                            continue;
                         }
                     }
-
-                    if (northWest != null)
+                    if (!northWest.Insert(point) && !northEast.Insert(point) &&
+                        !southWest.Insert(point) && !southEast.Insert(point))
                     {
-                        tmp.AddRange(northWest.QueryRange(range, queryDeep - 1));
-                        tmp.AddRange(northEast.QueryRange(range, queryDeep - 1));
-                        tmp.AddRange(southWest.QueryRange(range, queryDeep - 1));
-                        tmp.AddRange(southEast.QueryRange(range, queryDeep - 1));
+                        if (points.Count < QT_NODE_CAPACITY)
+                        {
+                            points.Add(point);
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            public Point[] QueryRange(Rect range, int queryDeep)
+            {
+                List<Point> tmp = new List<Point>();
+
+                if (queryDeep > 0)
+                {
+                    if (boundary.Overlaps(range))
+                    {
+                        for (int i = 0; i < points.Count; i++)
+                        {
+                            if (range.Contains(points[i].Position))
+                            {
+                                tmp.Add(points[i]);
+                            }
+                        }
+
+                        if (northWest != null)
+                        {
+                            tmp.AddRange(northWest.QueryRange(range, queryDeep - 1));
+                            tmp.AddRange(northEast.QueryRange(range, queryDeep - 1));
+                            tmp.AddRange(southWest.QueryRange(range, queryDeep - 1));
+                            tmp.AddRange(southEast.QueryRange(range, queryDeep - 1));
+                        }
+                    }
+                }
+                return tmp.ToArray();
+            }
+
+            void subdivide()
+            {
+                if (northWest == null) 
+                { 
+                    northWest = new Quad(new Rect(boundary.xMin, boundary.yMin + boundary.height / 2, boundary.width / 2, boundary.height / 2), deep + 1);
+                    northWest.parent = this;
+                }
+                if (northEast == null) 
+                { 
+                    northEast = new Quad(new Rect(boundary.xMin + boundary.width / 2, boundary.yMin + boundary.height / 2, boundary.width / 2, boundary.height / 2), deep + 1);
+                    northEast.parent = this;
+                }
+                if (southWest == null) 
+                { 
+                    southWest = new Quad(new Rect(boundary.xMin, boundary.yMin, boundary.width / 2, boundary.height / 2), deep + 1);
+                    southWest.parent = this;
+                }
+                if (southEast == null) 
+                { 
+                    southEast = new Quad(new Rect(boundary.xMin + boundary.width / 2, boundary.yMin, boundary.width / 2, boundary.height / 2), deep + 1);
+                    southEast.parent = this;
+                }
+            }
+            public void debugDraw()
+            {
+                Debug.DrawLine(new Vector3(boundary.xMin, boundary.yMin), new Vector3(boundary.xMax, boundary.yMin));
+                Debug.DrawLine(new Vector3(boundary.xMin, boundary.yMin), new Vector3(boundary.xMin, boundary.yMax));
+                Debug.DrawLine(new Vector3(boundary.xMax, boundary.yMin), new Vector3(boundary.xMax, boundary.yMax));
+                Debug.DrawLine(new Vector3(boundary.xMin, boundary.yMax), new Vector3(boundary.xMax, boundary.yMax));
+
+                if (northWest != null)
+                {
+                    northWest.debugDraw();
+                }
+                if (northEast != null)
+                {
+                    northEast.debugDraw();
+                }
+                if (southWest != null)
+                {
+                    southWest.debugDraw();
+                }
+                if (southEast != null)
+                {
+                    southEast.debugDraw();
+                }
+
+                for (int i = 0; i < points.Count; i++)
+                {
+                    Debug.DrawRay(points[i].Position, Vector3.one);
+                }
+            }
+        }
+        public class Point
+        {
+            public T Value;
+            public Vector2 Position;
+
+            public Point(Vector2 position, T value)
+            {
+                Value = value;
+                Position = position;
+            }
+        }
+        public void DebugDraw()
+        {
+            if (child != null)
+            {
+                child.debugDraw();
+            }
+        }
+
+        Quad child;
+
+        public void Insert(Vector2 point, T value)
+        {
+            if(child == null)
+            {
+                if(point != Vector2.zero)
+                {
+                    child = new Quad(new Rect(-point / 2, point));
+                }
+                else
+                {
+                    child = new Quad(new Rect(-5, -5, 10, 10)); 
+                }
+            }
+            if (!child.boundary.Contains(point))
+            {
+                while (true)
+                {
+                    if (child.boundary.Contains(point))
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        subdivideUp(point);
                     }
                 }
             }
-            return tmp.ToArray();
+            child.Insert(new Point(point, value));
         }
-
-        void subdivide()
+        public Point[] QueryRange(Rect range, int quaryDeep)
         {
-            northWest = new QuadTree<T>(new Rect(boundary.xMin, boundary.yMin + boundary.height / 2, boundary.width / 2, boundary.height / 2), deep + 1);
-            northEast = new QuadTree<T>(new Rect(boundary.xMin + boundary.width / 2, boundary.yMin + boundary.height / 2, boundary.width / 2, boundary.height / 2), deep + 1);
-            southWest = new QuadTree<T>(new Rect(boundary.xMin, boundary.yMin, boundary.width / 2, boundary.height / 2), deep + 1);
-            southEast = new QuadTree<T>(new Rect(boundary.xMin + boundary.width / 2, boundary.yMin, boundary.width / 2, boundary.height / 2), deep + 1);
-        } 
-
-        #region UNITY_EDITOR
-        public void DebugDraw()
-        {
-            Debug.DrawLine(boundary.min, new Vector3(boundary.xMin, boundary.yMax), Color.red);
-            Debug.DrawLine(boundary.min, new Vector3(boundary.xMax, boundary.yMin), Color.red);
-
-            Debug.DrawLine(boundary.max, new Vector3(boundary.xMax, boundary.yMin), Color.red);
-            Debug.DrawLine(boundary.max, new Vector3(boundary.xMin, boundary.yMax), Color.red);
-
-            if(northWest != null)
+            if(child != null)
             {
-                northWest.DebugDraw();
-                northEast.DebugDraw();
-                southWest.DebugDraw();
-                southEast.DebugDraw();
+                return child.QueryRange(range, quaryDeep);
+            }
+            return null;
+        }
+        void subdivideUp(Vector2 pos)
+        {
+            Rect childRect = child.boundary;
+            Vector2 dir = Vector2.zero;
+
+            if (new Rect(new Vector2(childRect.position.x, childRect.position.y + childRect.size.y),
+                childRect.size).Contains(pos)) dir = new Vector2(0, 1);
+            else if (new Rect(new Vector2(childRect.position.x + childRect.size.x, childRect.position.y),
+                childRect.size).Contains(pos)) dir = new Vector2(1, 0);
+            else if (new Rect(new Vector2(childRect.position.x + childRect.size.x, childRect.position.y + childRect.size.y),
+                childRect.size).Contains(pos)) dir = new Vector2(1, 1);
+            else if (new Rect(new Vector2(childRect.position.x + childRect.size.x, childRect.position.y - childRect.size.y),
+                childRect.size).Contains(pos)) dir = new Vector2(1, -1);
+            else if (new Rect(new Vector2(childRect.position.x, childRect.position.y - childRect.size.y),
+                childRect.size).Contains(pos)) dir = new Vector2(0, -1);
+            else if (new Rect(new Vector2(childRect.position.x - childRect.size.x, childRect.position.y - childRect.size.y),
+                childRect.size).Contains(pos)) dir = new Vector2(-1, -1);
+            else if (new Rect(new Vector2(childRect.position.x - childRect.size.x, childRect.position.y),
+                childRect.size).Contains(pos)) dir = new Vector2(-1, 0);
+            else if (new Rect(new Vector2(childRect.position.x - childRect.size.x, childRect.position.y + childRect.size.y),
+                childRect.size).Contains(pos)) dir = new Vector2(-1, 1);
+
+            Vector2 newSize = child.boundary.size * 2;
+            Quad newChild = null;
+            if(dir.y == 1f)
+            {
+                if(dir.x == 1f || dir.x == 0f)
+                {
+                    newChild = new Quad(new Rect(childRect.position, newSize));
+                    newChild.southWest = child;
+                }
+                else if(dir.x == -1)
+                {
+                    newChild = new Quad(new Rect(childRect.position - new Vector2(childRect.size.x, 0),
+                        newSize));
+                    newChild.southEast = child;
+                }
+            }
+            else if(dir.y == 0f)
+            {
+                if(dir.x == 1f)
+                {
+                    newChild = new Quad(new Rect(childRect.position, newSize));
+                    newChild.southWest = child; 
+                }
+                else if(dir.x == -1f)
+                {
+                    newChild = new Quad(new Rect(childRect.position - new Vector2(childRect.size.x, 0),
+                        newSize));
+                    newChild.southEast = child;
+                }
+                else if(dir.x == 0f)
+                {
+                    throw new Exception("point out of bounds " + pos);
+                }
+            }
+            else if (dir.y == -1f)
+            {
+                if (dir.x == 1f || dir.x == 0f)
+                {
+                    newChild = new Quad(new Rect(childRect.position - new Vector2(0, childRect.size.y),
+                        newSize));
+                    newChild.northWest = child;
+                }
+                else if (dir.x == -1)
+                {
+                    newChild = new Quad(new Rect(childRect.position - new Vector2(childRect.size.x, childRect.size.y),
+                        newSize));
+                    newChild.northEast = child;
+                }
+            }
+            if (newChild != null)
+            {
+                child.parent = newChild;
+                child = newChild;
+            }
+            else
+            {
+                throw new Exception("QuadTree: new parent is null");
             }
         }
-        #endregion
     }
 }
