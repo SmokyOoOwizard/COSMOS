@@ -17,15 +17,10 @@ namespace COSMOS.Managers
             LogManager.Init();
             InitAllManagers();
         }
-        void Start()
+        private void OnApplicationQuit()
         {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
+            DeInitAll();
+            LogManager.Deinit();
         }
         void InitAllManagers()
         {
@@ -79,6 +74,33 @@ namespace COSMOS.Managers
                 Log.Error(ex, "Init");
             }
         }
+        void DeInitAll()
+        {
+            List<KeyValuePair<int, (Type, MethodInfo, bool)>> methods = new List<KeyValuePair<int, (Type, MethodInfo, bool)>>();
+            foreach (var item in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (var t in item.GetTypes())
+                {
+                    if (t.GetCustomAttribute(typeof(ManagerAttribute), false) != null)
+                    {
+                        foreach (var m in t.GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+                        {
+                            DeInitMethodAttribute initMethod = m.GetCustomAttribute<DeInitMethodAttribute>();
+                            if (initMethod != null)
+                            {
+                                methods.Add(new KeyValuePair<int, (Type, MethodInfo, bool)>(initMethod.Priority, (t, m, false)));
+                            }
+                        }
+                    }
+                }
+            }
+            methods.Sort((x, y) => { return y.Key.CompareTo(x.Key); });
+            foreach (var method in methods)
+            {
+                Log.Info("Deinit: " + method.Value.Item1.FullName + " Method: " + method.Value.Item2.Name, "Deinit");
+                method.Value.Item2.Invoke(null, null);
+            }
+        }
     }
 }
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
@@ -90,6 +112,15 @@ public sealed class InitMethodAttribute : Attribute
 {
     public int Priority;
     public InitMethodAttribute(int priority = 0)
+    {
+        Priority = priority;
+    }
+}
+[AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
+public sealed class DeInitMethodAttribute : Attribute
+{
+    public int Priority;
+    public DeInitMethodAttribute(int priority = 0)
     {
         Priority = priority;
     }

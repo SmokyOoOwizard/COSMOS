@@ -17,6 +17,11 @@ namespace COSMOS.Managers
             Delogger.LogMaster.RemoveLogProcessing(LogProcess);
             Delogger.LogMaster.AddLogProcessing(LogProcess);
         }
+        public static void Deinit()
+        {
+            Delogger.LogMaster.Stop();
+            Delogger.LogMaster.RemoveLogProcessing(LogProcess);
+        }
         static void LogProcess(Delogger.LogString log)
         {
             if(log.level == Delogger.LogLevel.Info)
