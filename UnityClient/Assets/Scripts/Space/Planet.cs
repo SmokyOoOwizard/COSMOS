@@ -33,9 +33,7 @@ namespace COSMOS.Space
 
         public override void Update(float delta)
         {
-            Log.Info(delta);
-            Angle += OrbitSpeed * delta;
-            Angle %= 360;
+            Angle = (Angle + (OrbitSpeed * delta) / OrbitSize) % 360;
         }
     }
 }
