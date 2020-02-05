@@ -14,7 +14,7 @@ namespace COSMOS.UI.Map
 
         private void Update()
         {
-            transform.position = new Vector3(Planet.GetPos().x, 0, Planet.GetPos().y);
+            transform.localPosition = new Vector3(Planet.GetPos().x, Planet.GetPos().y, 0);
         }
 
         public static MapPlanetUI Spawn(Planet planet)
@@ -22,7 +22,7 @@ namespace COSMOS.UI.Map
             GameObject go = new GameObject("MapPlanetUI", typeof(MapPlanetUI));
             var tmp = go.GetComponent<MapPlanetUI>();
             tmp.Planet = planet;
-            return tmp; 
+            return tmp;
         }
     }
 }

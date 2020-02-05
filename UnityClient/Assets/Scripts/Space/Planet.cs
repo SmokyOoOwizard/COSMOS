@@ -18,9 +18,24 @@ namespace COSMOS.Space
         [BindProto(true)]
         public float OrbitSize;
 
+        float Angle = 0;
+
         public override Vector2 GetPos()
         {
-            return new Vector2();
+            Vector2 pos = new Vector2();
+
+            pos.x = Mathf.Sin(Angle) * OrbitSize;
+            pos.y = Mathf.Cos(Angle) * OrbitSize;
+
+
+            return pos;
+        }
+
+        public override void Update(float delta)
+        {
+            Log.Info(delta);
+            Angle += OrbitSpeed * delta;
+            Angle %= 360;
         }
     }
 }

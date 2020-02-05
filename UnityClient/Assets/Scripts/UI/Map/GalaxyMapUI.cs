@@ -37,7 +37,7 @@ namespace COSMOS.UI
 		#endregion
 
 		public const float CLIP_AREA_PERCENT = 1.10f;
-		public const float ZOOM_COEF = 30f;
+		public const float ZOOM_COEF = 100f;
 
 		public ObjectPool<MapSolarSystemUI> ObjectPool;
 		public Dictionary<SolarSystem, MapSolarSystemUI> Systems = new Dictionary<SolarSystem, MapSolarSystemUI>();

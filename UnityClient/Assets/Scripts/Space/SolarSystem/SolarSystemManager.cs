@@ -8,6 +8,7 @@ using COSMOS.Prototype;
 using COSMOS.UI.HelpfulStuff;
 using System.Collections.ObjectModel;
 using UnityEngine;
+using System.Threading;
 
 namespace COSMOS.Space
 {
@@ -28,33 +29,29 @@ namespace COSMOS.Space
         public static SolarSystem CurrentSystem { get; private set; }
         public static event Action StartLoadSystem;
         public static event Action EndLoadSystem;
+
+        static long lastTicks;
+        static Thread systemsUpdateThread;
+        static Thread systemsFixedUpdateThread;
+
+        public const int SystemFixedUpdateLength = 100;
         
         [InitMethod(-1)]
         public static void Init()
         {
             LoadSolarSystems();
-            SolarSystem tm1, tm2, tm3, tm4;
-            tm1 = new SolarSystem();
-            tm1.Name = "test 1";
-            tm1.Planets.Add(new Planet());
-            tm1.PosOnMap = new Vector2(10, 10);
-            tm2 = new SolarSystem();
-            tm2.PosOnMap = new Vector2(3, 3);
-            tm2.Name = "test 2";
-            tm3 = new SolarSystem();
-            tm3.PosOnMap = new Vector2(4, 3);
-            tm3.Name = "test 3";
-            tm4 = new SolarSystem();
-            tm4.PosOnMap = new Vector2(3, 4);
-            tm4.Name = "test 4";
-
-            systemsQuadTree.Insert(tm1);
-            systemsQuadTree.Insert(tm2);
-            systemsQuadTree.Insert(tm3);
-            systemsQuadTree.Insert(tm4);
-
-
+            systemsUpdateThread = new Thread(new ThreadStart(UpdateSolarSystems));
+            systemsUpdateThread.Start();
+            systemsFixedUpdateThread = new Thread(new ThreadStart(FixedUpdateSolarSystems));
+            systemsFixedUpdateThread.Start();
         }
+        [DeInitMethod()]
+        public static void Deinit()
+        {
+            systemsUpdateThread.Abort();
+            systemsFixedUpdateThread.Abort();
+        }
+        #region AddAndLoadSystems
         static void LoadSolarSystems()
         {
             string config = AssetsDatabase.LoadPrototype("SolarSystems");
@@ -94,10 +91,6 @@ namespace COSMOS.Space
             }
             return false;
         }
-        public static List<SolarSystem> SystemsOnMap(Rect rect, float importance)
-        {
-            return new List<SolarSystem>(systemsQuadTree.QueryRange(rect, importance));
-        }
         public static bool LoadSystem(string name)
         {
             if (solarSystems.ContainsKey(name))
@@ -107,6 +100,47 @@ namespace COSMOS.Space
                 return true;
             }
             return false;
+        }
+        #endregion
+        public static List<SolarSystem> SystemsOnMap(Rect rect, float importance)
+        {
+            return new List<SolarSystem>(systemsQuadTree.QueryRange(rect, importance));
+        }
+        static void UpdateSolarSystems()
+        {
+            lastTicks = DateTime.Now.Ticks;
+            while (true)
+            {
+                long ticks = DateTime.Now.Ticks;
+                TimeSpan delta = (new TimeSpan(ticks) - new TimeSpan(lastTicks));
+                if(delta.TotalMilliseconds < 10)
+                {
+                    Thread.Sleep(new TimeSpan(0, 0, 0, 0, 10) - delta);
+                    delta = new TimeSpan(0, 0, 0, 0, 10);
+                }
+                Parallel.ForEach(solarSystems, (system) =>
+                {
+                    system.Value.Update((float)delta.TotalSeconds);
+                });
+                lastTicks = ticks;
+            }
+        }
+        static void FixedUpdateSolarSystems()
+        {
+            while (true)
+            {
+                DateTime pref = DateTime.Now;
+                Parallel.ForEach(solarSystems, (system) =>
+                {
+                    system.Value.FixedUpdate();
+                });
+                TimeSpan delta = DateTime.Now - pref;
+                delta = new TimeSpan(0, 0, 0, 0, SystemFixedUpdateLength) - delta;
+                if(delta.Ticks > 0)
+                {
+                    Thread.Sleep(delta);
+                }
+            }
         }
     }
 }

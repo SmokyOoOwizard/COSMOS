@@ -31,5 +31,33 @@ namespace COSMOS.Space
         {
 
         }
+
+        public virtual void Update(float delta)
+        {
+            var planets = new List<Planet>(Planets);
+            for (int i = 0; i < planets.Count; i++)
+            {
+                planets[i].Update(delta);
+            }
+            var stations = new List<SpaceStation>(SpaceStations);
+            for (int i = 0; i < stations.Count; i++)
+            {
+                stations[i].Update(delta);
+            }
+        }
+
+        public virtual void FixedUpdate()
+        {
+            var planets = new List<Planet>(Planets);
+            for (int i = 0; i < planets.Count; i++)
+            {
+                planets[i].FixedUpdate();
+            }
+            var stations = new List<SpaceStation>(SpaceStations);
+            for (int i = 0; i < stations.Count; i++)
+            {
+                stations[i].FixedUpdate();
+            }
+        } 
     }
 }
