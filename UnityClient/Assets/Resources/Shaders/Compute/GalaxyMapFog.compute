@@ -1,57 +1,37 @@
 ﻿// Each #kernel tells which function to compile; you can have many kernels
-#pragma kernel CSMain
+#pragma kernel MoveAndZoom
 
 // Create a RenderTexture with enableRandomWrite flag and set it
 // with cs.SetTexture
 
 float coef;
 int2 size;
+float2 screen;
 float2 position;
-int offsetX;
 float zoom;
 Texture2D<float4> patern;
 RWTexture2D<float4> output;
 SamplerState MyLinearClampSampler;
 
-int3 move(int3 p, int3 dir) 
-{
-    return p + dir;
-}
-
 [numthreads(8,8,1)]
-void CSMain (uint3 id : SV_DispatchThreadID)
+void MoveAndZoom (uint3 id : SV_DispatchThreadID)
 {
-    float t = (1 + zoom * coef);
-    uint3 offsetMain = id;
-    offsetMain = move(offsetMain, int3(-offsetX, 0, 0));
-    offsetMain = move(offsetMain, int3(-(position.x), -(position.y), 0));
+    float zc = 1 + zoom * coef;
 
+    float2 p = float2(screen.x, screen.y) + position * zc;
 
-    float2 uv = float2((id - position) / (float2(size ))); 
+    float2 newSize = size * zc;
 
-
-    //float2 uv = (w - float2(0.5, 0.5) * zoom + float2(0.5, 0.5)); 
-    //offsetMain *= 1 - zoom;
-    //offsetMain = move(offsetMain, int3(size.x / 2 * zoom, size.y / 2 * zoom, 0));
+    float2 uv = (((id - p) + newSize / 2) / float2(newSize));
 
     float4 color = patern.SampleLevel(MyLinearClampSampler, uv, 0);
 
-    //uint3 paternPosition = Zoom(id, zoom);
-    //paternPosition.x += size.x / 2 * zoom;
-    //paternPosition.y += size.y / 2 * zoom;
-    //
-    //
-    //float4 color = patern[paternPosition.xy];//float4(0.5, 0.5, 0.5, 0.5);
-    //if (id.x >= size.x) {
-    //    color = 1;
-    //}
-    //if (id.y >= size.y) {
-    //    color = 1;
-    //}
-    //color = 1 - color;
-    //color.a = color.r;
-    ////color.a = color.r;
+    color = 1 - color;
+    color.a = 1;
 
     output[id.xy] = color;
 }
+
+
+
 

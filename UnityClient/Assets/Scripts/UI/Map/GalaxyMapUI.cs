@@ -10,6 +10,7 @@ using COSMOS.Core.HelpfulStuff;
 using COSMOS.UI.HelpfulStuff;
 using COSMOS.UI.Map;
 using UnityEngine.UI;
+using COSMOS.Shaders;
 
 namespace COSMOS.UI
 {
@@ -47,6 +48,7 @@ namespace COSMOS.UI
 		ComputeShader fogShader;
 		Texture2D fogPatern;
 		RenderTexture fogTexture;
+		GaussianBlurStatic gaussianBlur;
 
 		public static Texture2D Resize(Texture2D source, int newWidth, int newHeight)
 		{
@@ -72,6 +74,9 @@ namespace COSMOS.UI
 			fogTexture = new RenderTexture(Screen.width, Screen.height, 0);
 			fogTexture.enableRandomWrite = true;
 			fogTexture.Create();
+
+			gaussianBlur = new GaussianBlurStatic();
+			gaussianBlur.SetRadius(50);
 		}
 		private void Awake()
 		{
@@ -143,7 +148,7 @@ namespace COSMOS.UI
 				item.Value.gameObject.SetActive(false);
 				if (!ObjectPool.Release(item.Value))
 				{
-					Destroy(item.Value.gameObject);
+					Destroy(item.Value.gameObject); 
 				}
 				else
 				{
@@ -154,20 +159,24 @@ namespace COSMOS.UI
 
 		void UpdateFog()
 		{
-			int kernelIndex = fogShader.FindKernel("CSMain");
+			int kernelIndex = fogShader.FindKernel("MoveAndZoom");
 
 			int blockWidth = 8;
 			int blockHeight = 8;
 
+			Vector2 p = Position;
+			//p = p * (1 + Zoom.GalaxyZoom * ZOOM_COEF) + new Vector2(Screen.width, Screen.height) * 0.5f;
 			fogShader.SetFloat("coef", ZOOM_COEF);
+			fogShader.SetFloats("screen", Screen.width * 0.5f, Screen.height * 0.5f);
 			fogShader.SetInts("size", fogPatern.width, fogPatern.height);
-			fogShader.SetFloats("position", Position.x, Position.y);
-			fogShader.SetInts("offsetX", Screen.width / 2 - fogPatern.width / 2);
+			fogShader.SetFloats("position", p.x, p.y);
 			fogShader.SetFloat("zoom", Zoom.GalaxyZoom);
 			fogShader.SetTexture(kernelIndex, "patern", fogPatern); 
 			fogShader.SetTexture(kernelIndex, "output", fogTexture);
 
 			fogShader.Dispatch(kernelIndex, fogTexture.width / blockWidth, fogTexture.height / blockHeight, 1);
+			gaussianBlur.Disptach(fogTexture, ref fogTexture);
+			
 		}
 
 		public void SelectSystem(SolarSystem system)
