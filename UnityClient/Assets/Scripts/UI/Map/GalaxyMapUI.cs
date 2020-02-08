@@ -9,6 +9,7 @@ using COSMOS.Paterns;
 using COSMOS.Core.HelpfulStuff;
 using COSMOS.UI.HelpfulStuff;
 using COSMOS.UI.Map;
+using UnityEngine.UI;
 
 namespace COSMOS.UI
 {
@@ -17,7 +18,8 @@ namespace COSMOS.UI
 	{
 		public Vector2 Position;
 		private Vector2 position;
-		public GameObject Back;
+		public GameObject SystemsParent;
+		public RawImage fogImage;
 		public GameObject StarPrefab;
 		public Vector3 prefMousePosition;
 		[Header("UI")]
@@ -41,13 +43,46 @@ namespace COSMOS.UI
 
 		public ObjectPool<MapSolarSystemUI> ObjectPool;
 		public Dictionary<SolarSystem, MapSolarSystemUI> Systems = new Dictionary<SolarSystem, MapSolarSystemUI>();
+
+		ComputeShader fogShader;
+		Texture2D fogPatern;
+		RenderTexture fogTexture;
+
+		public static Texture2D Resize(Texture2D source, int newWidth, int newHeight)
+		{
+			source.filterMode = FilterMode.Point;
+			RenderTexture rt = RenderTexture.GetTemporary(newWidth, newHeight);
+			rt.filterMode = FilterMode.Point;
+			RenderTexture.active = rt;
+			Graphics.Blit(source, rt);
+			Texture2D nTex = new Texture2D(newWidth, newHeight);
+			nTex.ReadPixels(new Rect(0, 0, newWidth, newHeight), 0, 0);
+			nTex.Apply();
+			RenderTexture.active = null;
+			RenderTexture.ReleaseTemporary(rt);
+			return nTex;
+		}
+		void InitShaderPart()
+		{
+			fogShader = Resources.Load<ComputeShader>("Shaders/Compute/GalaxyMapFog");
+			fogPatern = Resources.Load<Texture2D>("Textures/GalaxyPatern");
+			float scale = Screen.height / (float)fogPatern.height;
+			fogPatern = Resize(fogPatern, (int)(scale * fogPatern.width), (int)(scale * fogPatern.height));
+			fogPatern.Apply();
+			fogTexture = new RenderTexture(Screen.width, Screen.height, 0);
+			fogTexture.enableRandomWrite = true;
+			fogTexture.Create();
+		}
 		private void Awake()
 		{
+			InitShaderPart();
+			fogImage.texture = fogTexture;
+			fogImage.color = new Color(1, 1, 1, 1);
 			InitPatern();
 			ObjectPool = new ObjectPool<MapSolarSystemUI>(20, true, () =>
 			{
 				GameObject t = Instantiate(StarPrefab);
-				t.transform.SetParent(Back.transform);
+				t.transform.SetParent(SystemsParent.transform);
 				t.SetActive(false);
 				var star = t.AddComponent<MapSolarSystemUI>();
 				return star;
@@ -73,6 +108,7 @@ namespace COSMOS.UI
 			{
 				UpdateMap();
 			}
+			UpdateFog();
 			//qw.DebugDraw();
 			SolarSystemManager.systemsQuadTree.DebugDraw();
 		}
@@ -115,6 +151,25 @@ namespace COSMOS.UI
 				}
 			}
 		}
+
+		void UpdateFog()
+		{
+			int kernelIndex = fogShader.FindKernel("CSMain");
+
+			int blockWidth = 8;
+			int blockHeight = 8;
+
+			fogShader.SetFloat("coef", ZOOM_COEF);
+			fogShader.SetInts("size", fogPatern.width, fogPatern.height);
+			fogShader.SetFloats("position", Position.x, Position.y);
+			fogShader.SetInts("offsetX", Screen.width / 2 - fogPatern.width / 2);
+			fogShader.SetFloat("zoom", Zoom.GalaxyZoom);
+			fogShader.SetTexture(kernelIndex, "patern", fogPatern); 
+			fogShader.SetTexture(kernelIndex, "output", fogTexture);
+
+			fogShader.Dispatch(kernelIndex, fogTexture.width / blockWidth, fogTexture.height / blockHeight, 1);
+		}
+
 		public void SelectSystem(SolarSystem system)
 		{
 
