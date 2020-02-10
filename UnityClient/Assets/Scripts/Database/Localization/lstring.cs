@@ -23,15 +23,16 @@ public class lstring
 
     public string GetString()
     {
-        if(Languages.CurrentLanguage == Language)
-        {
-            return Value;
-        }
-        else
+        if(Languages.CurrentLanguage != Language)
         {
             Language = Languages.CurrentLanguage;
-            return Value = Language.GetString(Key);
+            Value = Language.GetString(Key);
         }
+        if (string.IsNullOrEmpty(Value))
+        {
+            return '[' + Key + ']';
+        }
+        return Value;
     }
     [ParseMethod]
     public static object Parse(string key)
