@@ -18,7 +18,6 @@ namespace COSMOS.UI.Map
         public void OnPointerDown(PointerEventData eventData)
         {
             GalaxyMapUI.instance.SelectSystem(SolarSystem);
-            Log.Info("Clicl on " + SolarSystem.Name.Key);
         }
         public void Init(SolarSystem system)
         {

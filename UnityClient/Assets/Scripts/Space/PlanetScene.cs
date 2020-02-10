@@ -28,10 +28,10 @@ namespace COSMOS.Space {
         {
             time = (time + (owner.OrbitSpeed * Time.deltaTime) / owner.OrbitSize) % 360;
             time = float.IsNaN(time) ? 0 : time;
-            float x = Mathf.Sin(time * Mathf.Deg2Rad);
-            float y = Mathf.Cos(time * Mathf.Deg2Rad);
 
-            transform.localPosition = new Vector3(x, 0, y) * owner.OrbitSize;
+            Vector2 pos = owner.GetPos();
+            transform.localPosition = new Vector3(pos.x, 0, pos.y);
+
             trail.transform.position = transform.parent.position;
             trail.transform.localRotation = Quaternion.Euler(0, time, 0);
         }

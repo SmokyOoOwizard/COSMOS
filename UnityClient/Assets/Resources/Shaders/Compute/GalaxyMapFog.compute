@@ -1,0 +1,37 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel MoveAndZoom
+
+// Create a RenderTexture with enableRandomWrite flag and set it
+// with cs.SetTexture
+
+float coef;
+int2 size;
+float2 screen;
+float2 position;
+float zoom;
+Texture2D<float4> patern;
+RWTexture2D<float4> output;
+SamplerState MyLinearClampSampler;
+
+[numthreads(8,8,1)]
+void MoveAndZoom (uint3 id : SV_DispatchThreadID)
+{
+    float zc = 1 + zoom * coef;
+
+    float2 p = float2(screen.x, screen.y) + position * zc;
+
+    float2 newSize = size * zc;
+
+    float2 uv = (((id - p) + newSize / 2) / float2(newSize));
+
+    float4 color = patern.SampleLevel(MyLinearClampSampler, uv, 0);
+
+    color = 1 - color;
+    color.a = 1;
+
+    output[id.xy] = color;
+}
+
+
+
+

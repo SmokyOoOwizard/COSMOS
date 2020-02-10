@@ -5,6 +5,9 @@
   <Asset ID="Prefabs\UI\Map" Name="Map" Type="GameObject">
     <Path>Prefabs\UI\Map</Path>
   </Asset>
+  <Asset ID="Prefabs\UI\SolarSystem" Name="SolarSystem" Type="GameObject">
+    <Path>Prefabs\UI\SolarSystem</Path>
+  </Asset>
   <Asset ID="Sprites\Glow" Name="Glow" Type="Sprite">
     <Path>Sprites\Glow</Path>
   </Asset>
@@ -79,6 +82,9 @@
   </Asset>
   <Asset ID="Sprites\Icons\TopBar\MiniMap\MiniMapShadow" Name="MiniMapShadow" Type="Sprite">
     <Path>Sprites\Icons\TopBar\MiniMap\MiniMapShadow</Path>
+  </Asset>
+  <Asset ID="Textures\GalaxyPatern" Name="GalaxyPatern" Type="Sprite">
+    <Path>Textures\GalaxyPatern</Path>
   </Asset>
   <Asset ID="Materials\EthanWhite" Name="EthanWhite" Type="Material">
     <Path>Materials\EthanWhite</Path>
