@@ -44,7 +44,9 @@ namespace COSMOS.UI
 
 		public ObjectPool<MapSolarSystemUI> ObjectPool;
 		public Dictionary<SolarSystem, MapSolarSystemUI> Systems = new Dictionary<SolarSystem, MapSolarSystemUI>();
+		public SolarSystem SelectedSystem { get; private set; }
 
+		// Map shader
 		ComputeShader fogShader;
 		Texture2D fogPatern;
 		RenderTexture fogTexture;
@@ -96,7 +98,7 @@ namespace COSMOS.UI
 		// Start is called before the first frame update
 		void Start()
 		{
-
+			UpdateMap();
 		}
 
 		// Update is called once per frame
@@ -175,13 +177,21 @@ namespace COSMOS.UI
 			fogShader.SetTexture(kernelIndex, "output", fogTexture);
 
 			fogShader.Dispatch(kernelIndex, fogTexture.width / blockWidth, fogTexture.height / blockHeight, 1);
-			gaussianBlur.Disptach(fogTexture, ref fogTexture);
+			//gaussianBlur.Disptach(fogTexture, ref fogTexture);
 			
+		}
+
+		public void UpdateDescription()
+		{
+			SystemName.text = SelectedSystem.Name;
+			SystemPlanetCount.text = SelectedSystem.Planets.Count.ToString();
 		}
 
 		public void SelectSystem(SolarSystem system)
 		{
-
+			SelectedSystem = system;
+			UpdateDescription();
+			Log.Info("Selected " + system.Name.Key);
 		}
 		public void SelectSpaceObject(SpaceObject obj)
 		{
