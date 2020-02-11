@@ -106,6 +106,33 @@ namespace COSMOS.Space
         {
             return new List<SolarSystem>(systemsQuadTree.QueryRange(rect, importance));
         }
+        public static bool CheckWarp(SolarSystem system, Vector2 posInSystem, SolarSystem target)
+        {
+            float sqrSafeDistance = system.WarpSafeDistance * system.WarpSafeDistance;
+            if(sqrSafeDistance <= posInSystem.sqrMagnitude)
+            {
+                Vector2 v1 = posInSystem - system.PosOnMap; ;
+                Vector2 v2 = target.PosOnMap - system.PosOnMap;
+
+                float dx = v2.x - v1.x;
+                float dy = v2.y - v1.y;
+
+                float a = dx * dx + dy * dy;
+                float b = 2 * (v1.x * dx + v1.y * dy);
+                float c = v1.x * v1.x + v1.y * v1.y - sqrSafeDistance;
+
+                if(-b < 0)
+                {
+                    return c < 0;
+                }
+                if(-b < (2 * a))
+                {
+                    return (4 * a * c - b * b) < 0;
+                }
+                return a + b + c < 0;
+            }
+            return false;
+        }
         static void UpdateSolarSystems()
         {
             lastTicks = DateTime.Now.Ticks;
