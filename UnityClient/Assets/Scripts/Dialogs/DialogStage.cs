@@ -8,21 +8,25 @@ namespace COSMOS.Dialogs
 {
     public class DialogStage
     {
-        public ISpeech SelectedSpeech;
-        public ISpeech CurrentSpeech;
+        public DialogAction SelectedSpeech;
+        public DialogAction CurrentSpeech;
 
         public void Next()
         {
-            ISpeech nextSpeech = CurrentSpeech.GetNextSpeech();
-            if(nextSpeech == null || CurrentSpeech is EndSpeech)
+            DialogAction nextSpeech = CurrentSpeech.GetNextAction();
+            if(nextSpeech == null || CurrentSpeech is EndDialogDialogAction)
             {
                 return;
+            }
+            if(CurrentSpeech is SwitchSpeech)
+            {
+                nextSpeech = nextSpeech.GetNextAction();
             }
             CurrentSpeech = nextSpeech;
         }
         public bool IsFinished()
         {
-            return CurrentSpeech.GetNextSpeech() == null || CurrentSpeech is EndSpeech;
+            return CurrentSpeech.GetNextAction() == null || CurrentSpeech is EndDialogDialogAction;
         }
         public DialogStage GetNextStage()
         {

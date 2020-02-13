@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace COSMOS.Dialogs
 {
-    public interface ISpeech
+    public class ReputationCheckDialogAction : AbstractDialogAction
     {
-        string GetSpeechKey();
-        ISpeech GetNextSpeech();
-        void OnSelect();
+#warning NEED COMPLETE
     }
 }

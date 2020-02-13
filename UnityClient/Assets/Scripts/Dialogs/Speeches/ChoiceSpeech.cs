@@ -10,12 +10,12 @@ namespace COSMOS.Dialogs
     {
         List<SpeechOption> Options;
         
-        public void Choose(ISpeech speech)
+        public void Choose(DialogAction speech)
         {
 
         }
 
-        public ISpeech[] GetChoice()
+        public DialogAction[] GetChoice()
         {
             var enabledOprtions = Options.Where((x) => x.CheckConditions()).Select((x) => x.Speech).ToArray();
             return enabledOprtions;
@@ -23,7 +23,7 @@ namespace COSMOS.Dialogs
     }
     public class SpeechOption
     {
-        public ISpeech Speech;
+        public DialogAction Speech;
 
         public bool CheckConditions()
         {
