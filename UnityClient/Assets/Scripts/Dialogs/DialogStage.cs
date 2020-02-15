@@ -8,8 +8,8 @@ namespace COSMOS.Dialogs
 {
     public class DialogStage
     {
-        public DialogAction SelectedSpeech;
-        public DialogAction CurrentSpeech;
+        public DialogAction CurrentSpeech { get; protected set; }
+        DialogStage nextStage;
 
         public void Next()
         {
@@ -18,7 +18,7 @@ namespace COSMOS.Dialogs
             {
                 return;
             }
-            if(CurrentSpeech is SwitchSpeech)
+            if(CurrentSpeech is SwitchDialogAction)
             {
                 nextSpeech = nextSpeech.GetNextAction();
             }
@@ -30,7 +30,7 @@ namespace COSMOS.Dialogs
         }
         public DialogStage GetNextStage()
         {
-            return null;
+            return nextStage;
         }
     }
 }

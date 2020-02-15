@@ -8,14 +8,15 @@ namespace COSMOS.Dialogs
 {
     public abstract class AbstractDialogAction : DialogAction
     {
+        protected DialogAction nextAction;
         public virtual DialogAction GetNextAction()
         {
-            throw new NotImplementedException();
+            return nextAction;
         }
 
         public virtual void OnSelect()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

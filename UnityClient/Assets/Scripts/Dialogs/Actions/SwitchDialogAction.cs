@@ -8,6 +8,19 @@ namespace COSMOS.Dialogs
 {
     public class SwitchDialogAction : AbstractDialogAction
     {
-#warning NEED COMPLETE
+        Dictionary<SwitchOption, DialogAction> options;
+
+        public override DialogAction GetNextAction()
+        {
+            foreach (var option in options)
+            {
+                if (option.Key.CheckConditions())
+                {
+                    nextAction = option.Value;
+                    break;
+                }
+            }
+            return base.GetNextAction();
+        }
     }
 }
