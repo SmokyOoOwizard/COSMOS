@@ -22,12 +22,15 @@ namespace COSMOS.UI.DialogMenu
         {
             if(Content.transform.childCount > 0)
             {
-                while(Content.transform.childCount > 0)
+                foreach (Transform child in Content.transform)
                 {
-                    Destroy(Content.transform.GetChild(0));
+                    GameObject.Destroy(child.gameObject);
                 }
             }
-
+            if (CurrentDialog.IsDialogFinished())
+            {
+                return;
+            }
             IDialogAction action = CurrentDialog.GetCurrentAction();
             if(action is AbstractSpeech)
             {

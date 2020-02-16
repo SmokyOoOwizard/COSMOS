@@ -8,7 +8,7 @@ namespace COSMOS.Dialogs
 {
     public class SwitchDialogAction : AbstractDialogAction
     {
-        Dictionary<SwitchOption, IDialogAction> options;
+        Dictionary<SwitchOption, IDialogAction> options = new Dictionary<SwitchOption, IDialogAction>();
 
         public override IDialogAction GetNextAction()
         {

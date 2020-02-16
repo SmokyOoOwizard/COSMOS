@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using COSMOS.Dialogs;
+using TMPro;
+using UnityEngine.UI;
 
 namespace COSMOS.UI.DialogMenu
 {
@@ -12,10 +14,20 @@ namespace COSMOS.UI.DialogMenu
     {
         public event Action<DialogSpeechUI> OnClick;
         public SimpleSpeech CurrentSpeech { get; private set; }
+        [SerializeField]
+        TextMeshProUGUI text;
+        [SerializeField]
+        Button button;
+
+        private void Start()
+        {
+            button.onClick.AddListener(() => OnClick?.Invoke(this));
+        }
 
         void UpdateDialog(SimpleSpeech speech)
         {
             CurrentSpeech = speech;
+            text.text = speech.LStringKey;
         }
         public static DialogSpeechUI Spawn(SimpleSpeech speech)
         {

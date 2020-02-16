@@ -8,6 +8,9 @@ namespace COSMOS.Dialogs
 {
     public class SimpleSpeech : AbstractSpeech
     {
-
+        public SimpleSpeech(string key)
+        {
+            LStringKey = key;
+        }
     }
 }
