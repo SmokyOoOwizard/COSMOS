@@ -8,12 +8,12 @@ namespace COSMOS.Dialogs
 {
     public class DialogStage
     {
-        public DialogAction CurrentSpeech { get; protected set; }
+        public IDialogAction CurrentSpeech { get; protected set; }
         DialogStage nextStage;
 
         public void Next()
         {
-            DialogAction nextSpeech = CurrentSpeech.GetNextAction();
+            IDialogAction nextSpeech = CurrentSpeech.GetNextAction();
             if(nextSpeech == null || CurrentSpeech is EndDialogDialogAction)
             {
                 return;

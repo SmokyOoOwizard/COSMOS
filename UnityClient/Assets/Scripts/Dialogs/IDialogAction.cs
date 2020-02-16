@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace COSMOS.Dialogs
 {
-    public interface DialogAction
+    public interface IDialogAction
     {
-        DialogAction GetNextAction();
+        IDialogAction GetNextAction();
         void OnSelect();
     }
 }

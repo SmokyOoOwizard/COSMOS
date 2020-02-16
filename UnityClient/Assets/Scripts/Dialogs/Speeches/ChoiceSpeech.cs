@@ -8,9 +8,9 @@ namespace COSMOS.Dialogs
 {
     public class ChoiceSpeech : AbstractSpeech
     {
-        Dictionary<SwitchOption, DialogAction> Options;
+        Dictionary<SwitchOption, SimpleSpeech> Options;
         
-        public void Choose(DialogAction speech)
+        public void Choose(SimpleSpeech speech)
         {
             if (Options.ContainsValue(speech))
             {
@@ -18,7 +18,7 @@ namespace COSMOS.Dialogs
             }
         }
 
-        public DialogAction[] GetChoice()
+        public SimpleSpeech[] GetChoice()
         {
             var enabledOprtions = Options.Where((x) => x.Key.CheckConditions()).Select((x) => x.Value).ToArray();
             return enabledOprtions;

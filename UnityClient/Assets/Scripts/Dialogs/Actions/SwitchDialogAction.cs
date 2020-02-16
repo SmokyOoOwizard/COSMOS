@@ -8,9 +8,9 @@ namespace COSMOS.Dialogs
 {
     public class SwitchDialogAction : AbstractDialogAction
     {
-        Dictionary<SwitchOption, DialogAction> options;
+        Dictionary<SwitchOption, IDialogAction> options;
 
-        public override DialogAction GetNextAction()
+        public override IDialogAction GetNextAction()
         {
             foreach (var option in options)
             {

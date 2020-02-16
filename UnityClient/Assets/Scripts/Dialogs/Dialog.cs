@@ -11,7 +11,7 @@ namespace COSMOS.Dialogs
         DialogStage FirstStage;
         DialogStage CurrentStage;
 
-        public DialogAction GetCurrentAction()
+        public IDialogAction GetCurrentAction()
         {
             if(CurrentStage != null)
             {

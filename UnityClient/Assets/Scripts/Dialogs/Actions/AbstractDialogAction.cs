@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace COSMOS.Dialogs
 {
-    public abstract class AbstractDialogAction : DialogAction
+    public abstract class AbstractDialogAction : IDialogAction
     {
-        protected DialogAction nextAction;
-        public virtual DialogAction GetNextAction()
+        protected IDialogAction nextAction;
+        public virtual IDialogAction GetNextAction()
         {
             return nextAction;
         }

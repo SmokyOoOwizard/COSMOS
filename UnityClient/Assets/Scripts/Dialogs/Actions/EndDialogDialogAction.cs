@@ -8,7 +8,7 @@ namespace COSMOS.Dialogs
 {
     public class EndDialogDialogAction : AbstractDialogAction
     {
-        public override DialogAction GetNextAction()
+        public override IDialogAction GetNextAction()
         {
             return null;
         }
