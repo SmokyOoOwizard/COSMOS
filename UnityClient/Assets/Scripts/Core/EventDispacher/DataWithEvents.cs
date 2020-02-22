@@ -8,27 +8,51 @@ namespace COSMOS.Core.EventDispacher
 {
     public abstract class DataWithEvents : IDataWithEvents
     {
-        HashSet<Action<ushort>> listeners = new HashSet<Action<ushort>>();
+        Dictionary<uint, HashSet<Action<uint>>> listeners = new Dictionary<uint, HashSet<Action<uint>>>();
 
-        public void Notify(ushort flag = ushort.MaxValue)
+        public void Notify(uint flag = uint.MaxValue)
         {
-            foreach (var listener in listeners)
+            foreach (var listenerType in listeners)
             {
-                listener?.Invoke(flag);
+                if ((listenerType.Key & flag) != 0)
+                {
+                    foreach (var listener in listenerType.Value)
+                    {
+                        listener?.Invoke(flag);
+                    }
+                }
             }
         }
 
-        public void AddListener(Action<ushort> listener)
+        public void AddListener(Action<uint> listener, uint flag = uint.MaxValue)
         {
-            listeners.Add(listener);
+            if (!listeners.ContainsKey(flag))
+            {
+                listeners.Add(flag, new HashSet<Action<uint>>());
+            }
+            listeners[flag].Add(listener);
         }
-        public void RemoveListener(Action<ushort> listener)
+        public void RemoveListener(Action<uint> listener, uint flag = uint.MaxValue)
         {
-            listeners.Remove(listener);
+            if (listeners.ContainsKey(flag))
+            {
+                listeners[flag].Remove(listener);
+                if(listeners[flag].Count == 0)
+                {
+                    listeners.Remove(flag);
+                }
+            }
         }
-        public bool ContaintsListener(Action<ushort> listener)
+        public bool ContaintsListener(Action<uint> listener, uint flag = uint.MaxValue)
         {
-            return listeners.Contains(listener);
+            if (listeners.ContainsKey(flag))
+            {
+                if (listeners[flag].Contains(listener))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

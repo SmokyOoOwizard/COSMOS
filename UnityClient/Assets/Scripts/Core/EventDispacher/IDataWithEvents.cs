@@ -8,9 +8,9 @@ namespace COSMOS.Core.EventDispacher
 {
     public interface IDataWithEvents
     {
-        void Notify(ushort flag = ushort.MaxValue);
-        void AddListener(Action<ushort> listener);
-        void RemoveListener(Action<ushort> listener);
-        bool ContaintsListener(Action<ushort> listener);
+        void Notify(uint flag = uint.MaxValue);
+        void AddListener(Action<uint> listener, uint flag);
+        void RemoveListener(Action<uint> listener, uint flag);
+        bool ContaintsListener(Action<uint> listener, uint flag);
     }
 }
