@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace COSMOS.Dialogs
 {
-    public class EndSpeech : AbstractSpeech
+    public class EndDialogDialogAction : AbstractDialogAction
     {
-        public override ISpeech GetNextSpeech()
+        public override IDialogAction GetNextAction()
         {
             return null;
         }

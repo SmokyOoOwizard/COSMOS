@@ -6,23 +6,17 @@ using System.Threading.Tasks;
 
 namespace COSMOS.Dialogs
 {
-    public abstract class AbstractSpeech : IDialogAction
+    public abstract class AbstractDialogAction : IDialogAction
     {
-        public string LStringKey;
-        public IDialogAction NextSpeech;
+        protected IDialogAction nextAction;
         public virtual IDialogAction GetNextAction()
         {
-            return NextSpeech;
-        }
-
-        public string GetSpeechKey()
-        {
-            return LStringKey;
+            return nextAction;
         }
 
         public virtual void OnSelect()
         {
-
+            
         }
     }
 }

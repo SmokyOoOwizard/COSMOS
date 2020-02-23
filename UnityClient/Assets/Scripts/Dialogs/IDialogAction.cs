@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace COSMOS.Dialogs
 {
-    public class SimpleSpeech : AbstractSpeech
+    public interface IDialogAction
     {
-        public SimpleSpeech(string key)
-        {
-            LStringKey = key;
-        }
+        IDialogAction GetNextAction();
+        void OnSelect();
     }
 }

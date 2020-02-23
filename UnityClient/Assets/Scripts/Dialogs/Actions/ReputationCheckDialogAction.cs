@@ -6,11 +6,8 @@ using System.Threading.Tasks;
 
 namespace COSMOS.Dialogs
 {
-    public class SimpleSpeech : AbstractSpeech
+    public class ReputationCheckDialogAction : AbstractDialogAction
     {
-        public SimpleSpeech(string key)
-        {
-            LStringKey = key;
-        }
+#warning NEED COMPLETE
     }
 }

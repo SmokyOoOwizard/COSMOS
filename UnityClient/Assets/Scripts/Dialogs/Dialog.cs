@@ -11,7 +11,7 @@ namespace COSMOS.Dialogs
         DialogStage FirstStage;
         DialogStage CurrentStage;
 
-        public ISpeech GetCurrentSpeech()
+        public IDialogAction GetCurrentAction()
         {
             if(CurrentStage != null)
             {
@@ -44,7 +44,7 @@ namespace COSMOS.Dialogs
             {
                 return true;
             }
-            return CurrentStage.CurrentSpeech is EndSpeech;
+            return CurrentStage.CurrentSpeech is EndDialogDialogAction;
         }
     }
 }

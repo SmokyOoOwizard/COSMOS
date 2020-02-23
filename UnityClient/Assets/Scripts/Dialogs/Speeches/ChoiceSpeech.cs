@@ -8,26 +8,20 @@ namespace COSMOS.Dialogs
 {
     public class ChoiceSpeech : AbstractSpeech
     {
-        List<SpeechOption> Options;
+        Dictionary<SwitchOption, SimpleSpeech> Options = new Dictionary<SwitchOption, SimpleSpeech>();
         
-        public void Choose(ISpeech speech)
+        public void Choose(SimpleSpeech speech)
         {
-
+            if (Options.ContainsValue(speech))
+            {
+                NextSpeech = speech.GetNextAction();
+            }
         }
 
-        public ISpeech[] GetChoice()
+        public SimpleSpeech[] GetChoice()
         {
-            var enabledOprtions = Options.Where((x) => x.CheckConditions()).Select((x) => x.Speech).ToArray();
+            var enabledOprtions = Options.Where((x) => x.Key.CheckConditions()).Select((x) => x.Value).ToArray();
             return enabledOprtions;
-        }
-    }
-    public class SpeechOption
-    {
-        public ISpeech Speech;
-
-        public bool CheckConditions()
-        {
-            return true;
         }
     }
 }

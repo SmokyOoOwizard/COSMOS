@@ -8,13 +8,13 @@ namespace COSMOS.Dialogs
 {
     public class DialogStage
     {
-        public ISpeech SelectedSpeech;
-        public ISpeech CurrentSpeech;
+        public IDialogAction CurrentSpeech { get; private set; }
+        DialogStage nextStage;
 
         public void Next()
         {
-            ISpeech nextSpeech = CurrentSpeech.GetNextSpeech();
-            if(nextSpeech == null || CurrentSpeech is EndSpeech)
+            IDialogAction nextSpeech = CurrentSpeech.GetNextAction();
+            if(CurrentSpeech is EndDialogDialogAction)
             {
                 return;
             }
@@ -22,11 +22,11 @@ namespace COSMOS.Dialogs
         }
         public bool IsFinished()
         {
-            return CurrentSpeech.GetNextSpeech() == null || CurrentSpeech is EndSpeech;
+            return CurrentSpeech == null || CurrentSpeech is EndDialogDialogAction;
         }
         public DialogStage GetNextStage()
         {
-            return null;
+            return nextStage;
         }
     }
 }
