@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace COSMOS.Charactor
+namespace COSMOS.Character
 {
     public partial class Character
     {

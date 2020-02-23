@@ -4,18 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace COSMOS.Skills.Ability
+namespace COSMOS.Character
 {
-    public class AbilityStatBonus
+    public class AbilityBonus
     {
         public enum Operation
         {
-            Add,
-            Subtract,
             Multiply,
-            Divide
+            Divide,
+            Add,
+            Subtract
         }
-        public string StatName;
         public float Value;
         public Operation StatOperation; 
 

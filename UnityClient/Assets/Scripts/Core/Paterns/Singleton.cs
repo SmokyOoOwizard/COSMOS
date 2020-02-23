@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace COSMOS.Paterns
+namespace COSMOS.Core.Paterns
 {
     public abstract class SingletonMono<T> : MonoBehaviour where T : MonoBehaviour
     {

@@ -1,4 +1,4 @@
-﻿using COSMOS.Paterns;
+﻿using COSMOS.Core.Paterns;
 using COSMOS.Space;
 using System;
 using System.Collections;

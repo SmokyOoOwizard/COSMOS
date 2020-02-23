@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using COSMOS.Paterns;
+using COSMOS.Core.Paterns;
 namespace COSMOS.Space
 {
     public class SolarSystemSceneManager : SingletonMono<SolarSystemSceneManager>

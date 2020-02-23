@@ -5,7 +5,7 @@ using TMPro;
 using COSMOS.Space;
 using System.Threading.Tasks;
 using System.Linq;
-using COSMOS.Paterns;
+using COSMOS.Core.Paterns;
 using COSMOS.Core.HelpfulStuff;
 using COSMOS.UI.HelpfulStuff;
 using COSMOS.UI.Map;
