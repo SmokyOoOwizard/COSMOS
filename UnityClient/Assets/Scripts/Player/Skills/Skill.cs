@@ -1,17 +1,18 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using COSMOS.Player;
 
 namespace COSMOS.Skills
 {
     public abstract class Skill
     {
         public string inerName;
-        public lstring Name;
-        public lstring Description;
-        public string IconID;
+        public string LKeyName { get; set; }
+        public string LkeyDescription;
+        public string IconID { get; set; }
         public virtual void Update() { }
     }
-    public abstract class ActiveSkill : Skill
+    public abstract class ActiveSkill : Skill, ICanPlaceInQuickSlot
     {
         public bool Use(params SkillTarget[] targets)
         {
