@@ -16,7 +16,7 @@ namespace COSMOS.Equipment
         public string LkeyDescription { get; set; }
         public string IconID { get; set; }
         public uint ItemType { get; protected set; }
-        public string[] SecondaryItemType { get; protected set; }
+        public string[] SecondaryItemType { get; protected set; } = new string[0];
         public float Weight { get; protected set; }
         public float Volume { get; protected set; }
 
