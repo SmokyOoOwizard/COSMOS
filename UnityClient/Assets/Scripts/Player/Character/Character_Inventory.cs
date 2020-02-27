@@ -9,14 +9,14 @@ namespace COSMOS.Character
 {
     public partial class Character
     {
-        List<CharacterEquipmentPart> EquipmentsParts = new List<CharacterEquipmentPart>();
+        List<EquipmentPart> EquipmentsParts = new List<EquipmentPart>();
         List<Inventory> Inventories = new List<Inventory>();
 
         public Inventory[] GetInventories()
         {
             return Inventories.ToArray();
         }
-        public CharacterEquipmentPart[] GetEquipmentsParts()
+        public EquipmentPart[] GetEquipmentsParts()
         {
             return EquipmentsParts.ToArray();
         }

@@ -1,5 +1,6 @@
 ﻿using COSMOS.Core.EventDispacher;
 using COSMOS.Player;
+using COSMOS.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace COSMOS.Equipment
 {
-    public class Item : DataWithEvents, ICanPlaceInQuickSlot
+    public class Item : DataWithEvents, ICanPlaceInQuickSlot, ICanPlaceInSlot
     {
         public const uint ITEM_TYPE_CAN_SELL = 1;
 

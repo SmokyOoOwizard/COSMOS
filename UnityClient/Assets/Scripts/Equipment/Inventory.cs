@@ -11,23 +11,18 @@ namespace COSMOS.Equipment
         public string LKeyName;
 
         public float MaxWeight;
-        public float CurrentWeight;
+        public float FreeWeight { get { return MaxWeight - CurrentWeight; } }
+        public float CurrentWeight { get; protected set; }
         public float MaxVolume;
-        public float CurrentVolume;
+        public float FreeVolume { get { return MaxVolume - CurrentVolume; } }
+        public float CurrentVolume { get; protected set; }
 
         List<Item> items = new List<Item>();
 
         public bool AddItem(Item item)
         {
-            if (CurrentVolume + item.Volume <= MaxVolume)
-            {
-                if (CurrentWeight + item.Weight <= MaxWeight)
-                {
-                    items.Add(item);
-                    return true;
-                }
-            }
-            return false;
+            items.Add(item);
+            return true;
         }
         public bool ExistItem(Item item)
         {
@@ -46,6 +41,17 @@ namespace COSMOS.Equipment
             Item tmp = items[i1];
             items[i1] = items[i2];
             items[i2] = tmp;
+            return true;
+        }
+        public bool Replace(Item oldItem, Item newItem)
+        {
+            int index = items.FindIndex((item) => item == oldItem);
+            if (index == -1)
+            {
+                return false;
+            }
+
+            items[index] = newItem;
             return true;
         }
         public bool Remove(Item item)
