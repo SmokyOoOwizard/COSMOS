@@ -12,7 +12,7 @@ namespace COSMOS.Player
         public CameraController cmc;
         public IControllable IC { get; private set; }
         public Vector3 mousePos;
-        public Charactor.CharacterController Character;
+        public Character.CharacterController Character;
         public SpaceShip.SpaceShipController Ship;
 
         // Start is called before the first frame update

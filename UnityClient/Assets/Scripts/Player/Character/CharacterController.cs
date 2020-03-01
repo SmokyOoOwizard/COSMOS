@@ -1,7 +1,7 @@
 ﻿using COSMOS.Player;
 using UnityEngine;
 
-namespace COSMOS.Charactor {
+namespace COSMOS.Character {
     [RequireComponent(typeof(Rigidbody))]
     [RequireComponent(typeof(CapsuleCollider))]
     [RequireComponent(typeof(Animator))]
