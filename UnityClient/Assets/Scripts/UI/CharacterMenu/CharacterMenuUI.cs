@@ -10,26 +10,28 @@ namespace COSMOS.UI
 {
     public class CharacterMenuUI : SingletonMono<CharacterMenuUI>
     {
-        public GameObject InventoryObj;
-        public GameObject StatsObj;
+        public CharacterMenuEquipmentsTab InventoryObj;
+        public CharacterMenuAbilityTab StatsObj;
         public GameObject SkillsObj;
 
         public void ShowInvenotory()
         {
-            if(!InventoryObj.activeSelf)
+            if(!InventoryObj.gameObject.activeSelf)
             {
-                InventoryObj.SetActive(true);
+                InventoryObj.gameObject.SetActive(true);
+                InventoryObj.Init();
             }
-            StatsObj.SetActive(false);
+            StatsObj.gameObject.SetActive(false);
             //SkillsObj.SetActive(false);
         }
         public void ShowStats()
         {
-            if (!StatsObj.activeSelf)
+            if (!StatsObj.gameObject.activeSelf)
             {
-                StatsObj.SetActive(true);
+                StatsObj.gameObject.SetActive(true);
+                StatsObj.Init();
             }
-            InventoryObj.SetActive(false);
+            InventoryObj.gameObject.SetActive(false);
             //SkillsObj.SetActive(false);
         }
         public void ShowSkills()
