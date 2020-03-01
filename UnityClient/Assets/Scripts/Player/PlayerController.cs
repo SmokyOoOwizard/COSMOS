@@ -19,6 +19,8 @@ namespace COSMOS.Player
         private void Awake()
         {
             InitPatern();
+            GameData.PlayerCharacter = new COSMOS.Character.Character();
+
         }
         void Start()
         {

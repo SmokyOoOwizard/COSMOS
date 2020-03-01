@@ -11,6 +11,6 @@ namespace COSMOS
         public static bool WorldPause { get; private set; }
         public static DateTime CurrentDate { get; private set; }
         public static PlayerData PlayerData { get; private set; }
-        public static COSMOS.Character.Character PlayerCharacter { get; private set; }
+        public static COSMOS.Character.Character PlayerCharacter { get; set; }
     }
 }
