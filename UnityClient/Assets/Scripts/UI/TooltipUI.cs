@@ -28,7 +28,7 @@ namespace COSMOS.UI
     }
     public class TooltipUI : SingletonMono<TooltipUI>
     {
-        public const string TOOLTIP_PREFAB_ID = "";
+        public const string TOOLTIP_PREFAB_ID = @"Prefabs\UI\Tooltip";
 
         [SerializeField]
         GameObject header;
@@ -60,6 +60,10 @@ namespace COSMOS.UI
             instance.SetObj(obj);
             instance.gameObject.SetActive(true);
             return instance;
+        }
+        public void Hide()
+        {
+            gameObject.SetActive(false);
         }
         public void SetObj(ICanBeUseToShowTooltip obj)
         {
