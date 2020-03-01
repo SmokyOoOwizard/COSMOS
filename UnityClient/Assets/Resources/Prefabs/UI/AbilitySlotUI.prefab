@@ -621,6 +621,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3542614133441205150}
+  - component: {fileID: 765199717950461946}
   m_Layer: 0
   m_Name: AbilitySlotUI
   m_TagString: Untagged
@@ -652,6 +653,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &765199717950461946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4908623940060635848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a13a2a1aeea1b4940a708660fed79f94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  abilityIcon: {fileID: 7520540153054756358}
+  nameText: {fileID: 7158871433185050928}
+  totalValueText: {fileID: 60066003822216574}
+  detailValueText: {fileID: 1179570950017263590}
 --- !u!1 &6583344287713089982
 GameObject:
   m_ObjectHideFlags: 0
