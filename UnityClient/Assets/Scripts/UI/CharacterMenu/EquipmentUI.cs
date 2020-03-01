@@ -11,6 +11,8 @@ namespace COSMOS.UI
 {
     public class EquipmentUI : MonoBehaviour
     {
+#warning empty prefabs id
+        public const string PREFAB_ID = "";
         public const string SLOT_PREFAB_ID = "";
         public EquipmentPart CurrentEquipmentPart { get; protected set; }
 
@@ -75,5 +77,17 @@ namespace COSMOS.UI
                 RulesForSlots.Add(slot, rule.Key);
             }
         } 
+
+        public static EquipmentUI Spawn()
+        {
+            GameObject prefab = AssetsDatabase.LoadGameObject(PREFAB_ID);
+            if(prefab == null)
+            {
+                Log.Error("prefab for equipment not found. path:" + PREFAB_ID);
+                return null;
+            }
+            GameObject go = Instantiate(prefab);
+            return go.GetComponent<EquipmentUI>();
+        }
     }
 }

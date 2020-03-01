@@ -42,22 +42,4 @@ namespace COSMOS.UI
             //StatsObj.SetActive(false);
         }
     }
-    public class CharacterMenuEquipmentsUI : MonoBehaviour
-    {
-        public GameObject EquipmentScroll;
-        public GameObject InventoriesScroll;
-
-        public void Init()
-        {
-
-        }
-        void refreshEquipments()
-        {
-
-        }
-        void refreshInventories()
-        {
-
-        }
-    }
 }

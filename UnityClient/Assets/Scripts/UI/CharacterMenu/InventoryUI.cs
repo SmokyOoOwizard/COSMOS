@@ -9,6 +9,8 @@ namespace COSMOS.UI
 {
     public class InventoryUI : MonoBehaviour
     {
+#warning empty prefabs id
+        public const string PREFAB_ID = "";
         public const string SLOT_PREFAB_ID = "";
         public Inventory CurrentInventory { get; protected set; }
         Dictionary<SlotUI, Item> itemsBySlots = new Dictionary<SlotUI, Item>();
@@ -133,6 +135,17 @@ namespace COSMOS.UI
             slot.SetCustomAcceptFunc(checkRuleForSlot);
             slot.OnDropInSlot += onAcceptEquipmentInSlot;
             slot.UpdateData();
+        }
+        public static InventoryUI Spawn()
+        {
+            GameObject prefab = AssetsDatabase.LoadGameObject(PREFAB_ID);
+            if(prefab == null)
+            {
+                Log.Error("prefab for inventory not found. path:" + PREFAB_ID);
+                return null;
+            }
+            GameObject go = Instantiate(prefab);
+            return go.GetComponent<InventoryUI>();
         }
     }
 }
