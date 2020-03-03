@@ -53,7 +53,7 @@ namespace COSMOS.UI
             foreach (var part in inventories)
             {
                 InventoryUI ui = InventoryUI.Spawn();
-                ui.transform.SetParent(EquipmentContent.transform);
+                ui.transform.SetParent(InventoriesContent.transform);
                 ui.Init(part);
             }
         }

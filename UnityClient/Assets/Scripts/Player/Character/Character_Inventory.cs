@@ -3,23 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using COSMOS.Core.Collections;
+using COSMOS.Core.EventDispacher;
 using COSMOS.Equipment;
 
 namespace COSMOS.Character
 {
     public partial class Character
     {
-        List<EquipmentPart> EquipmentsParts = new List<EquipmentPart>();
-        List<Inventory> Inventories = new List<Inventory>();
-
-        public Inventory[] GetInventories()
-        {
-            return Inventories.ToArray();
-        }
-        public EquipmentPart[] GetEquipmentsParts()
-        {
-            return EquipmentsParts.ToArray();
-        }
-
+        public readonly ListWithEvents<EquipmentPart> EquipmentsParts = new ListWithEvents<EquipmentPart>();
+        public readonly ListWithEvents<Inventory> CharacterInventories = new ListWithEvents<Inventory>();
+        public readonly ListWithEvents<Inventory> AccessibleInventories = new ListWithEvents<Inventory>();
     }
 }
