@@ -9,9 +9,8 @@ namespace COSMOS.UI
 {
     public class InventoryUI : MonoBehaviour
     {
-#warning empty prefabs id
-        public const string PREFAB_ID = "";
-        public const string SLOT_PREFAB_ID = "";
+        public const string PREFAB_ID = @"Prefabs\UI\Inventory\InventoryTypeSlotsUI";
+        public const string SLOT_PREFAB_ID = @"Prefabs\UI\Slot";
         public Inventory CurrentInventory { get; protected set; }
         Dictionary<SlotUI, Item> itemsBySlots = new Dictionary<SlotUI, Item>();
         Dictionary<Item, SlotUI> slotByItems = new Dictionary<Item, SlotUI>();
