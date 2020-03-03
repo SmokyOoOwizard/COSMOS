@@ -1,4 +1,5 @@
-﻿using System;
+﻿using COSMOS.Core;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,5 +13,6 @@ namespace COSMOS
         public static DateTime CurrentDate { get; private set; }
         public static PlayerData PlayerData { get; private set; }
         public static COSMOS.Character.Character PlayerCharacter { get; set; }
+        public static readonly Notifications PlayerNotifications = new Notifications();
     }
 }
