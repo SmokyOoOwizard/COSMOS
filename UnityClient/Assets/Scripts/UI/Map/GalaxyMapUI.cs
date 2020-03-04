@@ -93,7 +93,7 @@ namespace COSMOS.UI
 				t.SetActive(false);
 				var star = t.AddComponent<MapSolarSystemUI>();
 				return star;
-			});
+			}, null);
 		}
 		// Start is called before the first frame update
 		void Start()

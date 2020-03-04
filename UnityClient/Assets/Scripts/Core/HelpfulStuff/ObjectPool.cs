@@ -15,28 +15,31 @@ namespace COSMOS.Core.HelpfulStuff
         public int MAX { get; private set; } = 30;
 
         Func<T> createObject;
+        Action<T> release;
         public bool CanOverSize { get; private set; }
 
-        public ObjectPool(T[] objects)
+        public ObjectPool(T[] objects, Action<T> releaseMethod)
         {
             MAX = objects.Length;
             counter = MAX;
+            release = releaseMethod;
             for (int i = 0; i < objects.Length; i++)
             {
                 items.Add(objects[i]);
             }
         }
-        public ObjectPool(int size, bool canGrow, Func<T> createObject)
+        public ObjectPool(int size, bool canGrow, Func<T> createObjectMethod, Action<T> releaseMethod)
         {
-            if (createObject != null)
+            release = releaseMethod;
+            if (createObjectMethod != null)
             {
-                this.createObject = createObject;
+                this.createObject = createObjectMethod;
                 CanOverSize = canGrow;
                 MAX = size;
                 counter = MAX;
                 for (int i = 0; i < size; i++)
                 {
-                    items.Add(createObject());
+                    items.Add(createObjectMethod());
                 }
             }
         }
@@ -49,7 +52,7 @@ namespace COSMOS.Core.HelpfulStuff
                 counter--;
                 return item;
             }
-            else if(CanOverSize && createObject != null)
+            else if (CanOverSize && createObject != null)
             {
                 T obj = createObject();
                 counter--;
@@ -59,16 +62,17 @@ namespace COSMOS.Core.HelpfulStuff
         }
         public bool Release(T item)
         {
-            if (counter < MAX)
+            if (counter < MAX && item != null)
             {
-                items.Add(item);
-                counter++;
-                return true;
+                release?.Invoke(item);
+                if (item != null)
+                {
+                    items.Add(item);
+                    counter++;
+                    return true;
+                }
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
     }
 }
