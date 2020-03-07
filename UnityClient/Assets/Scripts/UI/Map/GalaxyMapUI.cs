@@ -17,6 +17,8 @@ namespace COSMOS.UI
 	[Manager]
 	public class GalaxyMapUI : SingletonMono<GalaxyMapUI>
 	{
+		public const string PREFAB_ID = @"Prefabs\UI\Map";
+
 		public Vector2 Position;
 		private Vector2 position;
 		public GameObject SystemsParent;
@@ -93,8 +95,6 @@ namespace COSMOS.UI
 				var star = t.AddComponent<MapSolarSystemUI>();
 				return star;
 			}, null);
-			InitPatern();
-			gameObject.SetActive(false);
 		}
 		// Start is called before the first frame update
 		void Start()
@@ -215,6 +215,17 @@ namespace COSMOS.UI
 			//Log.Info(foundedSystems.Count);
 
 			return foundedSystems;
+		}
+
+		public static GalaxyMapUI Spawn()
+		{
+			if(instance == null)
+			{
+				GameObject prefab = AssetsDatabase.LoadGameObject(PREFAB_ID);
+				GameObject obj = Instantiate(prefab);
+				obj.GetComponent<GalaxyMapUI>().InitPatern();
+			}
+			return instance;
 		}
 	}
 }

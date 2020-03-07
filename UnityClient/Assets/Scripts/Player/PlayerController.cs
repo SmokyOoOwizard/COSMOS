@@ -50,11 +50,11 @@ namespace COSMOS.Player
             }
             if (Input.GetKeyDown(KeyCode.I))
             {
-                CharacterMenuUI.instance.gameObject.SetActive(!CharacterMenuUI.instance.gameObject.activeSelf);
+                CharacterMenuUI.Spawn().gameObject.SetActive(!CharacterMenuUI.instance.gameObject.activeSelf);
             }
             if (Input.GetKeyDown(KeyCode.M))
             {
-                GalaxyMapUI.instance.gameObject.SetActive(!GalaxyMapUI.instance.gameObject.activeSelf);
+                GalaxyMapUI.Spawn().gameObject.SetActive(!GalaxyMapUI.instance.gameObject.activeSelf);
             }
         }
 

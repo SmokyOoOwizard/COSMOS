@@ -10,15 +10,11 @@ namespace COSMOS.UI
 {
     public class CharacterMenuUI : SingletonMono<CharacterMenuUI>
     {
+        public const string PREFAB_ID = @"Prefabs\UI\CharacterMenu";
         public CharacterMenuEquipmentsTab InventoryObj;
         public CharacterMenuAbilityTab StatsObj;
         public GameObject SkillsObj;
 
-        private void Awake()
-        {
-            InitPatern();
-            gameObject.SetActive(false);
-        }
         public void ShowInvenotory()
         {
             if(!InventoryObj.gameObject.activeSelf)
@@ -47,6 +43,18 @@ namespace COSMOS.UI
             //}
             //InventoryObj.SetActive(false);
             //StatsObj.SetActive(false);
+        }
+
+
+        public static CharacterMenuUI Spawn()
+        {
+            if (instance == null)
+            {
+                GameObject prefab = AssetsDatabase.LoadGameObject(PREFAB_ID);
+                GameObject obj = Instantiate(prefab);
+                obj.GetComponent<CharacterMenuUI>().InitPatern();
+            }
+            return instance;
         }
     }
 }
