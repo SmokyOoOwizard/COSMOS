@@ -1,5 +1,6 @@
 ﻿using COSMOS.Core.Paterns;
 using COSMOS.Space;
+using COSMOS.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -47,13 +48,13 @@ namespace COSMOS.Player
                 cmc.Height = 45;
 
             }
-            if (Input.GetKeyDown(KeyCode.P))
+            if (Input.GetKeyDown(KeyCode.I))
             {
-                if(IC is SpaceShip.SpaceShipController)
-                {
-                    SpaceShip.SpaceShipController ssc = IC as SpaceShip.SpaceShipController;
-                    ssc.StartWarp(SolarSystemManager.SolarSystems["TestName2"]);
-                }
+                CharacterMenuUI.instance.gameObject.SetActive(!CharacterMenuUI.instance.gameObject.activeSelf);
+            }
+            if (Input.GetKeyDown(KeyCode.M))
+            {
+                GalaxyMapUI.instance.gameObject.SetActive(!GalaxyMapUI.instance.gameObject.activeSelf);
             }
         }
 

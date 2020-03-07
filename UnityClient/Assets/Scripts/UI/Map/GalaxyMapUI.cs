@@ -85,7 +85,6 @@ namespace COSMOS.UI
 			InitShaderPart();
 			fogImage.texture = fogTexture;
 			fogImage.color = new Color(1, 1, 1, 1);
-			InitPatern();
 			ObjectPool = new ObjectPool<MapSolarSystemUI>(20, true, () =>
 			{
 				GameObject t = Instantiate(StarPrefab);
@@ -94,6 +93,8 @@ namespace COSMOS.UI
 				var star = t.AddComponent<MapSolarSystemUI>();
 				return star;
 			}, null);
+			InitPatern();
+			gameObject.SetActive(false);
 		}
 		// Start is called before the first frame update
 		void Start()

@@ -14,6 +14,11 @@ namespace COSMOS.UI
         public CharacterMenuAbilityTab StatsObj;
         public GameObject SkillsObj;
 
+        private void Awake()
+        {
+            InitPatern();
+            gameObject.SetActive(false);
+        }
         public void ShowInvenotory()
         {
             if(!InventoryObj.gameObject.activeSelf)
