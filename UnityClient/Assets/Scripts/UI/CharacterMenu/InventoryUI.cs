@@ -84,40 +84,49 @@ namespace COSMOS.UI
         public void Init(Inventory inventory)
         {
             CurrentInventory = inventory;
-            CreateSlots();
+            Refresh();
         }
-        public void CreateSlots()
+        public void Refresh()
         {
-            SlotUI[] oldSlots = itemsBySlots.Keys.ToArray();
-            itemsBySlots.Clear();
-            slotByItems.Clear();
-            for (int i = 0; i < oldSlots.Length; i++)
-            {
-                Destroy(oldSlots[i].gameObject);
-            }
-            foreach (Transform child in Content.transform)
-            {
-                GameObject.Destroy(child.gameObject);
-            }
-
             GameObject slotPrefab = AssetsDatabase.LoadGameObject(SLOT_PREFAB_ID);
 
+            HashSet<SlotUI> freeSlots = new HashSet<SlotUI>(itemsBySlots.Keys);
             Item[] items = CurrentInventory.GetItems();
+            itemsBySlots.Clear();
+            slotByItems.Clear();
+
             for (int i = 0; i < items.Length; i++)
             {
-                GameObject slotObj = GameObject.Instantiate(slotPrefab);
-                SlotUI slot = slotObj.GetComponent<SlotUI>();
-                slotObj.transform.SetParent(Content.transform);
+                Item item = items[i];
+                SlotUI slot = null;
+                if (freeSlots.Count > 0)
+                {
+                    slot = freeSlots.First();
+                    freeSlots.Remove(slot);
+                }
+                else
+                {
+                    GameObject slotObj = GameObject.Instantiate(slotPrefab);
+                    slot = slotObj.GetComponent<SlotUI>();
+                    slotObj.transform.SetParent(Content.transform);
 
-                slot.SetCustomAcceptFunc(checkRuleForSlot);
-                slot.OnDropInSlot += onAcceptEquipmentInSlot;
-                slot.SetStuff(items[i]);
+                    slot.SetCustomAcceptFunc(checkRuleForSlot);
+                    slot.OnDropInSlot += onAcceptEquipmentInSlot;
+                }
+                itemsBySlots.Add(slot, item);
+                slotByItems.Add(item, slot);
+                slot.SetStuff(item);
                 slot.UpdateData();
-
-                itemsBySlots.Add(slot, items[i]);
-                slotByItems.Add(items[i], slot);
+                slot.transform.SetSiblingIndex(i);
             }
-
+            if(freeSlots.Count > 0)
+            {
+                foreach (var child in freeSlots)
+                {
+                    GameObject.Destroy(child.gameObject);
+                }
+            }
+            freeSlotsCount = 0;
             if (CurrentInventory.FreeVolume > 0 && CurrentInventory.FreeWeight > 0)
             {
                 createEmptySlot();
@@ -138,7 +147,7 @@ namespace COSMOS.UI
         public static InventoryUI Spawn()
         {
             GameObject prefab = AssetsDatabase.LoadGameObject(PREFAB_ID);
-            if(prefab == null)
+            if (prefab == null)
             {
                 Log.Error("prefab for inventory not found. path:" + PREFAB_ID);
                 return null;
