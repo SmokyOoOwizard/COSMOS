@@ -1,10 +1,12 @@
 ﻿using COSMOS.Character;
+using COSMOS.Database;
 using COSMOS.Equipment;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 
 namespace COSMOS.UI
@@ -17,6 +19,8 @@ namespace COSMOS.UI
 
         Dictionary<SlotUI, EquipmentRule> RulesForSlots = new Dictionary<SlotUI, EquipmentRule>();
 
+        [SerializeField]
+        TextMeshProUGUI header;
         [SerializeField]
         GameObject Content;
 
@@ -45,6 +49,10 @@ namespace COSMOS.UI
         public void Init(EquipmentPart equipment)
         {
             CurrentEquipmentPart = equipment;
+            if(equipment != null)
+            {
+                header.SetText(TextFormat.GetLKeyAndFormat(equipment.LKeyName));
+            }
             Refresh();
         }
         public void Refresh()

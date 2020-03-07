@@ -50,5 +50,11 @@ namespace COSMOS.Database
         {
             return rawText;
         }
+
+        public static string GetLKeyAndFormat(string lKeyName)
+        {
+            lstring k = lKeyName;
+            return Format(k);
+        }
     }
 }

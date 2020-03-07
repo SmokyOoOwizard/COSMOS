@@ -5,6 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using TMPro;
+using COSMOS.Database;
+
 namespace COSMOS.UI
 {
     public class InventoryUI : MonoBehaviour
@@ -14,6 +17,9 @@ namespace COSMOS.UI
         public Inventory CurrentInventory { get; protected set; }
         Dictionary<SlotUI, Item> itemsBySlots = new Dictionary<SlotUI, Item>();
         int freeSlotsCount = 0;
+
+        [SerializeField]
+        TextMeshProUGUI header;
         [SerializeField]
         GameObject Content;
 
@@ -83,6 +89,10 @@ namespace COSMOS.UI
         public void Init(Inventory inventory)
         {
             CurrentInventory = inventory;
+            if (inventory != null)
+            {
+                header.SetText(TextFormat.GetLKeyAndFormat(inventory.LKeyName));
+            }
             Refresh();
         }
         public void Refresh()

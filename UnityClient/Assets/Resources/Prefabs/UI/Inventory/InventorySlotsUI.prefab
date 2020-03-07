@@ -245,7 +245,7 @@ GameObject:
   - component: {fileID: 5528372789519701608}
   - component: {fileID: 1847800368018041703}
   m_Layer: 5
-  m_Name: InventoryTypeSlotsUI
+  m_Name: InventorySlotsUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -359,4 +359,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8825c87ac04a1a04fb72a0f60227d782, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  header: {fileID: 5528372789455015303}
   Content: {fileID: 5528372789037452841}
