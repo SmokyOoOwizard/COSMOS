@@ -8,31 +8,35 @@ namespace COSMOS.Core.EventDispacher
 {
     public abstract class DataWithEvents : IDataWithEvents
     {
-        Dictionary<uint, HashSet<Action<uint>>> listeners = new Dictionary<uint, HashSet<Action<uint>>>();
+        Dictionary<uint, HashSet<Action<uint, EventArg>>> listeners = new Dictionary<uint, HashSet<Action<uint, EventArg>>>();
 
-        public void Notify(uint flag = uint.MaxValue)
+        public void Notify(uint flag = uint.MaxValue, EventArg args = null)
         {
+            if(args == null)
+            {
+                args = new EventArg();
+            }
             foreach (var listenerType in listeners)
             {
                 if ((listenerType.Key & flag) != 0)
                 {
                     foreach (var listener in listenerType.Value)
                     {
-                        listener?.Invoke(flag);
+                        listener?.Invoke(flag, args);
                     }
                 }
             }
         }
 
-        public void AddListener(Action<uint> listener, uint flag = uint.MaxValue)
+        public void AddListener(Action<uint, EventArg> listener, uint flag = uint.MaxValue)
         {
             if (!listeners.ContainsKey(flag))
             {
-                listeners.Add(flag, new HashSet<Action<uint>>());
+                listeners.Add(flag, new HashSet<Action<uint, EventArg>>());
             }
             listeners[flag].Add(listener);
         }
-        public void RemoveListener(Action<uint> listener, uint flag = uint.MaxValue)
+        public void RemoveListener(Action<uint, EventArg> listener, uint flag = uint.MaxValue)
         {
             if (listeners.ContainsKey(flag))
             {
@@ -43,7 +47,7 @@ namespace COSMOS.Core.EventDispacher
                 }
             }
         }
-        public bool ContaintsListener(Action<uint> listener, uint flag = uint.MaxValue)
+        public bool ContaintsListener(Action<uint, EventArg> listener, uint flag = uint.MaxValue)
         {
             if (listeners.ContainsKey(flag))
             {

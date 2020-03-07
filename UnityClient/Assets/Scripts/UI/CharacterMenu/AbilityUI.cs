@@ -40,7 +40,7 @@ namespace COSMOS.UI
             CurrentAbility.AddListener(OnAbilityUpdate);
             updateStuff();
         }
-        private void OnAbilityUpdate(uint flags)
+        private void OnAbilityUpdate(uint flags, EventArg args)
         {
             updateStuff();
         }
