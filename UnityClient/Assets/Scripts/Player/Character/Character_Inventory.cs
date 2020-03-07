@@ -13,6 +13,5 @@ namespace COSMOS.Character
     {
         public readonly ListWithEvents<EquipmentPart> EquipmentsParts = new ListWithEvents<EquipmentPart>();
         public readonly ListWithEvents<Inventory> CharacterInventories = new ListWithEvents<Inventory>();
-        public readonly ListWithEvents<Inventory> AccessibleInventories = new ListWithEvents<Inventory>();
     }
 }
