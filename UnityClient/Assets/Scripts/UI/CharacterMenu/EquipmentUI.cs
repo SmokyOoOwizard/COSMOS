@@ -11,9 +11,8 @@ namespace COSMOS.UI
 {
     public class EquipmentUI : MonoBehaviour
     {
-#warning empty prefabs id
-        public const string PREFAB_ID = "";
-        public const string SLOT_PREFAB_ID = "";
+        public const string PREFAB_ID = @"Prefabs\UI\Inventory\EquipmentPartSlotsUI";
+        public const string SLOT_PREFAB_ID = @"Prefabs\UI\Slot";
         public EquipmentPart CurrentEquipmentPart { get; protected set; }
 
         Dictionary<SlotUI, EquipmentRule> RulesForSlots = new Dictionary<SlotUI, EquipmentRule>();

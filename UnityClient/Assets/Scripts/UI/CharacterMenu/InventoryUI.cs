@@ -9,11 +9,10 @@ namespace COSMOS.UI
 {
     public class InventoryUI : MonoBehaviour
     {
-        public const string PREFAB_ID = @"Prefabs\UI\Inventory\InventoryTypeSlotsUI";
+        public const string PREFAB_ID = @"Prefabs\UI\Inventory\InventorySlotsUI";
         public const string SLOT_PREFAB_ID = @"Prefabs\UI\Slot";
         public Inventory CurrentInventory { get; protected set; }
         Dictionary<SlotUI, Item> itemsBySlots = new Dictionary<SlotUI, Item>();
-        Dictionary<Item, SlotUI> slotByItems = new Dictionary<Item, SlotUI>();
         int freeSlotsCount = 0;
         [SerializeField]
         GameObject Content;
@@ -46,7 +45,7 @@ namespace COSMOS.UI
                 Item old = oldItem as Item;
                 if (item != null)
                 {
-                    if (slotByItems.ContainsKey(item))
+                    if (itemsBySlots.ContainsValue(item))
                     {
                         CurrentInventory.Swap(item, old);
                     }
@@ -92,7 +91,6 @@ namespace COSMOS.UI
 
             HashSet<SlotUI> freeSlots = new HashSet<SlotUI>(itemsBySlots.Keys);
             itemsBySlots.Clear();
-            slotByItems.Clear();
             if (CurrentInventory != null)
             {
                 Item[] items = CurrentInventory.GetItems();
@@ -116,7 +114,6 @@ namespace COSMOS.UI
                         slot.OnDropInSlot += onAcceptEquipmentInSlot;
                     }
                     itemsBySlots.Add(slot, item);
-                    slotByItems.Add(item, slot);
                     slot.SetStuff(item);
                     slot.UpdateData();
                     slot.transform.SetSiblingIndex(i);
@@ -146,6 +143,8 @@ namespace COSMOS.UI
             slot.SetCustomAcceptFunc(checkRuleForSlot);
             slot.OnDropInSlot += onAcceptEquipmentInSlot;
             slot.UpdateData();
+
+            itemsBySlots.Add(slot, null);
         }
         public static InventoryUI Spawn()
         {

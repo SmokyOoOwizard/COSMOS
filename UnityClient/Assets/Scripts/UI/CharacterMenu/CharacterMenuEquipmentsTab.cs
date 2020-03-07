@@ -17,9 +17,7 @@ namespace COSMOS.UI
         [SerializeField]
         GameObject InventoriesContent;
 
-        ObjectPool<InventoryUI> inventoriesPool;
         Dictionary<Inventory, InventoryUI> usedInventoryObjects = new Dictionary<Inventory, InventoryUI>();
-        ObjectPool<EquipmentUI> equipmentPool;
         Dictionary<EquipmentPart, EquipmentUI> usedEquipmentObjects = new Dictionary<EquipmentPart, EquipmentUI>();
 
         private void Awake()
@@ -39,7 +37,7 @@ namespace COSMOS.UI
             HashSet<InventoryUI> freeUI = new HashSet<InventoryUI>(usedInventoryObjects.Values);
             List<Inventory> availableInventories = new List<Inventory>(GameData.GetCharacterInventories());
 
-            if(availableInventories != null)
+            if (availableInventories != null)
             {
                 // search allready pair ui
                 for (int i = 0; i < availableInventories.Count; i++)
@@ -59,16 +57,16 @@ namespace COSMOS.UI
                 for (int i = 0; i < inventories.Count; i++)
                 {
                     (Inventory, InventoryUI) pair = inventories[i];
-                    if(pair.Item2 == null)
+                    if (pair.Item2 == null)
                     {
-                        if(freeUI.Count > 0)
+                        if (freeUI.Count > 0)
                         {
                             pair.Item2 = freeUI.First();
                             freeUI.Remove(pair.Item2);
                         }
                         else
                         {
-                            InventoryUI ui = inventoriesPool.GetObject();
+                            InventoryUI ui = InventoryUI.Spawn();
                             ui.transform.SetParent(InventoriesContent.transform);
                             pair.Item2 = ui;
                         }
@@ -80,7 +78,7 @@ namespace COSMOS.UI
                 for (int i = 0; i < inventories.Count; i++)
                 {
                     (Inventory, InventoryUI) pair = inventories[i];
-                    if(pair.Item2 == null)
+                    if (pair.Item2 == null)
                     {
                         Log.Error("InventoryUI is null");
                         continue;
@@ -94,10 +92,7 @@ namespace COSMOS.UI
 
             foreach (var child in freeUI)
             {
-                if (!inventoriesPool.Release(child))
-                {
-                    Destroy(child.gameObject);
-                }
+                Destroy(child.gameObject);
             }
         }
         void fullRefreshEquipments()
@@ -135,7 +130,7 @@ namespace COSMOS.UI
                         }
                         else
                         {
-                            EquipmentUI ui = equipmentPool.GetObject();
+                            EquipmentUI ui = EquipmentUI.Spawn();
                             ui.transform.SetParent(EquipmentContent.transform);
                             pair.Item2 = ui;
                         }
@@ -161,10 +156,7 @@ namespace COSMOS.UI
 
             foreach (var child in freeUI)
             {
-                if (!equipmentPool.Release(child))
-                {
-                    Destroy(child.gameObject);
-                }
+                Destroy(child.gameObject);
             }
         }
     }
