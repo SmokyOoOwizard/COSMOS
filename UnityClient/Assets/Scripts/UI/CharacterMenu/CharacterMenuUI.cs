@@ -19,7 +19,7 @@ namespace COSMOS.UI
             if(!InventoryObj.gameObject.activeSelf)
             {
                 InventoryObj.gameObject.SetActive(true);
-                InventoryObj.Init();
+                InventoryObj.Refresh();
             }
             StatsObj.gameObject.SetActive(false);
             //SkillsObj.SetActive(false);
