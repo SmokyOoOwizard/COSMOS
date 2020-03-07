@@ -30,6 +30,14 @@ namespace COSMOS.Character
 				// TODO notify
 			}
 		}
+		public void AddRule(EquipmentRule rule)
+		{
+			equipments.Add(rule, null);
+		}
+		public bool RemoveRule(EquipmentRule rule)
+		{
+			return equipments.Remove(rule);
+		}
 	}
 	public class EquipmentRule
 	{
