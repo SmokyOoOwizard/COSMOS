@@ -22,13 +22,10 @@ namespace COSMOS.UI
         ObjectPool<EquipmentUI> equipmentPool;
         Dictionary<EquipmentPart, EquipmentUI> usedEquipmentObjects = new Dictionary<EquipmentPart, EquipmentUI>();
 
-        public void Init()
+        private void Awake()
         {
             GameData.OnInventoryUpdate += fullRefreshInventories;
             GameData.OnEquipmentPartsUpdate += fullRefreshEquipments;
-
-            fullRefreshEquipments();
-            fullRefreshInventories();
         }
         public void Refresh()
         {

@@ -91,33 +91,36 @@ namespace COSMOS.UI
             GameObject slotPrefab = AssetsDatabase.LoadGameObject(SLOT_PREFAB_ID);
 
             HashSet<SlotUI> freeSlots = new HashSet<SlotUI>(itemsBySlots.Keys);
-            Item[] items = CurrentInventory.GetItems();
             itemsBySlots.Clear();
             slotByItems.Clear();
-
-            for (int i = 0; i < items.Length; i++)
+            if (CurrentInventory != null)
             {
-                Item item = items[i];
-                SlotUI slot = null;
-                if (freeSlots.Count > 0)
-                {
-                    slot = freeSlots.First();
-                    freeSlots.Remove(slot);
-                }
-                else
-                {
-                    GameObject slotObj = GameObject.Instantiate(slotPrefab);
-                    slot = slotObj.GetComponent<SlotUI>();
-                    slotObj.transform.SetParent(Content.transform);
+                Item[] items = CurrentInventory.GetItems();
 
-                    slot.SetCustomAcceptFunc(checkRuleForSlot);
-                    slot.OnDropInSlot += onAcceptEquipmentInSlot;
+                for (int i = 0; i < items.Length; i++)
+                {
+                    Item item = items[i];
+                    SlotUI slot = null;
+                    if (freeSlots.Count > 0)
+                    {
+                        slot = freeSlots.First();
+                        freeSlots.Remove(slot);
+                    }
+                    else
+                    {
+                        GameObject slotObj = GameObject.Instantiate(slotPrefab);
+                        slot = slotObj.GetComponent<SlotUI>();
+                        slotObj.transform.SetParent(Content.transform);
+
+                        slot.SetCustomAcceptFunc(checkRuleForSlot);
+                        slot.OnDropInSlot += onAcceptEquipmentInSlot;
+                    }
+                    itemsBySlots.Add(slot, item);
+                    slotByItems.Add(item, slot);
+                    slot.SetStuff(item);
+                    slot.UpdateData();
+                    slot.transform.SetSiblingIndex(i);
                 }
-                itemsBySlots.Add(slot, item);
-                slotByItems.Add(item, slot);
-                slot.SetStuff(item);
-                slot.UpdateData();
-                slot.transform.SetSiblingIndex(i);
             }
             if(freeSlots.Count > 0)
             {
@@ -127,7 +130,7 @@ namespace COSMOS.UI
                 }
             }
             freeSlotsCount = 0;
-            if (CurrentInventory.FreeVolume > 0 && CurrentInventory.FreeWeight > 0)
+            if (CurrentInventory != null && CurrentInventory.FreeVolume > 0 && CurrentInventory.FreeWeight > 0)
             {
                 createEmptySlot();
                 freeSlotsCount++;
