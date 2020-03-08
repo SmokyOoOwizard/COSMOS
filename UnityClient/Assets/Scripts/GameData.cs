@@ -72,15 +72,12 @@ namespace COSMOS
                 CurrentWarp.To = spaceShip.WarpTarget;
                 CurrentWarp.From = SolarSystemManager.CurrentSystem;
                 CurrentWarp.ChargeTimeLeft = CurrentDate.AddSeconds(spaceShip.WarpChargeTimeLeft);
-                Log.Info(spaceShip.WarpChargeTimeLeft + " " + CurrentWarp.ChargeTimeLeft);
-                Log.Info(spaceShip.WarpTimeLeft);
                 CurrentWarp.WarpTimeLeft = CurrentWarp.ChargeTimeLeft.AddSeconds(spaceShip.WarpTimeLeft);
             }
             else
             {
                 CurrentWarp = null;
             }
-            Log.Info(warpStatus);
         }
         static void UnsubControllableSpaceShip(SpaceShip.SpaceShipController spaceShip)
         {
@@ -105,6 +102,7 @@ namespace COSMOS
                 spaceShip.WarpStart += OnSpaceShipWarp;
                 spaceShip.WarpStop += OnSpaceShipWarp;
                 spaceShip.WarpEnd += OnSpaceShipWarp;
+                spaceShip.WarpEnd += (ship) => { SolarSystemManager.LoadSystem(ship.WarpTarget); };
 
             }
         }

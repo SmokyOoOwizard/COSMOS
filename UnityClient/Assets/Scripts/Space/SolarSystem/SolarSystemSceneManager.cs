@@ -22,12 +22,12 @@ namespace COSMOS.Space
 
         internal void LoadSystem(SolarSystem ss)
         {
+            SolarSystem = ss;
             StartLoadSystem?.Invoke();
             if(SolarSystem != null)
             {
                 UnloadSystem();
             }
-            SolarSystem = ss;
             Log.Info("loading system: " + ss.Name.Key);
             StartCoroutine(Loading());
         }
