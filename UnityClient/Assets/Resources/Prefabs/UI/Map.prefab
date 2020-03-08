@@ -339,11 +339,22 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 139091225856798557}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 5020272994954686255}
+        m_MethodName: OnWarpButtonDown
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5020272993973828377
 GameObject:
   m_ObjectHideFlags: 0
@@ -2765,6 +2776,7 @@ MonoBehaviour:
   prefMousePosition: {x: 0, y: 0, z: 0}
   Search: {fileID: 5020272994944326663}
   Zoom: {fileID: 5020272994123591221}
+  WarpButton: {fileID: 305401147457618208}
   SystemName: {fileID: 5020272994163279682}
   SystemPosition: {fileID: 5020272995061099547}
   SystemPlanetCount: {fileID: 5020272995905457155}

@@ -28,6 +28,7 @@ namespace COSMOS.UI
 		[Header("UI")]
 		public TMP_InputField Search;
 		public MapZoomUI Zoom;
+		public Button WarpButton;
 
 		[Header("Solar system")]
 		[Header("Description")]
@@ -193,10 +194,23 @@ namespace COSMOS.UI
 			SelectedSystem = system;
 			UpdateDescription();
 			Log.Info("Selected " + system.Name.Key);
+			WarpButton.interactable = (GameData.CurrentControllableObject is SpaceShip.SpaceShipController);
 		}
-		public void SelectSpaceObject(SpaceObject obj)
-		{
 
+		public void OnWarpButtonDown()
+		{
+			SpaceShip.SpaceShipController ssc = GameData.CurrentControllableObject as SpaceShip.SpaceShipController;
+			if(ssc != null)
+			{
+				if (ssc.CanWarp(SelectedSystem))
+				{
+					ssc.StartWarp(SelectedSystem);
+				}
+				else
+				{
+					Log.Info("not enough fuel to warp");
+				}
+			}
 		}
 		List<SolarSystem> SelectSystems()
 		{

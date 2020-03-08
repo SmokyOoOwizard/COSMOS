@@ -12,9 +12,8 @@ namespace COSMOS.Player
         public SolarSystem From;
         public SolarSystem To;
         public WarpStatus Status;
-        public DateTime StartChargeTime;
-        public DateTime EndChargeTime;
-        public DateTime EndWarpTime;
+        public DateTime ChargeTimeLeft;
+        public DateTime WarpTimeLeft;
 
 
     }

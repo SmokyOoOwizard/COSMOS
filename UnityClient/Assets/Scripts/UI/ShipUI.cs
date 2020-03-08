@@ -14,9 +14,9 @@ namespace COSMOS.UI
 
         private void Update()
         {
-            if(Player.PlayerController.instance.IC is SpaceShip.SpaceShipController && Player.PlayerController.instance.IC.Exist())
+            if(GameData.CurrentControllableObject is SpaceShip.SpaceShipController && GameData.CurrentControllableObject.Exist())
             {
-                SpaceShip.SpaceShipController ssc = Player.PlayerController.instance.IC as SpaceShip.SpaceShipController;
+                SpaceShip.SpaceShipController ssc = GameData.CurrentControllableObject as SpaceShip.SpaceShipController;
                 HP.fillAmount = 1;
                 Fuel.fillAmount = ssc.Hull.GetFuelCount("fuel") / ssc.Hull.GetMaxFuelCount("fuel");
                 DarkEnergy.fillAmount = ssc.Hull.GetFuelCount("DarkEnergy") / ssc.Hull.GetMaxFuelCount("DarkEnergy");

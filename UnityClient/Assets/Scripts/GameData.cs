@@ -2,6 +2,8 @@
 using COSMOS.Core;
 using COSMOS.Equipment;
 using COSMOS.Player;
+using COSMOS.Space;
+using COSMOS.SpaceShip;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +19,29 @@ namespace COSMOS
 
         public static readonly Notifications PlayerNotifications = new Notifications();
 
-        static PlayerData playerData;
+        public static long Money;
+        public static WarpState CurrentWarp;
+
+        public static IControllable CurrentControllableObject
+        {
+            get
+            {
+                return currentControllableObject;
+            }
+            set
+            {
+                if(currentControllableObject != null && currentControllableObject is SpaceShipController)
+                {
+                    UnsubControllableSpaceShip(currentControllableObject as SpaceShipController);
+                }
+                if(value != null && value is SpaceShipController)
+                {
+                    SubControllableSpaceShip(value as SpaceShipController);
+                }
+                currentControllableObject = value;
+            }
+        }
+        static IControllable currentControllableObject;
 
         public static COSMOS.Character.Character PlayerCharacter { get; set; }
         public static event Action OnEquipmentPartsUpdate;
@@ -37,17 +61,52 @@ namespace COSMOS
 
             return new EquipmentPart[] { q };
         }
-        public static PlayerData GetPlayerData()
+
+        static void OnSpaceShipWarp(SpaceShip.SpaceShipController spaceShip)
         {
-            if (playerData == null)
+            WarpStatus warpStatus = spaceShip.Hull.WarpEngine.EngineState;
+            if(warpStatus == WarpStatus.Charge || warpStatus == WarpStatus.Warp)
             {
-                playerData = new PlayerData();
-                playerData.CurrentWarp = new WarpState();
-                playerData.CurrentWarp.EndChargeTime = CurrentDate.AddMinutes(10);
-                playerData.CurrentWarp.EndWarpTime = CurrentDate.AddMinutes(25);
+                CurrentWarp = new WarpState();
+                CurrentWarp.Status = warpStatus;
+                CurrentWarp.To = spaceShip.WarpTarget;
+                CurrentWarp.From = SolarSystemManager.CurrentSystem;
+                CurrentWarp.ChargeTimeLeft = CurrentDate.AddSeconds(spaceShip.WarpChargeTimeLeft);
+                Log.Info(spaceShip.WarpChargeTimeLeft + " " + CurrentWarp.ChargeTimeLeft);
+                Log.Info(spaceShip.WarpTimeLeft);
+                CurrentWarp.WarpTimeLeft = CurrentWarp.ChargeTimeLeft.AddSeconds(spaceShip.WarpTimeLeft);
+            }
+            else
+            {
+                CurrentWarp = null;
+            }
+            Log.Info(warpStatus);
+        }
+        static void UnsubControllableSpaceShip(SpaceShip.SpaceShipController spaceShip)
+        {
+            if(spaceShip != null)
+            {
+                spaceShip.WarpChargeStart -= OnSpaceShipWarp;
+                spaceShip.WarpChargeStop -= OnSpaceShipWarp;
+                spaceShip.WarpChargeEnd -= OnSpaceShipWarp;
+                spaceShip.WarpStart -= OnSpaceShipWarp;
+                spaceShip.WarpStop -= OnSpaceShipWarp;
+                spaceShip.WarpEnd -= OnSpaceShipWarp;
 
             }
-            return playerData;
+        }
+        static void SubControllableSpaceShip(SpaceShip.SpaceShipController spaceShip)
+        {
+            if (spaceShip != null)
+            {
+                spaceShip.WarpChargeStart += OnSpaceShipWarp;
+                spaceShip.WarpChargeStop += OnSpaceShipWarp;
+                spaceShip.WarpChargeEnd += OnSpaceShipWarp;
+                spaceShip.WarpStart += OnSpaceShipWarp;
+                spaceShip.WarpStop += OnSpaceShipWarp;
+                spaceShip.WarpEnd += OnSpaceShipWarp;
+
+            }
         }
     }
 }

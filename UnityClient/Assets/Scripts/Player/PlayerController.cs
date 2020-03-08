@@ -11,7 +11,6 @@ namespace COSMOS.Player
     public class PlayerController : SingletonMono<PlayerController>
     {
         public CameraController cmc;
-        public IControllable IC { get; private set; }
         public Vector3 mousePos;
         public Character.CharacterController Character;
         public SpaceShip.SpaceShipController Ship;
@@ -61,13 +60,13 @@ namespace COSMOS.Player
         // Update is called once per frame
         void FixedUpdate()
         {
-            if (IC != null && IC.Exist())
+            if (GameData.CurrentControllableObject != null && GameData.CurrentControllableObject.Exist())
             {
 
                 float x = Input.GetAxis("Horizontal");
                 float y = Input.GetAxis("Vertical");
 
-                Plane horPlane = new Plane(Vector3.up, IC.GetPos());
+                Plane horPlane = new Plane(Vector3.up, GameData.CurrentControllableObject.GetPos());
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 float distance = 0;
                 if (horPlane.Raycast(ray, out distance))
@@ -76,37 +75,29 @@ namespace COSMOS.Player
                 }
 
 
-                Vector3 p = mousePos - IC.GetPos();
+                Vector3 p = mousePos - GameData.CurrentControllableObject.GetPos();
                 p.y = 0;
 
-                IC.Move(new Vector2(x, y));
+                GameData.CurrentControllableObject.Move(new Vector2(x, y));
                 if (p != Vector3.zero)
                 {
-                    IC.Rotate((float)Math.Round(Quaternion.LookRotation(p, Vector3.up).eulerAngles.y, 2));
+                    GameData.CurrentControllableObject.Rotate((float)Math.Round(Quaternion.LookRotation(p, Vector3.up).eulerAngles.y, 2));
                 }
-                IC.Selected();
+                GameData.CurrentControllableObject.Selected();
             }
-        }
-        public GameObject GetControllableObject()
-        {
-            if (PlayerController.instance.IC != null && PlayerController.instance.IC.Exist())
-            {
-                return ((MonoBehaviour)(PlayerController.instance.IC)).gameObject;
-            }
-            return null;
         }
         public void SetCharacter(IControllable character)
         {
             if(character != null && character.Exist())
             {
-                if (IC is SpaceShip.SpaceShipController)
+                if (GameData.CurrentControllableObject is SpaceShip.SpaceShipController)
                 {
-                    SpaceShip.SpaceShipController ssc = IC as SpaceShip.SpaceShipController;
+                    SpaceShip.SpaceShipController ssc = GameData.CurrentControllableObject as SpaceShip.SpaceShipController;
                     ssc.WarpChargeStart += (x) => Log.Info("START");
                     ssc.WarpStart += (x) => { SolarSystemManager.LoadSystem("TestName2"); Log.Info("WARP"); };
                 }
 
-                IC = character;
+                GameData.CurrentControllableObject = character;
             }
         }
     }

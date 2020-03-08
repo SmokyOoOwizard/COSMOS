@@ -21,17 +21,17 @@ namespace COMOS.UI
         // Update is called once per frame
         void Update()
         {
-            if (GameData.GetPlayerData().CurrentWarp != null && GameData.GetPlayerData().CurrentWarp.Status != WarpStatus.Idle)
+            if (GameData.CurrentWarp != null && GameData.CurrentWarp.Status != WarpStatus.Idle)
             {
-                WarpStatus status = GameData.GetPlayerData().CurrentWarp.Status;
+                WarpStatus status = GameData.CurrentWarp.Status;
                 int seconds = 0;
                 if (status == WarpStatus.Charge)
                 {
-                    seconds = (int)(GameData.GetPlayerData().CurrentWarp.EndChargeTime - GameData.CurrentDate).TotalSeconds;
+                    seconds = (int)(GameData.CurrentWarp.ChargeTimeLeft - GameData.CurrentDate).TotalSeconds;
                 }
                 else if (status == WarpStatus.Warp)
                 {
-                    seconds = (int)(GameData.GetPlayerData().CurrentWarp.EndWarpTime - GameData.CurrentDate).TotalSeconds;
+                    seconds = (int)(GameData.CurrentWarp.WarpTimeLeft - GameData.CurrentDate).TotalSeconds;
                 }
                 seconds = Mathf.Clamp(seconds, 0, 9999);
                 timeText.SetText(seconds.ToString());
