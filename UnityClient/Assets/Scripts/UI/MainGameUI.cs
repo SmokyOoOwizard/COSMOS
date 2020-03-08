@@ -16,7 +16,7 @@ namespace COSMOS.UI
         public TextMeshProUGUI DateUI;
         public TextMeshProUGUI TimeUI;
         public TextMeshProUGUI MoneyUI;
-        public GameObject EventBar;
+        public NotificationsUI NotificationsBar;
         public MiniMapUI MiniMap;
 
         [Header("CharacterUI")]
@@ -25,10 +25,20 @@ namespace COSMOS.UI
         [Header("Menu bar")]
         public GameObject MenuBar;
 
-
+        int day = -1;
         private void Awake()
         {
             InitPatern();
+        }
+
+        private void Update()
+        {
+            if(GameData.CurrentDate.Day != day)
+            {
+                day = GameData.CurrentDate.Day;
+                DateUI.SetText(GameData.CurrentDate.ToString("dd.MM.yyyy"));
+            }
+
         }
     }
 }

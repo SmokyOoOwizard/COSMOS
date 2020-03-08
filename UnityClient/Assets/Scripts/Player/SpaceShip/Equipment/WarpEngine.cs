@@ -4,30 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using COSMOS.Equipment;
+using COSMOS.Player;
 
 namespace COSMOS.SpaceShip.Equipment
 {
     public class WarpEngine : ShipEquipment, INeedEnergy
     {
-        public enum State
-        {
-            Idle,
-            Charge,
-            Warp
-        }
         public float WarpSpeed { get; protected set; } = 1;
         public float ChargeTime { get; protected set; } = 5;
-        public State EngineState 
+        public WarpStatus EngineState 
         { 
             get { return engineState; } 
             set { 
-                if (value == State.Idle) { EnergyConsumption = IdleEnergyConsumption; } 
-                else if (value == State.Charge) { EnergyConsumption = ChargeEnergyConsumption; } 
+                if (value == WarpStatus.Idle) { EnergyConsumption = IdleEnergyConsumption; } 
+                else if (value == WarpStatus.Charge) { EnergyConsumption = ChargeEnergyConsumption; } 
                 else { EnergyConsumption = WarpEnergyConsumption; } 
                 engineState = value;
             } 
         }
-        private State engineState = State.Idle;
+        private WarpStatus engineState = WarpStatus.Idle;
         public float ChargeFuelConsumption { get; protected set; } = 10;
         public float WarpFuelConsumption { get; protected set; } = 1;
 
