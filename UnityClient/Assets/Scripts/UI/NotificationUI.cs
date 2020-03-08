@@ -12,7 +12,7 @@ namespace COSMOS.UI
 {
     public class NotificationUI : MonoBehaviour
     {
-        public const string PREFAB_ID = @"";
+        public const string PREFAB_ID = @"Prefabs\UI\NotificationIcon";
         public Notification Notification { get; protected set; }
         public float Speed = 4;
 

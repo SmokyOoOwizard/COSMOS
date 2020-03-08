@@ -41,6 +41,7 @@ namespace COSMOS.UI
             else
             {
                 NotificationUI ui = uiPool.GetObject();
+                ui.gameObject.SetActive(true);
                 notificationsWithUI.Add(notification, ui);
                 ui.Init(notification);
             }
@@ -53,6 +54,7 @@ namespace COSMOS.UI
         {
             NotificationUI ui = NotificationUI.Spawn();
             ui.transform.SetParent(content.transform);
+            ui.gameObject.SetActive(false);
             return ui;
         }
         public void SortNotifications()
