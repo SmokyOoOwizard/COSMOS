@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace COSMOS.Core
 {
-    public class Notification : DataWithEvents, IHasDescription
+    public class Notification : DataWithEvents
     {
         public virtual string IconID { get; protected set; }
         public virtual string LkeyDescription { get; protected set; }
