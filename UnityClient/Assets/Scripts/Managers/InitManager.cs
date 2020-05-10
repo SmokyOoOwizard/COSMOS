@@ -14,13 +14,11 @@ namespace COSMOS.Managers
         private void Awake()
         {
             DontDestroyOnLoad(this);
-            LogManager.Init();
             InitAllManagers();
         }
         private void OnApplicationQuit()
         {
             DeInitAll();
-            LogManager.Deinit();
         }
         void InitAllManagers()
         {
