@@ -18,7 +18,7 @@ namespace COSMOS.UI
         GameObject InventoriesContent;
 
         Dictionary<Inventory, InventoryUI> usedInventoryObjects = new Dictionary<Inventory, InventoryUI>();
-        Dictionary<EquipmentPart, EquipmentUI> usedEquipmentObjects = new Dictionary<EquipmentPart, EquipmentUI>();
+        Dictionary<EquipmentSet, EquipmentUI> usedEquipmentObjects = new Dictionary<EquipmentSet, EquipmentUI>();
 
         private void Awake()
         {
@@ -97,16 +97,16 @@ namespace COSMOS.UI
         }
         void fullRefreshEquipments()
         {
-            List<(EquipmentPart, EquipmentUI)> equipments = new List<(EquipmentPart, EquipmentUI)>();
+            List<(EquipmentSet, EquipmentUI)> equipments = new List<(EquipmentSet, EquipmentUI)>();
             HashSet<EquipmentUI> freeUI = new HashSet<EquipmentUI>(usedEquipmentObjects.Values);
-            List<EquipmentPart> availableEquipments = new List<EquipmentPart>(GameData.GetCharacterEquipments());
+            List<EquipmentSet> availableEquipments = new List<EquipmentSet>(GameData.GetCharacterEquipments());
 
             if (availableEquipments != null)
             {
                 // search allready pair ui
                 for (int i = 0; i < availableEquipments.Count; i++)
                 {
-                    EquipmentPart item = availableEquipments[i];
+                    EquipmentSet item = availableEquipments[i];
                     if (usedEquipmentObjects.ContainsKey(item))
                     {
                         equipments.Add((item, usedEquipmentObjects[item]));
@@ -120,7 +120,7 @@ namespace COSMOS.UI
                 // creat new need pair
                 for (int i = 0; i < equipments.Count; i++)
                 {
-                    (EquipmentPart, EquipmentUI) pair = equipments[i];
+                    (EquipmentSet, EquipmentUI) pair = equipments[i];
                     if (pair.Item2 == null)
                     {
                         if (freeUI.Count > 0)
@@ -141,7 +141,7 @@ namespace COSMOS.UI
                 // init pairs
                 for (int i = 0; i < equipments.Count; i++)
                 {
-                    (EquipmentPart, EquipmentUI) pair = equipments[i];
+                    (EquipmentSet, EquipmentUI) pair = equipments[i];
                     if (pair.Item2 == null)
                     {
                         Log.Error("InventoryUI is null");

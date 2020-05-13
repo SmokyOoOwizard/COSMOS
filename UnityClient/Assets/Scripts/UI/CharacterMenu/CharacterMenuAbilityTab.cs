@@ -16,27 +16,27 @@ namespace COSMOS.UI
 
         public void Init()
         {
-            if (GameData.PlayerCharacter != null)
-            {
-                Ability[] abilities = GameData.PlayerCharacter.GetAbilities();
-                if (abilities == null || GameData.PlayerCharacter == null)
-                {
-                    return;
-                }
-                foreach (Transform child in Content.transform)
-                {
-                    GameObject.Destroy(child.gameObject);
-                }
-
-                for (int i = 0; i < abilities.Length; i++)
-                {
-                    var abilityUI = AbilityUI.Spawn(abilities[i]);
-                    if (abilityUI != null)
-                    {
-                        abilityUI.transform.SetParent(Content.transform);
-                    }
-                }
-            }
+            //if (GameData.PlayerCharacter != null)
+            //{
+            //    Ability[] abilities = GameData.PlayerCharacter.GetAbilities();
+            //    if (abilities == null || GameData.PlayerCharacter == null)
+            //    {
+            //        return;
+            //    }
+            //    foreach (Transform child in Content.transform)
+            //    {
+            //        GameObject.Destroy(child.gameObject);
+            //    }
+            //
+            //    for (int i = 0; i < abilities.Length; i++)
+            //    {
+            //        var abilityUI = AbilityUI.Spawn(abilities[i]);
+            //        if (abilityUI != null)
+            //        {
+            //            abilityUI.transform.SetParent(Content.transform);
+            //        }
+            //    }
+            //}
         }
 
     }

@@ -20,7 +20,7 @@ namespace COSMOS
         public static readonly Notifications PlayerNotifications = new Notifications();
 
         public static long Money;
-        public static WarpState CurrentWarp;
+        public static WarpState CurrentWarp { get; private set; }
 
         public static IControllable CurrentControllableObject
         {
@@ -53,13 +53,9 @@ namespace COSMOS
             return new Inventory[] { new Inventory() { MaxVolume = 10, MaxWeight = 10 } };
         }
 
-        public static EquipmentPart[] GetCharacterEquipments()
+        public static EquipmentSet[] GetCharacterEquipments()
         {
-            var q = new EquipmentPart();
-            q.AddRule(new EquipmentRule());
-            q.AddRule(new EquipmentRule());
-
-            return new EquipmentPart[] { q };
+            return new EquipmentSet[0];
         }
 
         static void OnSpaceShipWarp(SpaceShip.SpaceShipController spaceShip)

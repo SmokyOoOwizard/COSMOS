@@ -15,40 +15,18 @@ namespace COSMOS.UI
     {
         public const string PREFAB_ID = @"Prefabs\UI\Inventory\EquipmentPartSlotsUI";
         public const string SLOT_PREFAB_ID = @"Prefabs\UI\Slot";
-        public EquipmentPart CurrentEquipmentPart { get; protected set; }
+        public EquipmentSet CurrentEquipmentSet { get; protected set; }
 
-        Dictionary<SlotUI, EquipmentRule> RulesForSlots = new Dictionary<SlotUI, EquipmentRule>();
+        private List<SlotUI> Slots = new List<SlotUI>();
 
         [SerializeField]
         TextMeshProUGUI header;
         [SerializeField]
         GameObject Content;
 
-        bool checkRuleForSlot(SlotUI slot, ICanPlaceInSlot stuff)
+        public void Init(EquipmentSet equipment)
         {
-            if (stuff is Item)
-            {
-                if (RulesForSlots.ContainsKey(slot))
-                {
-                    EquipmentRule rule = RulesForSlots[slot];
-                    if (rule.ItemFit(stuff as Item))
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-        void onAcceptEquipmentInSlot(SlotUI slot, ICanPlaceInSlot item, ICanPlaceInSlot oldItem)
-        {
-            if (RulesForSlots.ContainsKey(slot) && item is Item)
-            {
-                CurrentEquipmentPart.SetItem(RulesForSlots[slot], item as Item);
-            }
-        }
-        public void Init(EquipmentPart equipment)
-        {
-            CurrentEquipmentPart = equipment;
+            CurrentEquipmentSet = equipment;
             if(equipment != null)
             {
                 header.SetText(TextFormat.GetLKeyAndFormat(equipment.LKeyName));
@@ -59,45 +37,68 @@ namespace COSMOS.UI
         {
             GameObject slotPrefab = AssetsDatabase.LoadGameObject(SLOT_PREFAB_ID);
 
-            HashSet<SlotUI> freeSlots = new HashSet<SlotUI>(RulesForSlots.Keys);
-            RulesForSlots.Clear();
-            if (CurrentEquipmentPart != null)
+            if (CurrentEquipmentSet != null)
             {
-                (EquipmentRule, Item)[] items = CurrentEquipmentPart.Equipments.Select((x) => (x.Key, x.Value)).ToArray();
+                var slots = CurrentEquipmentSet.Slots;
 
-                for (int i = 0; i < items.Length; i++)
+                if(slots.Count < Slots.Count)
                 {
-                    (EquipmentRule, Item) item = items[i];
-                    SlotUI slot = null;
-                    if (freeSlots.Count > 0)
+                    // destroy
+                    for (int i = 0; i < slots.Count - Slots.Count; i++)
                     {
-                        slot = freeSlots.First();
-                        freeSlots.Remove(slot);
+                        Destroy(Slots[i].gameObject);
+                        Slots.RemoveAt(i);
                     }
-                    else
-                    {
-                        GameObject slotObj = GameObject.Instantiate(slotPrefab);
-                        slot = slotObj.GetComponent<SlotUI>();
-                        slotObj.transform.SetParent(Content.transform);
-
-                        slot.SetCustomAcceptFunc(checkRuleForSlot);
-                        slot.OnDropInSlot += onAcceptEquipmentInSlot;
-                    }
-                    RulesForSlots.Add(slot, item.Item1);
-                    if (item.Item2 != null)
-                    {
-                        slot.SetStuff(item.Item2);
-                    }
-                    slot.EmptySlotImageID = item.Item1.SlotImageID;
-                    slot.UpdateData();
-                    slot.transform.SetSiblingIndex(i);
                 }
-            }
-            if (freeSlots.Count > 0)
-            {
-                foreach (var child in freeSlots)
+                else if(slots.Count > Slots.Count)
                 {
-                    GameObject.Destroy(child.gameObject);
+                    // create
+                    GameObject slotObj = GameObject.Instantiate(slotPrefab);
+                    Slots.Add(slotObj.GetComponent<SlotUI>());
+                    slotObj.transform.SetParent(Content.transform);
+                    slotObj.transform.SetAsLastSibling();
+                }
+
+                for (int i = 0; i < slots.Count; i++)
+                {
+                    var equipmentSlot = slots[i];
+                    var slotUI = Slots[i];
+
+                    slotUI.ClearSlot();
+
+                    slotUI.SetCustomAcceptFunc((slot, stuff) =>
+                    {
+                        if(stuff is Equipment.Equipment)
+                        {
+                            if(equipmentSlot.checkRules(stuff as Equipment.Equipment))
+                            {
+                                return true;
+                            }
+                        }
+                        return false;
+                    });
+                    if(equipmentSlot.CurrentEquipment != null)
+                    {
+                        slotUI.SetStuff(equipmentSlot.CurrentEquipment);
+                    }
+                    slotUI.OnDropInSlot += (slot, newStuff, oldStuff) =>
+                    {
+                        if (oldStuff != null && oldStuff is Equipment.Equipment)
+                        {
+                            var oldEquipment = oldStuff as Equipment.Equipment;
+                            if (equipmentSlot.RemoveEquipment(out oldEquipment))
+                            {
+
+                            }
+                        }
+                        if(newStuff != null && newStuff is Equipment.Equipment)
+                        {
+                            if(equipmentSlot.AddEquipment(newStuff as Equipment.Equipment))
+                            {
+
+                            }
+                        }
+                    };
                 }
             }
         }

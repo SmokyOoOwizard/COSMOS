@@ -27,6 +27,14 @@ namespace COSMOS.UI
             customAcceptFunc = null;
         }
 
+        public void ClearSlot()
+        {
+            ClearCustomAcceptFunc();
+            OnDropInSlot = null;
+            CurrentStuff = null;
+            Refresh();
+        }
+
         public virtual bool AcceptStuff(ICanPlaceInSlot stuff)
         {
             if (customAcceptFunc == null || customAcceptFunc(this, stuff))
@@ -43,11 +51,17 @@ namespace COSMOS.UI
         public void SetStuff(ICanPlaceInSlot stuff)
         {
             CurrentStuff = stuff;
+            UpdateData();
         }
 
         public virtual void UpdateData()
         {
             // update icons and others
+        }
+
+        public void Refresh()
+        {
+
         }
     }
 }

@@ -23,49 +23,51 @@ namespace COSMOS.UI
         [SerializeField]
         TextMeshProUGUI detailValueText;
 
-        public Ability CurrentAbility { get; private set; }
+        //public Ability CurrentAbility { get; private set; }
+        //
+        //
+        //public void Init(Ability ability)
+        //{
+        //    if(ability == null)
+        //    {
+        //        return;
+        //    }
+        //    if(CurrentAbility != null)
+        //    {
+        //        CurrentAbility.RemoveListener(OnAbilityUpdate);
+        //    }
+        //    CurrentAbility = ability;
+        //    CurrentAbility.AddListener(OnAbilityUpdate);
+        //    updateStuff();
+        //}
 
+        //private void OnAbilityUpdate(uint flags, EventArg args)
+        //{
+        //    updateStuff();
+        //}
 
-        public void Init(Ability ability)
-        {
-            if(ability == null)
-            {
-                return;
-            }
-            if(CurrentAbility != null)
-            {
-                CurrentAbility.RemoveListener(OnAbilityUpdate);
-            }
-            CurrentAbility = ability;
-            CurrentAbility.AddListener(OnAbilityUpdate);
-            updateStuff();
-        }
-        private void OnAbilityUpdate(uint flags, EventArg args)
-        {
-            updateStuff();
-        }
-        void updateStuff()
-        {
-            abilityIcon.sprite = AssetsDatabase.LoadSprite(CurrentAbility.IconID);
-            lstring name = CurrentAbility.LKeyName;
-            nameText.SetText(name);
-            totalValueText.SetText(CurrentAbility.CalculatedStatWithBonuses + "");
-            detailValueText.SetText(CurrentAbility.DetailTotalStat);
-        }
+        //void updateStuff()
+        //{
+        //    abilityIcon.sprite = AssetsDatabase.LoadSprite(CurrentAbility.IconID);
+        //    lstring name = CurrentAbility.LKeyName;
+        //    nameText.SetText(name);
+        //    totalValueText.SetText(CurrentAbility.CalculatedStatWithBonuses + "");
+        //    detailValueText.SetText(CurrentAbility.DetailTotalStat);
+        //}
 
-        public static AbilityUI Spawn(Ability ability)
-        {
-            GameObject prefab = AssetsDatabase.LoadGameObject(PREFAB_ID);
-            if(prefab == null)
-            {
-                Log.Error("prefab for abilityUI not found. path:" + PREFAB_ID);
-                return null;
-            }
-
-            GameObject go = GameObject.Instantiate(prefab);
-            AbilityUI abilityUI = go.GetComponent<AbilityUI>();
-            abilityUI.Init(ability);
-            return abilityUI;
-        }
+        //public static AbilityUI Spawn(Ability ability)
+        //{
+        //    GameObject prefab = AssetsDatabase.LoadGameObject(PREFAB_ID);
+        //    if(prefab == null)
+        //    {
+        //        Log.Error("prefab for abilityUI not found. path:" + PREFAB_ID);
+        //        return null;
+        //    }
+        //
+        //    GameObject go = GameObject.Instantiate(prefab);
+        //    AbilityUI abilityUI = go.GetComponent<AbilityUI>();
+        //    abilityUI.Init(ability);
+        //    return abilityUI;
+        //}
     }
 }
