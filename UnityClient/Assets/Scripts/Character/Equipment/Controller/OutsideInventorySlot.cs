@@ -10,6 +10,12 @@ namespace COSMOS.SpaceShip
         public float DefaultRotation { get; protected set; }
         public float RotationRangeMin { get; protected set; }
         public float RotationRangeMax { get; protected set; }
+
+        public OutsideInventorySlot(Vector3 position, Vector3 rotation)
+        {
+            Position = position;
+            Rotation = rotation;
+        }
     }
     public class SideEngineSlot : OutsideInventorySlot
     {
@@ -19,5 +25,10 @@ namespace COSMOS.SpaceShip
             Right
         }
         public Side SlotSide { get; protected set; }
+
+        public SideEngineSlot(Vector3 position, Vector3 rotation) : base(position, rotation)
+        {
+
+        }
     }
 }

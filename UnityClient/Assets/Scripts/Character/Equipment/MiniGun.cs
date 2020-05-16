@@ -9,9 +9,14 @@ namespace COSMOS.Equipment
 
         public MiniGun(float rate = 0.1f)
         {
+            Rate = rate;
+        }
+
+        public override void CreateObjectController()
+        {
+            Log.Info("CREATE MINI GUB OBJECT CONTROLLER");
             GameObjectController = new GameObject("MiniGunObjectController", typeof(MiniGunObjectController)).
                 GetComponent<MiniGunObjectController>();
-            Rate = rate;
         }
 
         public override void Fire(float delta)
@@ -19,7 +24,14 @@ namespace COSMOS.Equipment
             timer -= delta;
             if (timer <= 0)
             {
-                GameObjectController.Fire();
+                if (GameObjectController != null)
+                {
+                    GameObjectController.Fire();
+                }
+                else
+                {
+                    Log.Error(GameObjectController != null);
+                }
                 timer = Rate;
             }
         }

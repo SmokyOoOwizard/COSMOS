@@ -5,6 +5,8 @@ namespace COSMOS.Equipment
     public abstract class OutsideEquipment : Equipment
     {
         public virtual OutsideEquipmentObjectController GameObjectController { get; protected set; }
+
+        public abstract void CreateObjectController();
     }
     public abstract class OutsideEquipment<T> : OutsideEquipment where T : OutsideEquipmentObjectController
     {
