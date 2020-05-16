@@ -27,9 +27,9 @@ namespace COSMOS.SpaceShip
         public float CalculateTimeWarp { get; protected set; }
         public bool HasWarpEngine()
         {
-            if(Hull != null)
+            if(SpaceShip != null)
             {
-                if(Hull.WarpEngine != null)
+                if(SpaceShip.WarpEngine != null)
                 {
                     return true;
                 }
@@ -39,9 +39,9 @@ namespace COSMOS.SpaceShip
         public bool CanWarp(SolarSystem ss)
         {
             float distance = Vector2.Distance(SolarSystemManager.CurrentSystem.PosOnMap, ss.PosOnMap);
-            float warpTime = Hull.WarpEngine.WarpSpeed * distance;
-            float fuelCount = Hull.GetFuelCount("DarkEnergy");
-            float allCost = warpTime * Hull.WarpEngine.WarpFuelConsumption + Hull.WarpEngine.ChargeTime * Hull.WarpEngine.ChargeFuelConsumption;
+            float warpTime = SpaceShip.WarpEngine.WarpSpeed * distance;
+            float fuelCount = SpaceShip.GetFuelCount("DarkEnergy");
+            float allCost = warpTime * SpaceShip.WarpEngine.WarpFuelConsumption + SpaceShip.WarpEngine.ChargeTime * SpaceShip.WarpEngine.ChargeFuelConsumption;
             if (fuelCount >= allCost)
             {
                 return true;
@@ -52,12 +52,12 @@ namespace COSMOS.SpaceShip
         {
             if (HasWarpEngine() && CanWarp(ss))
             {
-                WarpChargeTimeLeft = Hull.WarpEngine.ChargeTime;
+                WarpChargeTimeLeft = SpaceShip.WarpEngine.ChargeTime;
                 WarpTarget = ss;
-                WarpTimeLeft = CalculateTimeWarp = Hull.WarpEngine.WarpSpeed * 
+                WarpTimeLeft = CalculateTimeWarp = SpaceShip.WarpEngine.WarpSpeed * 
                     Vector2.Distance(SolarSystemManager.CurrentSystem.PosOnMap, ss.PosOnMap);
                 WarpCharging = true;
-                Hull.WarpEngine.EngineState = WarpStatus.Charge;
+                SpaceShip.WarpEngine.EngineState = WarpStatus.Charge;
                 Warping = false;
                 WarpChargeStart?.Invoke(this);
             }
@@ -67,14 +67,14 @@ namespace COSMOS.SpaceShip
             if (WarpCharging)
             {
                 WarpChargeTimeLeft -= Time.deltaTime;
-                WarpChargePercentLeft = WarpChargeTimeLeft / Hull.WarpEngine.ChargeTime;
-                if(Hull.UseFuel(Hull.WarpEngine.ChargeFuelConsumption * Time.deltaTime, "DarkEnergy") != 0)
+                WarpChargePercentLeft = WarpChargeTimeLeft / SpaceShip.WarpEngine.ChargeTime;
+                if(SpaceShip.UseFuel(SpaceShip.WarpEngine.ChargeFuelConsumption * Time.deltaTime, "DarkEnergy") != 0)
                 {
                     WarpCharging = false;
                     Warping = false;
                     WarpChargeTimeLeft = 0;
                     WarpChargePercentLeft = 0;
-                    Hull.WarpEngine.EngineState = WarpStatus.Idle;
+                    SpaceShip.WarpEngine.EngineState = WarpStatus.Idle;
                     WarpChargeStop?.Invoke(this);
                     return;
                 }
@@ -86,7 +86,7 @@ namespace COSMOS.SpaceShip
 
                     WarpChargeTimeLeft = 0;
                     WarpChargePercentLeft = 0;
-                    Hull.WarpEngine.EngineState = WarpStatus.Warp;
+                    SpaceShip.WarpEngine.EngineState = WarpStatus.Warp;
                     WarpStart?.Invoke(this);
                     return;
                 }
@@ -104,17 +104,17 @@ namespace COSMOS.SpaceShip
                     WarpChargePercentLeft = 0;
                     WarpTimeLeft = 0;
                     WarpPercentLeft = 0;
-                    Hull.WarpEngine.EngineState = WarpStatus.Idle;
+                    SpaceShip.WarpEngine.EngineState = WarpStatus.Idle;
                     WarpEnd?.Invoke(this);
                     return;
                 }
-                if (Hull.UseFuel(Hull.WarpEngine.WarpFuelConsumption * Time.deltaTime, "DarkEnergy") != 0)
+                if (SpaceShip.UseFuel(SpaceShip.WarpEngine.WarpFuelConsumption * Time.deltaTime, "DarkEnergy") != 0)
                 {
                     WarpCharging = false;
                     Warping = false;
                     WarpChargeTimeLeft = 0;
                     WarpChargePercentLeft = 0;
-                    Hull.WarpEngine.EngineState = WarpStatus.Idle;
+                    SpaceShip.WarpEngine.EngineState = WarpStatus.Idle;
                     WarpStop?.Invoke(this);
                     return;
                 }

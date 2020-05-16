@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 namespace COSMOS.SpaceShip
 {
-    public partial class SpaceShipHull
+    public partial class SpaceShip : Character.Character
     {
         public float HullWeight { get; protected set; }
         public float TotalWeight { get; protected set; }
@@ -19,7 +19,7 @@ namespace COSMOS.SpaceShip
 
         public float MaxSpeed { get; protected set; } = 20;
 
-        public SpaceShipHull()
+        public SpaceShip()
         {
             InitEquipments();
         }

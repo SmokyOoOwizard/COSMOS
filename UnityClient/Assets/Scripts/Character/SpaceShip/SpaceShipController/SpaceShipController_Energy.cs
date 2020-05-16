@@ -11,37 +11,37 @@ namespace COSMOS.SpaceShip
     {
         void EnergyUpdate()
         {
-            if (Hull != null)
+            if (SpaceShip != null)
             {
                 float energyAdd = 0;
                 float energyNeed = 0;
-                if (Hull.Generators != null)
+                if (SpaceShip.Generators != null)
                 {
-                    foreach (var generator in Hull.Generators)
+                    foreach (var generator in SpaceShip.Generators)
                     {
-                        float amount = Hull.UseFuel(generator.FuelConsumption, generator.FuelType);
+                        float amount = SpaceShip.UseFuel(generator.FuelConsumption, generator.FuelType);
                         float percent = amount / generator.FuelConsumption;
                         energyAdd += percent * generator.GeneratePerTick * Time.deltaTime;
                     }
                 }
 
-                if(Hull.EnergyСonsumptions != null)
+                if(SpaceShip.EnergyСonsumptions != null)
                 {
-                    foreach (var ec in Hull.EnergyСonsumptions)
+                    foreach (var ec in SpaceShip.EnergyСonsumptions)
                     {
                         energyNeed += ec.EnergyConsumption * Time.deltaTime;
                     }
                 }
                 if(energyAdd >= energyNeed)
                 {
-                    foreach (var ec in Hull.EnergyСonsumptions)
+                    foreach (var ec in SpaceShip.EnergyСonsumptions)
                     {
                         ec.PowerPercent = 1;
                     }
                     energyAdd -= energyNeed;
-                    if(Hull.EnergyTanks != null)
+                    if(SpaceShip.EnergyTanks != null)
                     {
-                        List<Equipment.EnergyTank> tanks = new List<Equipment.EnergyTank>(Hull.EnergyTanks);
+                        List<Equipment.EnergyTank> tanks = new List<Equipment.EnergyTank>(SpaceShip.EnergyTanks);
                         int energyTanksCount = tanks.Count;
                         tanks.Sort((x, y) => { return y.FreeFuelVolume.CompareTo(x.FreeFuelVolume); });
 
@@ -61,9 +61,9 @@ namespace COSMOS.SpaceShip
                 else
                 {
                     float diff = energyNeed - energyAdd;
-                    if(Hull.EnergyTanks != null)
+                    if(SpaceShip.EnergyTanks != null)
                     {
-                        List<Equipment.EnergyTank> tanks = new List<Equipment.EnergyTank>(Hull.EnergyTanks);
+                        List<Equipment.EnergyTank> tanks = new List<Equipment.EnergyTank>(SpaceShip.EnergyTanks);
                         int energyTanksCount = tanks.Count;
                         tanks.Sort((x, y) => { return x.FreeFuelVolume.CompareTo(y.FreeFuelVolume); });
 
@@ -81,7 +81,7 @@ namespace COSMOS.SpaceShip
                         if(diff > 0)
                         {
                             float power = (energyNeed - diff) / energyNeed;
-                            foreach (var ec in Hull.EnergyСonsumptions)
+                            foreach (var ec in SpaceShip.EnergyСonsumptions)
                             {
                                 ec.PowerPercent = power;
                             }
@@ -90,7 +90,7 @@ namespace COSMOS.SpaceShip
                     else
                     {
                         float power = energyAdd / energyNeed;
-                        foreach (var ec in Hull.EnergyСonsumptions)
+                        foreach (var ec in SpaceShip.EnergyСonsumptions)
                         {
                             ec.PowerPercent = power;
                         }

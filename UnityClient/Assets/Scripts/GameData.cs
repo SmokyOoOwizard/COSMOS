@@ -43,24 +43,44 @@ namespace COSMOS
         }
         static IControllable currentControllableObject;
 
-        public static COSMOS.Character.Character PlayerCharacter { get; set; }
+        public static Character.Character PlayerCharacter { get; set; }
         public static event Action OnEquipmentPartsUpdate;
         public static event Action OnInventoryUpdate;
 
 
-        public static Inventory[] GetCharacterInventories()
+        public static InventoryController[] GetCharacterInventories()
         {
-            return new Inventory[] { new Inventory() { MaxVolume = 10, MaxWeight = 10 } };
+            List<InventoryController> sets = new List<InventoryController>();
+            if (PlayerCharacter != null)
+            {
+                if (PlayerCharacter.InventoryController != null)
+                {
+                    sets.Add(PlayerCharacter.InventoryController);
+                }
+                if(PlayerCharacter.AdditionalInventoryControllers != null)
+                {
+                    sets.AddRange(PlayerCharacter.AdditionalInventoryControllers);
+                }
+            }
+            return sets.ToArray();
         }
 
-        public static EquipmentSet[] GetCharacterEquipments()
+        public static InventoryController[] GetCharacterEquipments()
         {
-            return new EquipmentSet[0];
+            List<InventoryController> sets = new List<InventoryController>();
+            if (PlayerCharacter != null)
+            {
+                if (PlayerCharacter.EquipmentController != null)
+                {
+                    sets.Add(PlayerCharacter.EquipmentController);
+                }
+            }
+            return sets.ToArray();
         }
 
         static void OnSpaceShipWarp(SpaceShip.SpaceShipController spaceShip)
         {
-            WarpStatus warpStatus = spaceShip.Hull.WarpEngine.EngineState;
+            WarpStatus warpStatus = spaceShip.SpaceShip.WarpEngine.EngineState;
             if(warpStatus == WarpStatus.Charge || warpStatus == WarpStatus.Warp)
             {
                 CurrentWarp = new WarpState();

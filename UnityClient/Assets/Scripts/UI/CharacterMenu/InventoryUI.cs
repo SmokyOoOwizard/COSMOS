@@ -14,79 +14,15 @@ namespace COSMOS.UI
     {
         public const string PREFAB_ID = @"Prefabs\UI\Inventory\InventorySlotsUI";
         public const string SLOT_PREFAB_ID = @"Prefabs\UI\Slot";
-        public Inventory CurrentInventory { get; protected set; }
+        public InventorySet CurrentInventory { get; protected set; }
         Dictionary<SlotUI, Item> itemsBySlots = new Dictionary<SlotUI, Item>();
-        int freeSlotsCount = 0;
 
         [SerializeField]
         TextMeshProUGUI header;
         [SerializeField]
         GameObject Content;
 
-        bool checkRuleForSlot(SlotUI slot, ICanPlaceInSlot stuff)
-        {
-            if (stuff is Item)
-            {
-                Item item = stuff as Item;
-                float newWeight = item.Weight;
-                float newVolume = item.Volume;
-                if (slot.CurrentStuff != null && slot.CurrentStuff is Item)
-                {
-                    Item currentItem = slot.CurrentStuff as Item;
-                    newWeight -= currentItem.Weight;
-                    newVolume -= currentItem.Volume;
-                }
-                if (newWeight < CurrentInventory.FreeWeight && newVolume < CurrentInventory.FreeVolume)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        void onAcceptEquipmentInSlot(SlotUI slot, ICanPlaceInSlot newItem, ICanPlaceInSlot oldItem)
-        {
-            Item item = newItem as Item;
-            if (oldItem != null)
-            {
-                Item old = oldItem as Item;
-                if (item != null)
-                {
-                    if (itemsBySlots.ContainsValue(item))
-                    {
-                        CurrentInventory.Swap(item, old);
-                    }
-                    else
-                    {
-                        if (!CurrentInventory.Replace(old, item))
-                        {
-                            Log.Error("Old item in slot not contains in current inventory");
-                        }
-                    }
-                }
-                else
-                {
-                    if (!CurrentInventory.Remove(old))
-                    {
-                        Log.Error("Old item in slot not contains in current inventory");
-                    }
-                    freeSlotsCount++;
-                }
-            }
-            else
-            {
-                if (item != null)
-                {
-                    CurrentInventory.AddItem(item);
-                    freeSlotsCount--;
-                    if (freeSlotsCount < 1)
-                    {
-                        createEmptySlot();
-                        freeSlotsCount++;
-                    }
-                }
-            }
-        }
-        public void Init(Inventory inventory)
+        public void Init(InventorySet inventory)
         {
             CurrentInventory = inventory;
             if (inventory != null)
@@ -103,7 +39,7 @@ namespace COSMOS.UI
             itemsBySlots.Clear();
             if (CurrentInventory != null)
             {
-                Item[] items = CurrentInventory.GetItems();
+                Item[] items = CurrentInventory.Items.ToArray();
 
                 for (int i = 0; i < items.Length; i++)
                 {
@@ -120,8 +56,8 @@ namespace COSMOS.UI
                         slot = slotObj.GetComponent<SlotUI>();
                         slotObj.transform.SetParent(Content.transform);
 
-                        slot.SetCustomAcceptFunc(checkRuleForSlot);
-                        slot.OnDropInSlot += onAcceptEquipmentInSlot;
+                        //slot.SetCustomAcceptFunc(checkRuleForSlot);
+                        //slot.OnDropInSlot += onAcceptEquipmentInSlot;
                     }
                     itemsBySlots.Add(slot, item);
                     slot.SetStuff(item);
@@ -136,11 +72,9 @@ namespace COSMOS.UI
                     GameObject.Destroy(child.gameObject);
                 }
             }
-            freeSlotsCount = 0;
-            if (CurrentInventory != null && CurrentInventory.FreeVolume > 0 && CurrentInventory.FreeWeight > 0)
+            for (int i = 0; i < CurrentInventory.FreeSlotsCount; i++)
             {
                 createEmptySlot();
-                freeSlotsCount++;
             }
         }
         void createEmptySlot()
@@ -150,8 +84,8 @@ namespace COSMOS.UI
             SlotUI slot = slotObj.GetComponent<SlotUI>();
             slotObj.transform.SetParent(Content.transform);
 
-            slot.SetCustomAcceptFunc(checkRuleForSlot);
-            slot.OnDropInSlot += onAcceptEquipmentInSlot;
+            //slot.SetCustomAcceptFunc(checkRuleForSlot);
+            //slot.OnDropInSlot += onAcceptEquipmentInSlot;
             slot.UpdateData();
 
             itemsBySlots.Add(slot, null);

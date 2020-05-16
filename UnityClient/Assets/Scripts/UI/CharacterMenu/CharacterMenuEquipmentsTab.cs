@@ -17,8 +17,8 @@ namespace COSMOS.UI
         [SerializeField]
         GameObject InventoriesContent;
 
-        Dictionary<Inventory, InventoryUI> usedInventoryObjects = new Dictionary<Inventory, InventoryUI>();
-        Dictionary<EquipmentSet, EquipmentUI> usedEquipmentObjects = new Dictionary<EquipmentSet, EquipmentUI>();
+        Dictionary<InventorySet, InventoryUI> usedInventoryObjects = new Dictionary<InventorySet, InventoryUI>();
+        Dictionary<InventorySet, EquipmentUI> usedEquipmentObjects = new Dictionary<InventorySet, EquipmentUI>();
 
         private void Awake()
         {
@@ -33,16 +33,28 @@ namespace COSMOS.UI
 
         void fullRefreshInventories()
         {
-            List<(Inventory, InventoryUI)> inventories = new List<(Inventory, InventoryUI)>();
+            List<(InventorySet, InventoryUI)> inventories = new List<(InventorySet, InventoryUI)>();
             HashSet<InventoryUI> freeUI = new HashSet<InventoryUI>(usedInventoryObjects.Values);
-            List<Inventory> availableInventories = new List<Inventory>(GameData.GetCharacterInventories());
+
+            InventoryController[] availableInventoriesControllers = GameData.GetCharacterInventories();
+
+            List<InventorySet> availableInventories = new List<InventorySet>();
+            for (int i = 0; i < availableInventoriesControllers.Length; i++)
+            {
+                InventoryController controller = availableInventoriesControllers[i];
+                if(controller != null && controller.InventorySets != null)
+                {
+                    availableInventories.AddRange(controller.InventorySets);
+                }
+            }
+
 
             if (availableInventories != null)
             {
                 // search allready pair ui
                 for (int i = 0; i < availableInventories.Count; i++)
                 {
-                    Inventory item = availableInventories[i];
+                    InventorySet item = availableInventories[i];
                     if (usedInventoryObjects.ContainsKey(item))
                     {
                         inventories.Add((item, usedInventoryObjects[item]));
@@ -53,10 +65,10 @@ namespace COSMOS.UI
                         inventories.Add((item, null));
                     }
                 }
-                // creat new need pair
+                // create new need pair
                 for (int i = 0; i < inventories.Count; i++)
                 {
-                    (Inventory, InventoryUI) pair = inventories[i];
+                    var pair = inventories[i];
                     if (pair.Item2 == null)
                     {
                         if (freeUI.Count > 0)
@@ -77,7 +89,7 @@ namespace COSMOS.UI
                 // init pairs
                 for (int i = 0; i < inventories.Count; i++)
                 {
-                    (Inventory, InventoryUI) pair = inventories[i];
+                    var pair = inventories[i];
                     if (pair.Item2 == null)
                     {
                         Log.Error("InventoryUI is null");
@@ -97,16 +109,26 @@ namespace COSMOS.UI
         }
         void fullRefreshEquipments()
         {
-            List<(EquipmentSet, EquipmentUI)> equipments = new List<(EquipmentSet, EquipmentUI)>();
+            List<(InventorySet, EquipmentUI)> equipments = new List<(InventorySet, EquipmentUI)>();
             HashSet<EquipmentUI> freeUI = new HashSet<EquipmentUI>(usedEquipmentObjects.Values);
-            List<EquipmentSet> availableEquipments = new List<EquipmentSet>(GameData.GetCharacterEquipments());
+            InventoryController[] availableEquipmentControllers = GameData.GetCharacterEquipments();
+            List<InventorySet> availableEquipments = new List<InventorySet>();
+
+            for (int i = 0; i < availableEquipmentControllers.Length; i++)
+            {
+                InventoryController equipmentController = availableEquipmentControllers[i];
+                if(equipmentController != null && equipmentController.InventorySets != null)
+                {
+                    availableEquipments.AddRange(equipmentController.InventorySets);
+                }
+            }
 
             if (availableEquipments != null)
             {
                 // search allready pair ui
                 for (int i = 0; i < availableEquipments.Count; i++)
                 {
-                    EquipmentSet item = availableEquipments[i];
+                    InventorySet item = availableEquipments[i];
                     if (usedEquipmentObjects.ContainsKey(item))
                     {
                         equipments.Add((item, usedEquipmentObjects[item]));
@@ -117,10 +139,10 @@ namespace COSMOS.UI
                         equipments.Add((item, null));
                     }
                 }
-                // creat new need pair
+                // create new need pair
                 for (int i = 0; i < equipments.Count; i++)
                 {
-                    (EquipmentSet, EquipmentUI) pair = equipments[i];
+                    var pair = equipments[i];
                     if (pair.Item2 == null)
                     {
                         if (freeUI.Count > 0)
@@ -141,7 +163,7 @@ namespace COSMOS.UI
                 // init pairs
                 for (int i = 0; i < equipments.Count; i++)
                 {
-                    (EquipmentSet, EquipmentUI) pair = equipments[i];
+                    var pair = equipments[i];
                     if (pair.Item2 == null)
                     {
                         Log.Error("InventoryUI is null");

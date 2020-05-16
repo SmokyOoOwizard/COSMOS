@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace COSMOS.UI
 {
@@ -51,6 +52,7 @@ namespace COSMOS.UI
         public void SetStuff(ICanPlaceInSlot stuff)
         {
             CurrentStuff = stuff;
+            GetComponent<Image>().color = Color.red;
             UpdateData();
         }
 

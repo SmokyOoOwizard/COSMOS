@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace COSMOS.SpaceShip
 {
-    public partial class SpaceShipHull
+    public partial class SpaceShip
     {
         public float CalculateForwardEngineForce(float power)
         {

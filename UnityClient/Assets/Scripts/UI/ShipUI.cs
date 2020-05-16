@@ -18,8 +18,8 @@ namespace COSMOS.UI
             {
                 SpaceShip.SpaceShipController ssc = GameData.CurrentControllableObject as SpaceShip.SpaceShipController;
                 HP.fillAmount = 1;
-                Fuel.fillAmount = ssc.Hull.GetFuelCount("fuel") / ssc.Hull.GetMaxFuelCount("fuel");
-                DarkEnergy.fillAmount = ssc.Hull.GetFuelCount("DarkEnergy") / ssc.Hull.GetMaxFuelCount("DarkEnergy");
+                Fuel.fillAmount = ssc.SpaceShip.GetFuelCount("fuel") / ssc.SpaceShip.GetMaxFuelCount("fuel");
+                DarkEnergy.fillAmount = ssc.SpaceShip.GetFuelCount("DarkEnergy") / ssc.SpaceShip.GetMaxFuelCount("DarkEnergy");
                 //Energy.fillAmount = ssc.Hull.get
 
             }

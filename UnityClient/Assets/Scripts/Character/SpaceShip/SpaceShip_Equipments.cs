@@ -2,13 +2,14 @@
 using COSMOS.SpaceShip.Equipment;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace COSMOS.SpaceShip
 {
-    public partial class SpaceShipHull
+    public partial class SpaceShip
     {
         public List<COSMOS.Equipment.Equipment> Equipments { get; protected set; }
         public MainEngine MainEngine { get; protected set; }

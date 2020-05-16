@@ -19,13 +19,14 @@ namespace COSMOS.SpaceShip
         public float TargetRotation;
         public Vector3 torque;
 
-        public SpaceShipHull Hull { get; protected set; }
+        public SpaceShip SpaceShip { get; protected set; }
         private new Rigidbody rigidbody;
         PID AngleCont, VelocityCont;
         private void Awake()
         {
             rigidbody = GetComponent<Rigidbody>();
             CreateDebugShip();
+            GameData.PlayerCharacter = SpaceShip;
 
             AngleCont = new PID();
             AngleCont.Kp = 9.244681f / 2;
@@ -65,7 +66,7 @@ namespace COSMOS.SpaceShip
         {
             if (Enable)
             {
-                if (rigidbody.velocity.magnitude > Hull.MaxSpeed)
+                if (rigidbody.velocity.magnitude > SpaceShip.MaxSpeed)
                 {
                     rigidbody.AddForce(-rigidbody.velocity, ForceMode.Force);
                     return;
@@ -97,9 +98,9 @@ namespace COSMOS.SpaceShip
             }
             if (Input.GetMouseButton(0))
             {
-                if (Hull.Weapons.Count > 0)
+                if (SpaceShip.Weapons.Count > 0)
                 {
-                    Hull.Weapons[0].Fire(Time.deltaTime);
+                    SpaceShip.Weapons[0].Fire(Time.deltaTime);
                 }
             }
         }
@@ -111,9 +112,9 @@ namespace COSMOS.SpaceShip
                 rigidbody.AddTorque(-rigidbody.angularVelocity * 0.9f, ForceMode.Force);
                 Vector3 local = transform.InverseTransformVector(rigidbody.velocity);
                 //
-                UseForwardEngine(Mathf.Abs(Mathf.Clamp((local.z / Hull.MainEngine.MaxForce), -1, 0)));
-                UseBrakingEngine(Mathf.Abs(Mathf.Clamp((local.z / Hull.BrakingEngine.MaxForce), 0, 1)));
-                UseSideEngine(Mathf.Clamp((-local.x / Hull.SideEngines.MaxForce), -1, 1));
+                UseForwardEngine(Mathf.Abs(Mathf.Clamp((local.z / SpaceShip.MainEngine.MaxForce), -1, 0)));
+                UseBrakingEngine(Mathf.Abs(Mathf.Clamp((local.z / SpaceShip.BrakingEngine.MaxForce), 0, 1)));
+                UseSideEngine(Mathf.Clamp((-local.x / SpaceShip.SideEngines.MaxForce), -1, 1));
 
                 if(rigidbody.velocity.sqrMagnitude < 0.1f)
                 {
@@ -136,7 +137,7 @@ namespace COSMOS.SpaceShip
         #region Engines
         public void UseForwardEngine(float power)
         {
-            float f = Hull.UseForwardEngine(Mathf.Abs(power));
+            float f = SpaceShip.UseForwardEngine(Mathf.Abs(power));
             if(f > 0)
             {
                 rigidbody.AddForce(transform.forward * f, ForceMode.Force);
@@ -144,7 +145,7 @@ namespace COSMOS.SpaceShip
         }
         public void UseBrakingEngine(float power)
         {
-            float f = Hull.UseBrakingEngine(Mathf.Abs(power));
+            float f = SpaceShip.UseBrakingEngine(Mathf.Abs(power));
             if (f > 0)
             {
                 rigidbody.AddForce(transform.forward * f * -1, ForceMode.Force);
@@ -152,7 +153,7 @@ namespace COSMOS.SpaceShip
         }
         public void UseSideEngine(float power)
         {
-            float f = Hull.UseSideEngine(Mathf.Abs(power));
+            float f = SpaceShip.UseSideEngine(Mathf.Abs(power));
             if(f > 0)
             {
                 rigidbody.AddForce(transform.right * Mathf.Sign(power) * f, ForceMode.Force);
@@ -170,7 +171,7 @@ namespace COSMOS.SpaceShip
             // The target angle is the user-driven angle that the ship will be (hopefully) 
             // steered towards. The target angle is represented in Unity's scene view by a 
             // white line.
-            float targetAngle = transform.eulerAngles.y + (Mathf.Clamp(target, -1, 1)) * Hull.TurnEngines.MaxForce * dt;
+            float targetAngle = transform.eulerAngles.y + (Mathf.Clamp(target, -1, 1)) * SpaceShip.TurnEngines.MaxForce * dt;
             //targetAngle = TargetY;// * MaxRotationSpeed * dt;
 
             // The angle controller drives the ship's angle towards the target angle.
@@ -193,7 +194,7 @@ namespace COSMOS.SpaceShip
 
             float f = (float)Math.Round(Mathf.Clamp01(Mathf.Abs(torqueCorrectionForAngle / 10)), 2);
             //Debug.Log((float)Math.Round(Mathf.Clamp01(Mathf.Abs(torque.y / 10)) * Hull.SteeringEngines.FuelConsumption, 2));
-            if (Hull.UseTurnEngine(f) > 0)
+            if (SpaceShip.UseTurnEngine(f) > 0)
             {
                 //GetComponent<Rigidbody>().AddRelativeTorque(torque);
                 rigidbody.AddTorque(torque);
@@ -202,17 +203,32 @@ namespace COSMOS.SpaceShip
         #endregion
         public void CreateDebugShip()
         {
-            Hull = new SpaceShipHull();
-            Hull.ReplaceEngine(new TurnEngine(250, "fuel", 1));
-            Hull.ReplaceEngine(new SideEngine(20, "fuel", 1));
-            Hull.ReplaceEngine(new MainEngine(20, "fuel", 1));
-            Hull.ReplaceEngine(new BrakingEngine(20, "fuel", 1));
-            Hull.AddEquipment(new WarpEngine());
+            SpaceShip = new SpaceShip();
+            var set = new InventorySet();
+            set.LKeyName = "Equipment test";
+            var slot = new InventorySlot();
+            slot.AddCheckRule((item) => item is MiniGun);
+            set.AddSlot(slot);
+            SpaceShip.EquipmentController.AddInventorySet(set);
+            set.AddSlot(new InventorySlot());
 
-            Hull.AddEquipment(new Tank("fuel", 100, 100));
-            Hull.AddEquipment(new Tank("DarkEnergy", 1000, 1000));
+            Debug.Log(SpaceShip.EquipmentController.AddItem(new MiniGun()));
 
-            Hull.AddEquipment(new MiniGun());
+            set = new InventorySet();
+            set.LKeyName = "Inventory test";
+            set.AddSlot(new InventorySlot());
+            SpaceShip.InventoryController.AddInventorySet(set);
+
+            SpaceShip.ReplaceEngine(new TurnEngine(250, "fuel", 1));
+            SpaceShip.ReplaceEngine(new SideEngine(20, "fuel", 1));
+            SpaceShip.ReplaceEngine(new MainEngine(20, "fuel", 1));
+            SpaceShip.ReplaceEngine(new BrakingEngine(20, "fuel", 1));
+            SpaceShip.AddEquipment(new WarpEngine());
+
+            SpaceShip.AddEquipment(new Tank("fuel", 100, 100));
+            SpaceShip.AddEquipment(new Tank("DarkEnergy", 1000, 1000));
+
+            SpaceShip.AddEquipment(new MiniGun());
         }
     }
 }
