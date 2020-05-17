@@ -98,9 +98,12 @@ namespace COSMOS.SpaceShip
             }
             if (Input.GetMouseButton(0))
             {
-                if (SpaceShip.Weapons.Count > 0)
+                foreach (var item in SpaceShip.EquipmentController.Items)
                 {
-                    SpaceShip.Weapons[0].Fire(Time.deltaTime);
+                    if(item is Weapon)
+                    {
+                        (item as Weapon).Fire(Time.deltaTime);
+                    }
                 }
             }
         }
@@ -204,20 +207,30 @@ namespace COSMOS.SpaceShip
         public void CreateDebugShip()
         {
             SpaceShip = new SpaceShip();
+            SpaceShip.EquipmentController.OnAddItem += OnAddEquipment;
+
             var set = new InventorySet();
             set.LKeyName = "Equipment test";
-            var slot = new InventorySlot();
+            var slot = new OutsideInventorySlot(new Vector3(0, 0, 5), new Vector3(0, 0, 0));
             slot.AddCheckRule((item) => item is MiniGun);
             set.AddSlot(slot);
-            SpaceShip.EquipmentController.AddInventorySet(set);
             set.AddSlot(new InventorySlot());
+            SpaceShip.EquipmentController.AddInventorySet(set);
 
-            Debug.Log(SpaceShip.EquipmentController.AddItem(new MiniGun()));
 
             set = new InventorySet();
             set.LKeyName = "Inventory test";
             set.AddSlot(new InventorySlot());
             SpaceShip.InventoryController.AddInventorySet(set);
+
+            var minigun = new MiniGun();
+            minigun.Inventory = new InventoryController();
+            set = new InventorySet();
+            set.LKeyName = "Mini Gun Inventory";
+            set.AddSlot(new InventorySlot());
+            minigun.Inventory.AddInventorySet(set);
+            Debug.Log(SpaceShip.EquipmentController.AddItem(minigun));
+
 
             SpaceShip.ReplaceEngine(new TurnEngine(250, "fuel", 1));
             SpaceShip.ReplaceEngine(new SideEngine(20, "fuel", 1));
@@ -228,7 +241,21 @@ namespace COSMOS.SpaceShip
             SpaceShip.AddEquipment(new Tank("fuel", 100, 100));
             SpaceShip.AddEquipment(new Tank("DarkEnergy", 1000, 1000));
 
-            SpaceShip.AddEquipment(new MiniGun());
+            //SpaceShip.AddEquipment(new MiniGun());
+        }
+
+        private void OnAddEquipment(InventorySet set, InventorySlot slot, Item item)
+        {
+            if(item is OutsideEquipment && slot is OutsideInventorySlot)
+            {
+                var oSlot = slot as OutsideInventorySlot;
+                var oEquipment = item as OutsideEquipment;
+                oEquipment.CreateObjectController();
+                var controller = oEquipment.GameObjectController;
+                controller.transform.SetParent(transform);
+                controller.transform.localPosition = oSlot.Position;
+                controller.transform.localEulerAngles = oSlot.Rotation;
+            }
         }
     }
 }

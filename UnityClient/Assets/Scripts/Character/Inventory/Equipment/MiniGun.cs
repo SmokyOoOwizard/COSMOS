@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 namespace COSMOS.Equipment
 {
@@ -14,7 +15,6 @@ namespace COSMOS.Equipment
 
         public override void CreateObjectController()
         {
-            Log.Info("CREATE MINI GUB OBJECT CONTROLLER");
             GameObjectController = new GameObject("MiniGunObjectController", typeof(MiniGunObjectController)).
                 GetComponent<MiniGunObjectController>();
         }
@@ -40,12 +40,30 @@ namespace COSMOS.Equipment
     {
         public void Fire()
         {
-            GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+            GameObject obj = GameObject.CreatePrimitive(PrimitiveType.Cube);
             obj.transform.position = transform.position;
             var r = obj.AddComponent<Rigidbody>();
             r.AddForce(transform.forward * 100, ForceMode.Impulse);
             r.useGravity = false;
+            var damage = obj.AddComponent<BulletDamage>();
+            damage.Damage = 10;
             GameObject.Destroy(obj, 1);
+        }
+    }
+    public class BulletDamage : UnityEngine.MonoBehaviour
+    {
+        public float Damage;
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            var des = collision.gameObject.GetComponent<DestructibleObject>();
+            if (des != null)
+            {
+                Damage e = new Damage(new KeyValuePair<DamageType, float>[] {
+                    new KeyValuePair<DamageType,float>(new DamageType(){ Type = "Physics" }, Damage)  });
+                des.ApplyDamage(e);
+                Destroy(gameObject);
+            }
         }
     }
 }

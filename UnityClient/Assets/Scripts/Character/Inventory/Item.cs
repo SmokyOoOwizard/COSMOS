@@ -27,7 +27,7 @@ namespace COSMOS.Equipment
         public float Weight { get; protected set; }
         public float Volume { get; protected set; }
 
-        public InventoryController Inventory { get; protected set; } = null;
+        public InventoryController Inventory { get; set; } = null;
 
     }
 }
