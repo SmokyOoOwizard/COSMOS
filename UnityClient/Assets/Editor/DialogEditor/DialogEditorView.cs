@@ -33,8 +33,6 @@ namespace DialogEditor
             Insert(0, grid);
             grid.StretchToParentSize();
 
-            AddElement(new EntryNode());
-
             addSearchWindow();
         }
 

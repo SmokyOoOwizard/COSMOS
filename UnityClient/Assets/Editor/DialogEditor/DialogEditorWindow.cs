@@ -10,13 +10,17 @@ namespace DialogEditor
     public class DialogEditorWindow : EditorWindow
     {
         private DialogEditorView graphView;
+        private DialogEditorContainer currentContainer;
+        private TextField dialogNameLabel;
 
         [MenuItem("Window/Dialog Editor")]
-        public static void OpenGraphEditorWindow()
+        public static DialogEditorWindow OpenGraphEditorWindow()
         {
             var window = CreateWindow<DialogEditorWindow>();
             window.titleContent.text = "Dialog Editor";
 
+
+            return window;
         }
 
         private void OnEnable()
@@ -25,41 +29,109 @@ namespace DialogEditor
             GenerateToolbar();
         }
 
+        [UnityEditor.Callbacks.OnOpenAsset(1)]
+        public static bool OnOpenAsset(int instanceID, int line)
+        {
+            if (Selection.activeObject as DialogEditorContainer != null)
+            {
+                var window = OpenGraphEditorWindow();
+                window.Load(Selection.activeObject as DialogEditorContainer);
+                return true; //catch open file
+            }
+            return false; // let unity open the file
+        }
+
+
+
         private void GenerateToolbar()
         {
             var toolbar = new Toolbar();
 
+            dialogNameLabel = new TextField();
+            dialogNameLabel.isReadOnly = true;
+
             toolbar.Add(new Button(() => Clear()) { text = "Clear" });
             toolbar.Add(new Button(() => Save()) { text = "Save Data" });
-            toolbar.Add(new Button(() => Load()) { text = "Load Data" });
+            toolbar.Add(new Button(() => OnLoadButton()) { text = "Load Data" });
+            toolbar.Add(dialogNameLabel);
             rootVisualElement.Add(toolbar);
         }
 
-        public void Load()
+        private void OnLoadButton()
         {
             AssetDatabase.Refresh();
-            var data = AssetDatabase.LoadAssetAtPath<DialogEditorContainer>(@"Assets/TestDialog.asset");
-            if (data != null)
+            if (currentContainer != null)
+            {
+                if(EditorUtility.DisplayDialog("Save", "Save current open dialog?", "Yes", "No"))
+                {
+                    Save();
+                }
+            }
+            string path = EditorUtility.OpenFilePanel("Select dialog", "", "asset");
+            int pathStart = path.IndexOf("Assets/");
+            if(pathStart < 0)
+            {
+                Debug.LogError("Wrong path: " + path);
+                return;
+            }
+            path = path.Substring(pathStart);
+            if (!string.IsNullOrEmpty(path))
+            {
+                var data = AssetDatabase.LoadAssetAtPath<DialogEditorContainer>(path);
+                Load(data);
+            }
+        }
+        public void Load(DialogEditorContainer container)
+        {
+            if (container != null)
             {
                 Clear();
-                graphView.Load(data);
+                graphView.Load(container);
+                currentContainer = container;
+                UpdateDialogName();
             }
             else
             {
-                Debug.Log("Dialog not found");
+                Debug.Log("Dialog is null");
             }
         }
         public void Save()
         {
             var data = graphView.Save();
-            AssetDatabase.CreateAsset(data, @"Assets/TestDialog.asset");
-            AssetDatabase.SaveAssets();
+            string path = string.Empty;
+            if (currentContainer != null)
+            {
+                path = AssetDatabase.GetAssetPath(currentContainer);
+            }
+            if (string.IsNullOrEmpty(path))
+            {
+                path = EditorUtility.SaveFilePanelInProject("Save dialog", "New Dialog", "asset", "");
+            }
+            if (!string.IsNullOrEmpty(path))
+            {
+                currentContainer = data;
+                AssetDatabase.CreateAsset(data, path);
+                AssetDatabase.SaveAssets();
+                UpdateDialogName();
+            }
+            else
+            {
+                Debug.LogError("Save failed. Path is null");
+            }
         }
         public void Clear()
         {
             graphView.ClaerGraph();
+            currentContainer = null;
         }
 
+        public void UpdateDialogName()
+        {
+            if (currentContainer != null)
+            {
+                dialogNameLabel.SetValueWithoutNotify("Name: "+currentContainer.name);
+            }
+        }
         private void ConstructGraphView()
         {
             graphView = new DialogEditorView(this)
