@@ -29,8 +29,8 @@ namespace DialogEditor
         {
             var toolbar = new Toolbar();
 
+            toolbar.Add(new Button(() => Clear()) { text = "Clear" });
             toolbar.Add(new Button(() => Save()) { text = "Save Data" });
-
             toolbar.Add(new Button(() => Load()) { text = "Load Data" });
             rootVisualElement.Add(toolbar);
         }
@@ -41,6 +41,7 @@ namespace DialogEditor
             var data = AssetDatabase.LoadAssetAtPath<DialogEditorContainer>(@"Assets/TestDialog.asset");
             if (data != null)
             {
+                Clear();
                 graphView.Load(data);
             }
             else
@@ -53,6 +54,10 @@ namespace DialogEditor
             var data = graphView.Save();
             AssetDatabase.CreateAsset(data, @"Assets/TestDialog.asset");
             AssetDatabase.SaveAssets();
+        }
+        public void Clear()
+        {
+            graphView.ClaerGraph();
         }
 
         private void ConstructGraphView()

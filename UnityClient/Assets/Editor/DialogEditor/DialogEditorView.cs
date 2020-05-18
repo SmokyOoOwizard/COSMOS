@@ -77,7 +77,6 @@ namespace DialogEditor
                     Debug.LogError(ex);
                 }
             }
-
         }
         public DialogEditorContainer Save()
         {
@@ -92,6 +91,20 @@ namespace DialogEditor
                 }
             }
             return container;
+        }
+
+        public void ClaerGraph()
+        {
+            var nodes = this.nodes.ToList();
+            var edges = this.edges.ToList();
+            foreach (var node in nodes)
+            {
+                RemoveElement(node);
+            }
+            foreach (var edge in edges)
+            {
+                RemoveElement(edge);
+            }
         }
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)

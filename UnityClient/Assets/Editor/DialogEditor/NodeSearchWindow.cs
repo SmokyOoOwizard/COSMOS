@@ -56,25 +56,21 @@ namespace DialogEditor
                     editorWindow.rootVisualElement.ChangeCoordinatesTo(editorWindow.rootVisualElement.parent,
                     context.screenMousePosition - editorWindow.position.position);
                 var localMousePosition = editorView.contentViewContainer.WorldToLocal(worldMousePosition);
-                switch (SearchTreeEntry.userData)
+
+                if (SearchTreeEntry.userData != null)
                 {
-                    case ChoiceNode cn:
-                    case SpeechNode sn:
-                    case EntryNode en:
+                    if (SearchTreeEntry.userData is DialogNode)
+                    {
                         var node = SearchTreeEntry.userData as Node;
                         editorView.AddElement(node);
                         var rect = node.GetPosition();
                         rect.position = localMousePosition;
                         node.SetPosition(rect);
                         return true;
-                    default:
-                        return false;
+                    }
                 }
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
     }
 }
