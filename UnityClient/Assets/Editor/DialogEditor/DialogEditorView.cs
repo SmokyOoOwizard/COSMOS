@@ -10,11 +10,6 @@ using UnityEngine.UIElements;
 
 namespace DialogEditor
 {
-    [Serializable]
-    public class DialogEditorContainer : ScriptableObject
-    {
-        public List<DialogNodeData> Nodes = new List<DialogNodeData>();
-    }
     public class DialogEditorView : GraphView
     {
         private NodeSearchWindow searchWindow;
@@ -52,17 +47,21 @@ namespace DialogEditor
             {
                 try
                 {
-                    if (node.Type != null)
+                    if (!string.IsNullOrEmpty(node.Type))
                     {
-                        if (node.Type.IsSubclassOf(typeof(DialogNode)))
+                        Type type = Type.GetType(node.Type);
+                        if (type != null)
                         {
-                            var instance = Activator.CreateInstance(node.Type) as DialogNode;
+                            if (type.IsSubclassOf(typeof(DialogNode)))
+                            {
+                                var instance = Activator.CreateInstance(type) as DialogNode;
 
-                            (instance).Restore(node);
+                                instance.Restore(node);
 
-                            AddElement(instance);
+                                AddElement(instance);
 
-                            nodes.Add(node.GUID, instance);
+                                nodes.Add(node.GUID, instance);
+                            }
                         }
                     }
                     else
@@ -82,7 +81,7 @@ namespace DialogEditor
             var nodes = this.nodes.ToList();
             foreach (var node in nodes)
             {
-                if(node is DialogNode)
+                if (node is DialogNode)
                 {
                     var data = (node as DialogNode).GetData();
                     container.Nodes.Add(data);
