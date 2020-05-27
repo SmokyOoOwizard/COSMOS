@@ -13,7 +13,7 @@ namespace COSMOS.UI.DialogMenu
     public class DialogSpeechUI : MonoBehaviour
     {
         public event Action<DialogSpeechUI> OnClick;
-        public SimpleSpeech CurrentSpeech { get; private set; }
+        //public SimpleSpeech CurrentSpeech { get; private set; }
         [SerializeField]
         TextMeshProUGUI text;
         [SerializeField]
@@ -24,18 +24,18 @@ namespace COSMOS.UI.DialogMenu
             button.onClick.AddListener(() => OnClick?.Invoke(this));
         }
 
-        void UpdateDialog(SimpleSpeech speech)
-        {
-            CurrentSpeech = speech;
-            text.text = speech.LStringKey;
-        }
-        public static DialogSpeechUI Spawn(SimpleSpeech speech)
-        {
-            GameObject prefab = AssetsDatabase.LoadGameObject(@"Prefabs\UI\Dialog\Speech");
-            GameObject go = Instantiate(prefab);
-            DialogSpeechUI ds = go.GetComponent<DialogSpeechUI>();
-            ds.UpdateDialog(speech);
-            return ds;
-        }
+        //void UpdateDialog(SimpleSpeech speech)
+        //{
+        //    CurrentSpeech = speech;
+        //    text.text = speech.LStringKey;
+        //}
+        //public static DialogSpeechUI Spawn(SimpleSpeech speech)
+        //{
+        //    GameObject prefab = AssetsDatabase.LoadGameObject(@"Prefabs\UI\Dialog\Speech");
+        //    GameObject go = Instantiate(prefab);
+        //    DialogSpeechUI ds = go.GetComponent<DialogSpeechUI>();
+        //    ds.UpdateDialog(speech);
+        //    return ds;
+        //}
     }
 }

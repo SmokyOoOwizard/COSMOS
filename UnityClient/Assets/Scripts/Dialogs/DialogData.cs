@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace COSMOS.Dialogs
 {
-    public class Dialog
+    [Serializable]
+    public class DialogData
     {
-        
+        public EntryNode.DialogEntryNodeData[] EntryNodes;
+        public DialogNodeData[] Nodes;
     }
 }
