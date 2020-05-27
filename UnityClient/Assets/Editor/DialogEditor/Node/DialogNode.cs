@@ -1,4 +1,5 @@
-﻿using System;
+﻿using COSMOS.Dialogs;
+using System;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -80,5 +81,13 @@ namespace DialogEditor
         {
 
         }
+
+        public virtual RawDialogNode Export()
+        {
+            var rawNode = new RawDialogNode();
+            rawNode.GUID = GUID;
+            return rawNode;
+        }
+
     }
 }

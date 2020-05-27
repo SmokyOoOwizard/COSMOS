@@ -1,11 +1,17 @@
 {
     "name": "DialogEditor",
-    "references": [],
-    "includePlatforms": [],
+    "references": [
+        "GUID:b04f57f404d98e24693ed86e226a19e6"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
-    "precompiledReferences": [],
+    "precompiledReferences": [
+        "Newtonsoft.Json.dll"
+    ],
     "autoReferenced": true,
     "defineConstraints": [],
     "versionDefines": [],
