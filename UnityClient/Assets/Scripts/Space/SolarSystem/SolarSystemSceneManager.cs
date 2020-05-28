@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-using COSMOS.Paterns;
+using COSMOS.Core.Paterns;
 namespace COSMOS.Space
 {
     public class SolarSystemSceneManager : SingletonMono<SolarSystemSceneManager>
@@ -22,12 +22,12 @@ namespace COSMOS.Space
 
         internal void LoadSystem(SolarSystem ss)
         {
+            SolarSystem = ss;
             StartLoadSystem?.Invoke();
             if(SolarSystem != null)
             {
                 UnloadSystem();
             }
-            SolarSystem = ss;
             Log.Info("loading system: " + ss.Name.Key);
             StartCoroutine(Loading());
         }

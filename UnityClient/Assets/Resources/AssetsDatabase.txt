@@ -2,14 +2,68 @@
   <Asset ID="Prefabs\Planet" Name="Planet" Type="GameObject">
     <Path>Prefabs\Planet</Path>
   </Asset>
+  <Asset ID="Prefabs\UI\AbilitySlotUI" Name="AbilitySlotUI" Type="GameObject">
+    <Path>Prefabs\UI\AbilitySlotUI</Path>
+  </Asset>
+  <Asset ID="Prefabs\UI\CharacterMenu" Name="CharacterMenu" Type="GameObject">
+    <Path>Prefabs\UI\CharacterMenu</Path>
+  </Asset>
   <Asset ID="Prefabs\UI\Map" Name="Map" Type="GameObject">
     <Path>Prefabs\UI\Map</Path>
+  </Asset>
+  <Asset ID="Prefabs\UI\NotificationIcon" Name="NotificationIcon" Type="GameObject">
+    <Path>Prefabs\UI\NotificationIcon</Path>
+  </Asset>
+  <Asset ID="Prefabs\UI\Slot" Name="Slot" Type="GameObject">
+    <Path>Prefabs\UI\Slot</Path>
   </Asset>
   <Asset ID="Prefabs\UI\SolarSystem" Name="SolarSystem" Type="GameObject">
     <Path>Prefabs\UI\SolarSystem</Path>
   </Asset>
-  <Asset ID="Sprites\Glow" Name="Glow" Type="Sprite">
-    <Path>Sprites\Glow</Path>
+  <Asset ID="Prefabs\UI\Tooltip" Name="Tooltip" Type="GameObject">
+    <Path>Prefabs\UI\Tooltip</Path>
+  </Asset>
+  <Asset ID="Prefabs\UI\Dialog\DialogMenu" Name="DialogMenu" Type="GameObject">
+    <Path>Prefabs\UI\Dialog\DialogMenu</Path>
+  </Asset>
+  <Asset ID="Prefabs\UI\Dialog\Speech" Name="Speech" Type="GameObject">
+    <Path>Prefabs\UI\Dialog\Speech</Path>
+  </Asset>
+  <Asset ID="Prefabs\UI\Inventory\EquipmentPartSlotsUI" Name="EquipmentPartSlotsUI" Type="GameObject">
+    <Path>Prefabs\UI\Inventory\EquipmentPartSlotsUI</Path>
+  </Asset>
+  <Asset ID="Prefabs\UI\Inventory\InventorySlotsUI" Name="InventorySlotsUI" Type="GameObject">
+    <Path>Prefabs\UI\Inventory\InventorySlotsUI</Path>
+  </Asset>
+  <Asset ID="Sprites\Backgrounds\ShipUI\FuelAndEnergy" Name="FuelAndEnergy" Type="Sprite">
+    <Path>Sprites\Backgrounds\ShipUI\FuelAndEnergy</Path>
+  </Asset>
+  <Asset ID="Sprites\Backgrounds\ShipUI\HP_DarkEnergy_Shield" Name="HP_DarkEnergy_Shield" Type="Sprite">
+    <Path>Sprites\Backgrounds\ShipUI\HP_DarkEnergy_Shield</Path>
+  </Asset>
+  <Asset ID="Sprites\Backgrounds\TopBar\Background" Name="Background" Type="Sprite">
+    <Path>Sprites\Backgrounds\TopBar\Background</Path>
+  </Asset>
+  <Asset ID="Sprites\Backgrounds\TopBar\Bar" Name="Bar" Type="Sprite">
+    <Path>Sprites\Backgrounds\TopBar\Bar</Path>
+  </Asset>
+  <Asset ID="Sprites\Backgrounds\TopBar\DateTime\Background" Name="Background" Type="Sprite">
+    <Path>Sprites\Backgrounds\TopBar\DateTime\Background</Path>
+  </Asset>
+  <Asset ID="Sprites\Backgrounds\TopBar\DateTime\Date" Name="Date" Type="Sprite">
+    <Path>Sprites\Backgrounds\TopBar\DateTime\Date</Path>
+  </Asset>
+  <Asset ID="Sprites\Backgrounds\TopBar\DateTime\Time" Name="Time" Type="Sprite">
+    <Path>Sprites\Backgrounds\TopBar\DateTime\Time</Path>
+  </Asset>
+  <Asset ID="Sprites\Backgrounds\Unsorted\MiniMap_Background" Name="MiniMap_Background" Type="Sprite">
+    <Path>Sprites\Backgrounds\Unsorted\MiniMap_Background</Path>
+  </Asset>
+  <Asset ID="Sprites\Backgrounds\Unsorted\QuickMenu_Background" Name="QuickMenu_Background" Type="Sprite">
+    <Path>Sprites\Backgrounds\Unsorted\QuickMenu_Background</Path>
+  </Asset>
+  <Asset ID="Sprites\Backgrounds\Unsorted\QuickSlot_Background" Name="QuickSlot_Background" Type="Sprite">
+    <Path>Sprites\Backgrounds\Unsorted\QuickSlot_Background</Path>
   </Asset>
   <Asset ID="Sprites\Icons\Planet Icon" Name="Planet Icon" Type="Sprite">
     <Path>Sprites\Icons\Planet Icon</Path>
@@ -29,59 +83,41 @@
   <Asset ID="Sprites\Icons\Star Icon" Name="Star Icon" Type="Sprite">
     <Path>Sprites\Icons\Star Icon</Path>
   </Asset>
-  <Asset ID="Sprites\Icons\QuickMenu\Back" Name="Back" Type="Sprite">
-    <Path>Sprites\Icons\QuickMenu\Back</Path>
+  <Asset ID="Sprites\Masks\MiniMap_Mask" Name="MiniMap_Mask" Type="Sprite">
+    <Path>Sprites\Masks\MiniMap_Mask</Path>
   </Asset>
-  <Asset ID="Sprites\Icons\QuickMenu\MenuFrame" Name="MenuFrame" Type="Sprite">
-    <Path>Sprites\Icons\QuickMenu\MenuFrame</Path>
+  <Asset ID="Sprites\Masks\QuickSlot_Mask" Name="QuickSlot_Mask" Type="Sprite">
+    <Path>Sprites\Masks\QuickSlot_Mask</Path>
   </Asset>
-  <Asset ID="Sprites\Icons\QuickMenu\MenuSelect" Name="MenuSelect" Type="Sprite">
-    <Path>Sprites\Icons\QuickMenu\MenuSelect</Path>
+  <Asset ID="Sprites\Stuff\DateTime_TimeGlow" Name="DateTime_TimeGlow" Type="Sprite">
+    <Path>Sprites\Stuff\DateTime_TimeGlow</Path>
   </Asset>
-  <Asset ID="Sprites\Icons\ShipUI\DarkEnergy" Name="DarkEnergy" Type="Sprite">
-    <Path>Sprites\Icons\ShipUI\DarkEnergy</Path>
+  <Asset ID="Sprites\Stuff\Glow" Name="Glow" Type="Sprite">
+    <Path>Sprites\Stuff\Glow</Path>
   </Asset>
-  <Asset ID="Sprites\Icons\ShipUI\FuelAndEnergy" Name="FuelAndEnergy" Type="Sprite">
-    <Path>Sprites\Icons\ShipUI\FuelAndEnergy</Path>
+  <Asset ID="Sprites\Stuff\MiniMap_Shadow" Name="MiniMap_Shadow" Type="Sprite">
+    <Path>Sprites\Stuff\MiniMap_Shadow</Path>
   </Asset>
-  <Asset ID="Sprites\Icons\ShipUI\FuelOrEnergy" Name="FuelOrEnergy" Type="Sprite">
-    <Path>Sprites\Icons\ShipUI\FuelOrEnergy</Path>
+  <Asset ID="Sprites\Stuff\QuickSlot_SlowGlow" Name="QuickSlot_SlowGlow" Type="Sprite">
+    <Path>Sprites\Stuff\QuickSlot_SlowGlow</Path>
   </Asset>
-  <Asset ID="Sprites\Icons\ShipUI\HP" Name="HP" Type="Sprite">
-    <Path>Sprites\Icons\ShipUI\HP</Path>
+  <Asset ID="Sprites\Stuff\QuickMenu\MenuFrame" Name="MenuFrame" Type="Sprite">
+    <Path>Sprites\Stuff\QuickMenu\MenuFrame</Path>
   </Asset>
-  <Asset ID="Sprites\Icons\ShipUI\HP_DarkEnergy_Shield" Name="HP_DarkEnergy_Shield" Type="Sprite">
-    <Path>Sprites\Icons\ShipUI\HP_DarkEnergy_Shield</Path>
+  <Asset ID="Sprites\Stuff\QuickMenu\MenuSelect" Name="MenuSelect" Type="Sprite">
+    <Path>Sprites\Stuff\QuickMenu\MenuSelect</Path>
   </Asset>
-  <Asset ID="Sprites\Icons\ShipUI\Shield" Name="Shield" Type="Sprite">
-    <Path>Sprites\Icons\ShipUI\Shield</Path>
+  <Asset ID="Sprites\Stuff\ShipUI\DarkEnergy" Name="DarkEnergy" Type="Sprite">
+    <Path>Sprites\Stuff\ShipUI\DarkEnergy</Path>
   </Asset>
-  <Asset ID="Sprites\Icons\TopBar\background" Name="background" Type="Sprite">
-    <Path>Sprites\Icons\TopBar\background</Path>
+  <Asset ID="Sprites\Stuff\ShipUI\FuelOrEnergy" Name="FuelOrEnergy" Type="Sprite">
+    <Path>Sprites\Stuff\ShipUI\FuelOrEnergy</Path>
   </Asset>
-  <Asset ID="Sprites\Icons\TopBar\Bar" Name="Bar" Type="Sprite">
-    <Path>Sprites\Icons\TopBar\Bar</Path>
+  <Asset ID="Sprites\Stuff\ShipUI\HP" Name="HP" Type="Sprite">
+    <Path>Sprites\Stuff\ShipUI\HP</Path>
   </Asset>
-  <Asset ID="Sprites\Icons\TopBar\DateTime\background" Name="background" Type="Sprite">
-    <Path>Sprites\Icons\TopBar\DateTime\background</Path>
-  </Asset>
-  <Asset ID="Sprites\Icons\TopBar\DateTime\Date" Name="Date" Type="Sprite">
-    <Path>Sprites\Icons\TopBar\DateTime\Date</Path>
-  </Asset>
-  <Asset ID="Sprites\Icons\TopBar\DateTime\Time" Name="Time" Type="Sprite">
-    <Path>Sprites\Icons\TopBar\DateTime\Time</Path>
-  </Asset>
-  <Asset ID="Sprites\Icons\TopBar\DateTime\TimeGlow" Name="TimeGlow" Type="Sprite">
-    <Path>Sprites\Icons\TopBar\DateTime\TimeGlow</Path>
-  </Asset>
-  <Asset ID="Sprites\Icons\TopBar\MiniMap\MiniMapBorder" Name="MiniMapBorder" Type="Sprite">
-    <Path>Sprites\Icons\TopBar\MiniMap\MiniMapBorder</Path>
-  </Asset>
-  <Asset ID="Sprites\Icons\TopBar\MiniMap\MiniMapMask" Name="MiniMapMask" Type="Sprite">
-    <Path>Sprites\Icons\TopBar\MiniMap\MiniMapMask</Path>
-  </Asset>
-  <Asset ID="Sprites\Icons\TopBar\MiniMap\MiniMapShadow" Name="MiniMapShadow" Type="Sprite">
-    <Path>Sprites\Icons\TopBar\MiniMap\MiniMapShadow</Path>
+  <Asset ID="Sprites\Stuff\ShipUI\Shield" Name="Shield" Type="Sprite">
+    <Path>Sprites\Stuff\ShipUI\Shield</Path>
   </Asset>
   <Asset ID="Textures\GalaxyPatern" Name="GalaxyPatern" Type="Sprite">
     <Path>Textures\GalaxyPatern</Path>

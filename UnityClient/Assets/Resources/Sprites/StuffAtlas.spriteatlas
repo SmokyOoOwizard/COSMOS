@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: StuffAtlas
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 1
+      compressionQuality: 50
+      maxTextureSize: 2048
+      textureCompression: 0
+      filterMode: 2
+      generateMipMaps: 0
+      readable: 1
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 3
+      m_BuildTarget: DefaultTexturePlatform
+      m_MaxTextureSize: 4096
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: -1
+      m_TextureCompression: 2
+      m_CompressionQuality: 50
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 4
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 1
+      enableTightPacking: 0
+    variantMultiplier: 1
+    packables:
+    - {fileID: 102900000, guid: 5f43eccd7cd04a04d9f15133096e1370, type: 3}
+    totalSpriteSurfaceArea: 356591
+    bindAsDefault: 1
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: 21300000, guid: 73dbe082feb635d4b81b4e4524a3f58d, type: 3}
+  - {fileID: 21300000, guid: 5db0bd347568eb64ab6de12a691128d0, type: 3}
+  - {fileID: 21300000, guid: eb76df944a48b5240b42b17ff95d7abf, type: 3}
+  - {fileID: 21300000, guid: da35bd978773d9c46bb963b3ee8b089c, type: 3}
+  - {fileID: 21300000, guid: 8fdc3128ab8a86341895957d1e1fe5b5, type: 3}
+  - {fileID: 21300000, guid: 606fd728431fdf247af523aae937cec6, type: 3}
+  - {fileID: 21300000, guid: b7ebf53862b3cd34b9ef84e7aa34249b, type: 3}
+  - {fileID: 21300000, guid: ec70223aa16eb0844b63047025c37c19, type: 3}
+  - {fileID: 21300000, guid: f6cb594d88da33743b963e09e3749f17, type: 3}
+  - {fileID: 21300000, guid: 620a6b0ecb5a4824ebfa8e331d1391c2, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - MiniMap_Shadow
+  - MenuFrame
+  - Shield
+  - QuickSlot_SlowGlow
+  - MenuSelect
+  - Glow
+  - DateTime_TimeGlow
+  - FuelOrEnergy
+  - HP
+  - DarkEnergy
+  m_Tag: StuffAtlas
+  m_IsVariant: 0

@@ -121,15 +121,11 @@ namespace COSMOS.Prototype
         public static readonly Dictionary<Type, Func<object, string>> SaveOtherTypes = new Dictionary<Type, Func<object, string>>();
 
         static readonly Dictionary<string, Type> SignaturesName = new Dictionary<string, Type>();
-        static Delogger.Logger Log = new Delogger.Logger();
 
         static Dictionary<Type, Signature> Signatures = new Dictionary<Type, Signature>();
         [InitMethod(1)]
         static void Init()
         {
-            Log.Tags.Add("Parse");
-            Log.Tags.Add("Save");
-            Log.Tags.Add("Prototype");
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
             ConcurrentDictionary<Type, Signature> signatures = new ConcurrentDictionary<Type, Signature>();
             foreach (var assembly in assemblies)
@@ -160,18 +156,18 @@ namespace COSMOS.Prototype
                                     var tmpType = SignaturesName[name];
                                     if (tmpType == type)
                                     {
-                                        Log.Error("already have this parse name: " + name + " of type: " + type);
+                                        Log.Error("already have this parse name: " + name + " of type: " + type, "Prototype", "Parse");
                                     }
                                     else
                                     {
-                                        Log.Error("already have this parse name: " + name + " of" + type + " but another type: " + tmpType + " has this parse name");
+                                        Log.Error("already have this parse name: " + name + " of" + type + " but another type: " + tmpType + " has this parse name", "Prototype", "Parse");
                                     }
                                 }
                             }
                         }
                         else
                         {
-                            Log.Error("there can be no prototype without a constructor without parameters. Type: " + type);
+                            Log.Error("there can be no prototype without a constructor without parameters. Type: " + type, "Prototype", "Parse");
                         }
                     }
                     
@@ -191,17 +187,17 @@ namespace COSMOS.Prototype
                                     }
                                     else
                                     {
-                                        Log.Error("paramets should be \"string\" Type: " + type + " method: " + x.Name);
+                                        Log.Error("paramets should be \"string\" Type: " + type + " method: " + x.Name, "Prototype", "Parse");
                                     }
                                 }
                                 else
                                 {
-                                    Log.Error("return type should be is object Type: " + type + " method: " + x.Name);
+                                    Log.Error("return type should be is object Type: " + type + " method: " + x.Name, "Prototype", "Parse");
                                 }
                             }
                             else
                             {
-                                Log.Error("parse method should be static Type: " + type + " method: " + x.Name);
+                                Log.Error("parse method should be static Type: " + type + " method: " + x.Name, "Prototype", "Parse");
                             }
                         }
 
@@ -221,17 +217,17 @@ namespace COSMOS.Prototype
                                     }
                                     else
                                     {
-                                        Log.Error("paramets should be \"object\" Type: " + type + " method: " + x.Name);
+                                        Log.Error("paramets should be \"object\" Type: " + type + " method: " + x.Name, "Prototype", "Parse");
                                     }
                                 }
                                 else
                                 {
-                                    Log.Error("return type should be is \"string\" Type: " + type + " method: " + x.Name);
+                                    Log.Error("return type should be is \"string\" Type: " + type + " method: " + x.Name, "Prototype", "Parse");
                                 }
                             }
                             else
                             {
-                                Log.Error("save method should be static Type: " + type + " method: " + x.Name);
+                                Log.Error("save method should be static Type: " + type + " method: " + x.Name, "Prototype", "Parse");
                             }
                         }
                         return false;
@@ -493,7 +489,7 @@ namespace COSMOS.Prototype
             }
             else
             {
-                Log.Error("parser cant save this type: " + type + " with this value: " + context.obj);
+                Log.Error("parser cant save this type: " + type + " with this value: " + context.obj, "Prototype", "Parse");
                 return null;
             }
         }
@@ -529,7 +525,7 @@ namespace COSMOS.Prototype
             }
             else
             {
-                Log.Error("type: " + context.obj.GetType() + " its not a prototype");
+                Log.Error("type: " + context.obj.GetType() + " its not a prototype", "Prototype", "Save");
                 return null;
             }
         }
@@ -629,7 +625,7 @@ namespace COSMOS.Prototype
                 }
                 else
                 {
-                    Log.Error("this collection not supported: " + type);
+                    Log.Error("this collection not supported: " + type, "Prototype", "Parse");
                 }
             }
             return null;
@@ -690,7 +686,7 @@ namespace COSMOS.Prototype
                     }
                     else
                     {
-                        Log.Error("parse value is null Type: " + type + " Block: " + child.OuterXml);
+                        Log.Error("parse value is null Type: " + type + " Block: " + child.OuterXml, "Prototype", "Parse");
                     }
                 }
             }
@@ -726,7 +722,7 @@ namespace COSMOS.Prototype
             }
             else
             {
-                Log.Error("parser cant parse this type: " + type + " with this value: " + value);
+                Log.Error("parser cant parse this type: " + type + " with this value: " + value, "Prototype", "Parse");
                 return null;
             }
         }
@@ -762,7 +758,7 @@ namespace COSMOS.Prototype
                         }
                         else
                         {
-                            Log.Panic("value cannot be null");
+                            Log.Panic("value cannot be null", "Prototype", "Parse");
                         }
                     }
                 }
@@ -780,12 +776,12 @@ namespace COSMOS.Prototype
                         }
                         else
                         {
-                            Log.Panic("value cannot be null");
+                            Log.Panic("value cannot be null", "Prototype", "Parse");
                         }
                     }
                     else
                     {
-                        Log.Warning("value cant be parse, because cannot found the property or field  with this name: " + child.Name + " xml block:\n" + child.OuterXml);
+                        Log.Warning("value cant be parse, because cannot found the property or field  with this name: " + child.Name + " xml block:\n" + child.OuterXml, "Prototype", "Parse");
                     }
                 }
 

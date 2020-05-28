@@ -37,8 +37,9 @@ namespace COSMOS.Space
         public const int SystemFixedUpdateLength = 100;
         
         [InitMethod(-1)]
-        public static void Init()
+        static void Init()
         {
+            SolarSystemSceneManager.StartLoadSystem += () => { CurrentSystem = SolarSystemSceneManager.instance.SolarSystem; };
             LoadSolarSystems();
             systemsUpdateThread = new Thread(new ThreadStart(UpdateSolarSystems));
             systemsUpdateThread.Start();
@@ -46,7 +47,7 @@ namespace COSMOS.Space
             systemsFixedUpdateThread.Start();
         }
         [DeInitMethod()]
-        public static void Deinit()
+        static void Deinit()
         {
             systemsUpdateThread.Abort();
             systemsFixedUpdateThread.Abort();
@@ -96,7 +97,15 @@ namespace COSMOS.Space
             if (solarSystems.ContainsKey(name))
             {
                 SolarSystemSceneManager.instance.LoadSystem(solarSystems[name]);
-                CurrentSystem = solarSystems[name];
+                return true;
+            }
+            return false;
+        }
+        public static bool LoadSystem(SolarSystem system)
+        {
+            if (solarSystems.ContainsValue(system))
+            {
+                SolarSystemSceneManager.instance.LoadSystem(system);
                 return true;
             }
             return false;

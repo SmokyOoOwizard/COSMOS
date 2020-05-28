@@ -16,7 +16,7 @@ namespace COSMOS.UI.DialogMenu
 
         public static DialogMenuUI Instance { get; private set; }
         public Dialog CurrentDialog { get; private set; }
-        public event Action<IDialogAction> DialogAction;
+        //public event Action<IDialogAction> DialogAction;
 
         void UpdateCurrentStage()
         {
@@ -27,76 +27,76 @@ namespace COSMOS.UI.DialogMenu
                     GameObject.Destroy(child.gameObject);
                 }
             }
-            if (CurrentDialog.IsDialogFinished())
-            {
-                return;
-            }
-            IDialogAction action = CurrentDialog.GetCurrentAction();
-            if(action is AbstractSpeech)
-            {
-                if(action is ChoiceSpeech)
-                {
-                    var choice = (action as ChoiceSpeech).GetChoice();
-                    foreach (var item in choice)
-                    {
-                        DialogSpeechUI speech = DialogSpeechUI.Spawn(item);
-                        speech.OnClick += OnChoiceSpeech;
-                        speech.OnClick += (x) => OnClick();
-                        speech.transform.SetParent(Content.transform);
-                    }
-                }
-                else if(action is SimpleSpeech)
-                {
-                    DialogSpeechUI speech = DialogSpeechUI.Spawn(action as SimpleSpeech);
-                    speech.OnClick += (x) => OnClick();
-                    speech.transform.SetParent(Content.transform);
-                }
-            }
-            else
-            {
-                while (action != null && action is AbstractDialogAction)
-                {
-                    CurrentDialog.Next();
-                    action = CurrentDialog.GetCurrentAction();
-                    if (action != null)
-                    {
-                        DialogAction?.Invoke(action);
-                        action.OnSelect();
-                    }
-                    if (CurrentDialog.IsDialogFinished())
-                    {
-                        break;
-                    }
-                }
-                UpdateCurrentStage();
-            }
+            //if (CurrentDialog.IsDialogFinished())
+            //{
+            //    return;
+            //}
+            //IDialogAction action = CurrentDialog.GetCurrentAction();
+            //if(action is AbstractSpeech)
+            //{
+            //    if(action is ChoiceSpeech)
+            //    {
+            //        var choice = (action as ChoiceSpeech).GetChoice();
+            //        foreach (var item in choice)
+            //        {
+            //            DialogSpeechUI speech = DialogSpeechUI.Spawn(item);
+            //            speech.OnClick += OnChoiceSpeech;
+            //            speech.OnClick += (x) => OnClick();
+            //            speech.transform.SetParent(Content.transform);
+            //        }
+            //    }
+            //    else if(action is SimpleSpeech)
+            //    {
+            //        DialogSpeechUI speech = DialogSpeechUI.Spawn(action as SimpleSpeech);
+            //        speech.OnClick += (x) => OnClick();
+            //        speech.transform.SetParent(Content.transform);
+            //    }
+            //}
+            //else
+            //{
+            //    while (action != null && action is AbstractDialogAction)
+            //    {
+            //        CurrentDialog.Next();
+            //        action = CurrentDialog.GetCurrentAction();
+            //        if (action != null)
+            //        {
+            //            DialogAction?.Invoke(action);
+            //            action.OnSelect();
+            //        }
+            //        if (CurrentDialog.IsDialogFinished())
+            //        {
+            //            break;
+            //        }
+            //    }
+            //    UpdateCurrentStage();
+            //}
         }
         void OnClick()
         {
-            IDialogAction action = CurrentDialog.GetCurrentAction();
-            if (action is AbstractSpeech)
-            {
-                CurrentDialog.Next();
-                action = CurrentDialog.GetCurrentAction();
-                if(action != null)
-                {
-                    DialogAction?.Invoke(action);
-                    action.OnSelect();
-                }
-            }
+            //IDialogAction action = CurrentDialog.GetCurrentAction();
+            //if (action is AbstractSpeech)
+            //{
+            //    CurrentDialog.Next();
+            //    action = CurrentDialog.GetCurrentAction();
+            //    if(action != null)
+            //    {
+            //        DialogAction?.Invoke(action);
+            //        action.OnSelect();
+            //    }
+            //}
             UpdateCurrentStage();
 
         }
         void OnChoiceSpeech(DialogSpeechUI speech)
         {
-            IDialogAction action = CurrentDialog.GetCurrentAction();
-            if (action is AbstractSpeech)
-            {
-                if (action is ChoiceSpeech)
-                {
-                    (action as ChoiceSpeech).Choose(speech.CurrentSpeech);
-                }
-            }
+            //IDialogAction action = CurrentDialog.GetCurrentAction();
+            //if (action is AbstractSpeech)
+            //{
+            //    if (action is ChoiceSpeech)
+            //    {
+            //        (action as ChoiceSpeech).Choose(speech.CurrentSpeech);
+            //    }
+            //}
         }
 
         public static void CloseMenu()

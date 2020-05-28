@@ -5,7 +5,7 @@ using TMPro;
 using COSMOS.Space;
 using System.Threading.Tasks;
 using System.Linq;
-using COSMOS.Paterns;
+using COSMOS.Core.Paterns;
 using COSMOS.Core.HelpfulStuff;
 using COSMOS.UI.HelpfulStuff;
 using COSMOS.UI.Map;
@@ -17,6 +17,8 @@ namespace COSMOS.UI
 	[Manager]
 	public class GalaxyMapUI : SingletonMono<GalaxyMapUI>
 	{
+		public const string PREFAB_ID = @"Prefabs\UI\Map";
+
 		public Vector2 Position;
 		private Vector2 position;
 		public GameObject SystemsParent;
@@ -26,6 +28,7 @@ namespace COSMOS.UI
 		[Header("UI")]
 		public TMP_InputField Search;
 		public MapZoomUI Zoom;
+		public Button WarpButton;
 
 		[Header("Solar system")]
 		[Header("Description")]
@@ -85,7 +88,6 @@ namespace COSMOS.UI
 			InitShaderPart();
 			fogImage.texture = fogTexture;
 			fogImage.color = new Color(1, 1, 1, 1);
-			InitPatern();
 			ObjectPool = new ObjectPool<MapSolarSystemUI>(20, true, () =>
 			{
 				GameObject t = Instantiate(StarPrefab);
@@ -93,7 +95,7 @@ namespace COSMOS.UI
 				t.SetActive(false);
 				var star = t.AddComponent<MapSolarSystemUI>();
 				return star;
-			});
+			}, null);
 		}
 		// Start is called before the first frame update
 		void Start()
@@ -192,10 +194,23 @@ namespace COSMOS.UI
 			SelectedSystem = system;
 			UpdateDescription();
 			Log.Info("Selected " + system.Name.Key);
+			WarpButton.interactable = (GameData.CurrentControllableObject is SpaceShip.SpaceShipController);
 		}
-		public void SelectSpaceObject(SpaceObject obj)
-		{
 
+		public void OnWarpButtonDown()
+		{
+			SpaceShip.SpaceShipController ssc = GameData.CurrentControllableObject as SpaceShip.SpaceShipController;
+			if(ssc != null)
+			{
+				if (ssc.CanWarp(SelectedSystem))
+				{
+					ssc.StartWarp(SelectedSystem);
+				}
+				else
+				{
+					Log.Info("not enough fuel to warp");
+				}
+			}
 		}
 		List<SolarSystem> SelectSystems()
 		{
@@ -214,6 +229,17 @@ namespace COSMOS.UI
 			//Log.Info(foundedSystems.Count);
 
 			return foundedSystems;
+		}
+
+		public static GalaxyMapUI Spawn()
+		{
+			if(instance == null)
+			{
+				GameObject prefab = AssetsDatabase.LoadGameObject(PREFAB_ID);
+				GameObject obj = Instantiate(prefab);
+				obj.GetComponent<GalaxyMapUI>().InitPatern();
+			}
+			return instance;
 		}
 	}
 }
