@@ -8,6 +8,8 @@ namespace COSMOS.Dialogs
 {
     public class DialogNode
     {
+        private readonly static Dictionary<string, Type> nodeTypes = new Dictionary<string, Type>();
+        public string ID { get; private set; }
         public virtual string Text { get; }
 
         public virtual bool HasNextNode()
@@ -26,32 +28,39 @@ namespace COSMOS.Dialogs
         {
             return null;
         }
-    }
-    public class EntryNode : DialogNode
-    {
-        public class DialogEntryNodeData : DialogNodeData
+
+        public static DialogNode CreateNode(RawDialogNode node)
         {
-            public string NextNodeGUID;
-
-            public override DialogNode restoreData()
+            if (node != null)
             {
-                return new EntryNode();
-            }
-
-            public override bool restoreLinks(DialogNode data, Dictionary<string, DialogNode> nodes)
-            {
-                if (data is EntryNode)
+                if (!string.IsNullOrEmpty(node.Type))
                 {
-                    if (nodes.ContainsKey(NextNodeGUID))
+                    if (nodeTypes.ContainsKey(node.Type))
                     {
-                        (data as EntryNode).NextNode = nodes[NextNodeGUID];
-                        return true;
+                        var instance = Activator.CreateInstance(nodeTypes[node.Type]) as DialogNode;
+                        instance.restore(node);
+                        return instance;
                     }
                 }
-                return false;
+            }
+            return null;
+        }
+        protected virtual void restore(RawDialogNode node)
+        {
+            if(node != null)
+            {
+                ID = node.GUID;
             }
         }
+        public virtual void RestoreLinks(Dialog dialog)
+        {
 
+        }
+    }
+
+    [DialogNode("StartNode")]
+    public class EntryNode : DialogNode
+    {
         public string Name;
 
         public DialogNode NextNode { get; private set; }
@@ -63,6 +72,14 @@ namespace COSMOS.Dialogs
         public override DialogNode GetNextNode()
         {
             return NextNode;
+        }
+    }
+    public class DialogNodeAttribute : Attribute
+    {
+        public string name;
+        public DialogNodeAttribute(string name)
+        {
+            this.name = name;
         }
     }
 }

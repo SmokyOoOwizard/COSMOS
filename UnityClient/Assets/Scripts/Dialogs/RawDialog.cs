@@ -10,6 +10,11 @@ namespace COSMOS.Dialogs
     {
         public List<RawDialogNode> EntryNodes;
         public List<RawDialogNode> Nodes;
+
+        public Dialog CreateDialog()
+        {
+            return new Dialog(this);
+        }
     }
     public sealed class RawDialogNode
     {
