@@ -8,7 +8,6 @@ namespace COSMOS.Dialogs
 {
     public class DialogNode
     {
-        private readonly static Dictionary<string, Type> nodeTypes = new Dictionary<string, Type>();
         public string ID { get; private set; }
         public virtual string Text { get; }
 
@@ -35,11 +34,23 @@ namespace COSMOS.Dialogs
             {
                 if (!string.IsNullOrEmpty(node.Type))
                 {
-                    if (nodeTypes.ContainsKey(node.Type))
+                    var classes = Core.AttributeFinder.GetTypesWithAttribute(typeof(DialogNodeAttribute));
+                    foreach (var att in classes)
                     {
-                        var instance = Activator.CreateInstance(nodeTypes[node.Type]) as DialogNode;
-                        instance.restore(node);
-                        return instance;
+                        if ((att.Key as DialogNodeAttribute).name == node.Type)
+                        {
+                            if (att.Value.IsSubclassOf(typeof(DialogNode)))
+                            {
+                                var instance = Activator.CreateInstance(att.Value) as DialogNode;
+                                instance.restore(node);
+                                return instance;
+                            }
+                            else
+                            {
+                                Log.Error($"Dialog node with Type:{node.Type} is not DialogNode. ID:{node.GUID}", "Dialog");
+                                break;
+                            }
+                        }
                     }
                 }
             }

@@ -6,7 +6,7 @@ using COSMOS;
 using System;
 using COSMOS.Player;
 
-namespace COMOS.UI
+namespace COSMOS.UI
 {
     class TimeWarpTimeUI : MonoBehaviour
     {
