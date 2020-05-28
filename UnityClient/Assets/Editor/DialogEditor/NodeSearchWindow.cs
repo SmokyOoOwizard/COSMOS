@@ -36,9 +36,17 @@ namespace DialogEditor
                 {
                     userData = new EntryNode(), level = 1
                 },
+                new SearchTreeEntry(new GUIContent("Finish Node", indentationIcon))
+                {
+                    userData = new FinishNode(), level = 1
+                },
                 new SearchTreeEntry(new GUIContent("Speech Node", indentationIcon))
                 {
                     userData = new SpeechNode(), level = 1
+                },
+                new SearchTreeEntry(new GUIContent("Speech Node", indentationIcon))
+                {
+                    userData = new ShopNode(), level = 1
                 },
                 new SearchTreeEntry(new GUIContent("Choice Node", indentationIcon))
                 {
