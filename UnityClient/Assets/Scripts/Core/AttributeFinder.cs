@@ -12,67 +12,44 @@ namespace COSMOS.Core
     [Manager]
     public static class AttributeFinder
     {
-        public static ReadOnlyDictionary<Type, ReadOnlyCollection<Attribute>> ClassesAttributes { get; private set; }
-        public static ReadOnlyDictionary<Type, ReadOnlyDictionary<MemberInfo, ReadOnlyCollection<Attribute>>> MembersAttributes { get; private set; }
-
-        static HashSet<Type> searchAttributes = new HashSet<Type>();
-        static object searchAttributesLock = new object();
-
-        static Dictionary<Type, Action<Dictionary<Type, List<Attribute>>, Dictionary<Type, Dictionary<MemberInfo, List<Attribute>>>>> callbacks = 
-            new Dictionary<Type, Action<Dictionary<Type, List<Attribute>>, Dictionary<Type, Dictionary<MemberInfo, List<Attribute>>>>>();
-
-        public static void AddCallback(Type att, Action<Dictionary<Type, List<Attribute>>, Dictionary<Type, Dictionary<MemberInfo, List<Attribute>>>> callback)
+        private class AttributeInfo
         {
-            lock (searchAttributesLock)
+            public Type AttributeType { get; private set; }
+            public Dictionary<Attribute, Type> Classes = new Dictionary<Attribute, Type>();
+            public Dictionary<Attribute, KeyValuePair<Type, MemberInfo>> Methods =
+                new Dictionary<Attribute, KeyValuePair<Type, MemberInfo>>();
+
+            public AttributeInfo(Type type)
             {
-                if (!callbacks.ContainsKey(att))
+                AttributeType = type;
+            }
+
+            public KeyValuePair<Attribute, Type>[] GetAttributes()
+            {
+                if (Classes != null)
                 {
-                    callbacks.Add(att, callback);
-                    searchAttributes.Add(att);
-                    return;
+                    return Classes.ToArray();
                 }
-                callbacks[att] += callback;
+                return null;
             }
         }
-        public static void RemoveCallBack(Type att, Action<Dictionary<Type, List<Attribute>>, Dictionary<Type, Dictionary<MemberInfo, List<Attribute>>>> callback)
-        {
-            lock (searchAttributesLock)
-            {
-                if (callbacks.ContainsKey(att))
-                {
-                    callbacks[att] -= callback;
-                    if (callbacks[att] == null)
-                    {
-                        searchAttributes.Remove(att);
-                        callbacks.Remove(att);
-                    }
-                }
-            }
-        }
+        private static Dictionary<Type, AttributeInfo> Attributes = new Dictionary<Type, AttributeInfo>();
+        private static Dictionary<Type, AttributeInfo> GenericAttributes = new Dictionary<Type, AttributeInfo>();
 
         [InitMethod(0)]
-        public static void Init()
+        private static void Init()
         {
+            Attributes.Clear();
+            GenericAttributes.Clear();
+
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-
-            ConcurrentDictionary<Type, List<Attribute>> types = new ConcurrentDictionary<Type, List<Attribute>>();
-
-            Dictionary<Type, Dictionary<Type, List<Attribute>>> aTypes = new Dictionary<Type, Dictionary<Type, List<Attribute>>>();
-
-            ConcurrentDictionary<Type, Dictionary<MemberInfo, List<Attribute>>> members = new ConcurrentDictionary<Type, Dictionary<MemberInfo, List<Attribute>>>();
-
-            Dictionary<Type, Dictionary<Type, Dictionary<MemberInfo, List<Attribute>>>> aMembers = new Dictionary<Type, Dictionary<Type, Dictionary<MemberInfo, List<Attribute>>>>();
-
-            ConcurrentBag<Type> foundTypes = new ConcurrentBag<Type>();
-
-            HashSet<Type> sa;
-            lock (searchAttributesLock)
+            foreach (var assemble in assemblies)
             {
-                sa = new HashSet<Type>(searchAttributes);
-            }
-
-            assemblies.AsParallel().Any((assemble) =>
-            {
+                if (assemble.FullName.StartsWith("Unity") || assemble.FullName.StartsWith("System"))
+                {
+                    continue;
+                }
+                Log.Info(assemble.FullName);
                 foreach (var type in assemble.GetTypes())
                 {
                     var membersCache = new Dictionary<MemberInfo, List<Attribute>>();
@@ -84,27 +61,30 @@ namespace COSMOS.Core
                         foreach (Attribute att in atts)
                         {
                             Type t = att.GetType();
-                            if (sa.Contains(t))
+                            if (t.IsGenericType)
                             {
-                                typesCache.Add(att);
-                                if (!foundTypes.Contains(t))
-                                {
-                                    foundTypes.Add(t);
-                                }
-
-                            }
-                            else if(t.IsGenericType && sa.Contains(t.GetGenericTypeDefinition()))
-                            {
-                                typesCache.Add(att);
-
                                 Type tG = t.GetGenericTypeDefinition();
-                                if (!foundTypes.Contains(tG))
+                                if (!GenericAttributes.ContainsKey(tG))
                                 {
-                                    foundTypes.Add(tG);
+                                    GenericAttributes.Add(tG, new AttributeInfo(tG));
                                 }
+                                if (!GenericAttributes[tG].Classes.ContainsKey(att))
+                                {
+                                    GenericAttributes[tG].Classes.Add(att, type);
+                                }
+                            }
+
+                            if (!Attributes.ContainsKey(t))
+                            {
+                                Attributes.Add(t, new AttributeInfo(t));
+                            }
+                            if (!Attributes[t].Classes.ContainsKey(att))
+                            {
+                                Attributes[t].Classes.Add(att, type);
                             }
                         }
                     }
+
                     foreach (var member in type.GetMembers())
                     {
                         var memberAtts = member.GetCustomAttributes(false);
@@ -113,117 +93,50 @@ namespace COSMOS.Core
                             foreach (Attribute att in memberAtts)
                             {
                                 Type t = att.GetType();
-                                if (sa.Contains(t))
+                                if (t.IsGenericType)
                                 {
-                                    if (!membersCache.ContainsKey(member))
+                                    Type tG = t.GetGenericTypeDefinition();
+                                    if (!GenericAttributes.ContainsKey(tG))
                                     {
-                                        membersCache.Add(member, new List<Attribute>());
+                                        GenericAttributes.Add(tG, new AttributeInfo(tG));
                                     }
-                                    if (!foundTypes.Contains(t))
+                                    if (!GenericAttributes[tG].Methods.ContainsKey(att))
                                     {
-                                        foundTypes.Add(t);
-                                    }
-                                    membersCache[member].Add(att);
-
-                                    if (!foundTypes.Contains(t))
-                                    {
-                                        foundTypes.Add(t);
+                                        GenericAttributes[tG].Methods.Add(att,
+                                            new KeyValuePair<Type, MemberInfo>(type, member));
                                     }
                                 }
-                                else if (t.IsGenericType && sa.Contains(t.GetGenericTypeDefinition()))
-                                {
-                                    if(!membersCache.ContainsKey(member))
-                                    {
-                                        membersCache.Add(member, new List<Attribute>());
-                                    }
-                                    membersCache[member].Add(att);
 
-                                    Type tG = t.GetGenericTypeDefinition();
-                                    if (!foundTypes.Contains(tG))
-                                    {
-                                        foundTypes.Add(tG);
-                                    }
+                                if (!Attributes.ContainsKey(t))
+                                {
+                                    Attributes.Add(t, new AttributeInfo(t));
+                                }
+                                if (!Attributes[t].Methods.ContainsKey(att))
+                                {
+                                    Attributes[t].Methods.Add(att, new KeyValuePair<Type, MemberInfo>(type, member));
                                 }
                             }
                         }
                     }
-
-                    if(typesCache.Count > 0)
-                    {
-                        types.TryAdd(type, new List<Attribute>(typesCache));
-                    }
-                    if(membersCache.Count > 0)
-                    {
-                        members.TryAdd(type, membersCache);
-                    }
-                }
-                return false;
-            });
-
-            ClassesAttributes = new ReadOnlyDictionary<Type, ReadOnlyCollection<Attribute>>(types.ToDictionary(pair => pair.Key, pair => pair.Value.AsReadOnly()));
-            MembersAttributes = new ReadOnlyDictionary<Type, ReadOnlyDictionary<MemberInfo, ReadOnlyCollection<Attribute>>>(
-                members.ToDictionary(pair => pair.Key, pair => new ReadOnlyDictionary<MemberInfo, ReadOnlyCollection<Attribute>>(
-                      pair.Value.ToDictionary(pair2 => pair2.Key, pair2 => pair2.Value.AsReadOnly()))));
-
-            foreach (var t in types)
-            {
-                foreach (var a in t.Value)
-                {
-                    var aT = a.GetType();
-                    if (foundTypes.Contains(aT))
-                    {
-                        if (!aTypes.ContainsKey(aT))
-                        {
-                            aTypes.Add(aT, new Dictionary<Type, List<Attribute>>());
-                        }
-                        if (!aTypes[aT].ContainsKey(t.Key))
-                        {
-                            aTypes[aT].Add(t.Key, new List<Attribute>());
-                        }
-                        aTypes[aT][t.Key].Add(a);
-                    }
-                    if(aT.IsGenericType && foundTypes.Contains(aT.GetGenericTypeDefinition()))
-                    {
-                        var aTG = aT.GetGenericTypeDefinition();
-                        if (!aTypes.ContainsKey(aTG))
-                        {
-                            aTypes.Add(aTG, new Dictionary<Type, List<Attribute>>());
-                        }
-                        if (!aTypes[aTG].ContainsKey(t.Key))
-                        {
-                            aTypes[aTG].Add(t.Key, new List<Attribute>());
-                        }
-                        aTypes[aTG][t.Key].Add(a);
-                    }
                 }
             }
+        }
 
-            //foreach (var t in members)
-            //{
-            //    foreach (var m in t.Value)
-            //    {
-            //        foreach (var a in m.Value)
-            //        {
-            //
-            //        }
-            //    }
-            //}
-
-            foreach (var callback in callbacks)
+        public static KeyValuePair<Attribute, Type>[] GetTypesWithAttribute(Type attributeType)
+        {
+            if (Attributes.ContainsKey(attributeType))
             {
-                Dictionary<Type, List<Attribute>> tmpAt = null;
-                if (aTypes.ContainsKey(callback.Key))
-                {
-                    tmpAt = aTypes[callback.Key];
-                }
-                Dictionary<Type, Dictionary<MemberInfo, List<Attribute>>> tmpAm = null;
-                if (aMembers.ContainsKey(callback.Key))
-                {
-                    tmpAm = aMembers[callback.Key];
-                }
-
-                callback.Value?.Invoke(tmpAt, tmpAm);
+                return Attributes[attributeType].GetAttributes();
             }
+            return null;
+        }
+        public static KeyValuePair<Attribute, Type>[] GetTypesWithGenericAttribute(Type attributeType)
+        {
+            if (GenericAttributes.ContainsKey(attributeType))
+            {
+                return GenericAttributes[attributeType].GetAttributes();
+            }
+            return null;
         }
     }
 }
