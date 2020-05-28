@@ -10,9 +10,17 @@ namespace COSMOS.Character
 {
     public abstract partial class Character
     {
+        public Dialogs.Dialog BaseDialog { get; protected set; }
+
         public Character()
         {
             ctorInventoryControllers();
+        }
+
+
+        public void SetBaseDialog(Dialogs.Dialog baseDialog)
+        {
+            BaseDialog = baseDialog;
         }
     }
     public abstract partial class Character

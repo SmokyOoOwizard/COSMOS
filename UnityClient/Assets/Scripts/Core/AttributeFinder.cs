@@ -49,7 +49,7 @@ namespace COSMOS.Core
                 {
                     continue;
                 }
-                Log.Info(assemble.FullName);
+                Log.Info("Assembly processing: " + assemble.FullName, "AttributeFinder", "Attribute");
                 foreach (var type in assemble.GetTypes())
                 {
                     var membersCache = new Dictionary<MemberInfo, List<Attribute>>();
