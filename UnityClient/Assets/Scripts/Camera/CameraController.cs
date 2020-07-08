@@ -1,47 +1,14 @@
 ﻿using UnityEngine;
-using COSMOS.Prototype;
-using COSMOS.Space;
 
 public class CameraController : MonoBehaviour
 {
     public Transform Target;
-    public float distanceToTarget = 5;
     public float Height = 2f;
     public bool DrawDebug = false;
-    float radius;
-    float disTarget;
-    float h;
-    [Header("PlanetZoom")]
-    public AnimationCurve HByTime;
-    public AnimationCurve DistanceByTime;
-    public bool Zoom = false;
-    public float HSpeed = 1;
-    public float HAmount = 1;
-    public float TargetH;
-    public float DSpeed = 1;
-    public float DistanceAmount = 1;
-    public float TargetDistance;
+    public float Radius;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        SolarSystemManager.EndLoadSystem += () => Log.Info("LOADED");
-        SolarSystemManager.LoadSystem("TestName");
-    }
-    [ContextMenu("1")]
-    public void T()
-    {
-        SolarSystemManager.LoadSystem("TestName");
-    }
-    [ContextMenu("2")]
-    public void TT()
-    {
-        SolarSystemManager.LoadSystem("TestName2");
-    }
-    // Update is called once per frame
     void Update()
     {
-        ZoomUpdate();
         SetCameraPos();
     }
     public void SetCameraPos()
@@ -49,13 +16,10 @@ public class CameraController : MonoBehaviour
         Vector3 NewPos = Vector3.zero;
         Vector3 Rot = transform.eulerAngles;
 
-
-        radius = disTarget;// * Mathf.Tan((Angle + 90) * Mathf.Deg2Rad);
-
-        NewPos.z = Mathf.Cos(Rot.y * Mathf.Deg2Rad) * -radius;
-        NewPos.y = h;
-        NewPos.x = Mathf.Sin(Rot.y * Mathf.Deg2Rad) * -radius;
-        Rot.x = Mathf.Atan(h / radius) * Mathf.Rad2Deg;
+        NewPos.z = Mathf.Cos(Rot.y * Mathf.Deg2Rad) * -Radius;
+        NewPos.y = Height;
+        NewPos.x = Mathf.Sin(Rot.y * Mathf.Deg2Rad) * -Radius;
+        Rot.x = Mathf.Atan(Height / Radius) * Mathf.Rad2Deg;
         if (float.IsNaN(Rot.x)) Rot.x = 0;
         transform.rotation = Quaternion.Euler(Rot.x, Rot.y, Rot.z);
         if (Target != null)
@@ -73,23 +37,6 @@ public class CameraController : MonoBehaviour
             transform.position = NewPos + Target.position;
         }
     }
-    public void ZoomUpdate()
-    {
-        if (Zoom)
-        {
-            DistanceAmount += DSpeed * Time.deltaTime;
-            HAmount += HSpeed * Time.deltaTime;
-        }
-        else
-        {
-            DistanceAmount -= DSpeed * Time.deltaTime;
-            HAmount -= HSpeed * Time.deltaTime;
-        }
-        DistanceAmount = Mathf.Clamp01(DistanceAmount);
-        HAmount = Mathf.Clamp01(HAmount);
-        h = Mathf.Lerp(Height ,TargetH, HByTime.Evaluate(HAmount));
-        disTarget = Mathf.Lerp(distanceToTarget, TargetDistance, DistanceByTime.Evaluate(DistanceAmount));
-    }
     private void OnDrawGizmos()
     {
         if (this.enabled)
@@ -100,11 +47,11 @@ public class CameraController : MonoBehaviour
         {
             Gizmos.color = Color.red;
 
-            Gizmos.DrawLine(new Vector3(Target.position.x + radius, Target.position.y, transform.position.z), new Vector3(Target.position.x + radius, Target.position.y, Target.position.z));
-            Gizmos.DrawLine(new Vector3(Target.position.x + radius, transform.position.y, transform.position.z), new Vector3(Target.position.x + radius, Target.position.y, Target.position.z));
-            Gizmos.DrawLine(new Vector3(Target.position.x + radius, transform.position.y, transform.position.z), new Vector3(Target.position.x + radius, Target.position.y, transform.position.z));
+            Gizmos.DrawLine(new Vector3(Target.position.x + Radius, Target.position.y, transform.position.z), new Vector3(Target.position.x + Radius, Target.position.y, Target.position.z));
+            Gizmos.DrawLine(new Vector3(Target.position.x + Radius, transform.position.y, transform.position.z), new Vector3(Target.position.x + Radius, Target.position.y, Target.position.z));
+            Gizmos.DrawLine(new Vector3(Target.position.x + Radius, transform.position.y, transform.position.z), new Vector3(Target.position.x + Radius, Target.position.y, transform.position.z));
 
-            Gizmos.DrawLine(new Vector3(Target.position.x + radius, transform.position.y, transform.position.z), new Vector3(transform.position.x, transform.position.y, transform.position.z));
+            Gizmos.DrawLine(new Vector3(Target.position.x + Radius, transform.position.y, transform.position.z), new Vector3(transform.position.x, transform.position.y, transform.position.z));
             Gizmos.DrawLine(new Vector3(transform.position.x, transform.position.y, transform.position.z), new Vector3(transform.position.x, Target.position.y, transform.position.z));
 
             Gizmos.color = Color.green;
@@ -112,7 +59,7 @@ public class CameraController : MonoBehaviour
 
             Gizmos.color = Color.yellow;
             Gizmos.matrix = Matrix4x4.Scale(new Vector3(1, 0, 1));
-            Gizmos.DrawWireSphere(Target.position, radius);
+            Gizmos.DrawWireSphere(Target.position, Radius);
             Gizmos.matrix = Matrix4x4.identity;
         }
     }
